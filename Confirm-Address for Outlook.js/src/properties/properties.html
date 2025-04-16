@@ -1,0 +1,38 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
+<!-- This file shows how to design a first-run page that provides a welcome screen to the user about the features of the add-in. -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Confirm-Address for Outlook.js</title>
+
+    <!-- Office JavaScript API -->
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+
+    <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
+    <link rel="stylesheet" href="https://res-1.cdn.office.net/files/fabric-cdn-prod_20230815.002/office-ui-fabric-core/11.1.0/css/fabric.min.css"/>
+
+    <!-- Template styles -->
+    <link href="properties.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body class="ms-font-s ca-js ms-Fabric">
+    <header class="ca-js__header ms-bgColor-themeDarker ms-fontColor-neutralLight">
+        <img width="32" height="32" src="../../assets/ConfirmAddress-32x32.png" alt="Confirm-Address" title="Confirm-Address" />
+        <span class="ms-font-l">Confirm-Address for Outlook.js</span>
+    </header>
+    <section id="sideload-msg" class="ca-js__main ms-bgColor-neutral ms-fontColor-neutralLight">
+        <h2 class="ms-font-xl">このアプリの内容を見るには、<a target="_blank" href="https://learn.microsoft.com/office/dev/add-ins/testing/test-debug-office-add-ins#sideload-an-office-add-in-for-testing">サイドロード</a>してください。</h2>
+    </section>
+    <main id="app-body" class="ca-js__main ms-bgColor-themePrimary ms-fontColor-neutralLight" style="display: none;">
+        <h2>メールプロパティ</h2>
+        <ul id="properties"></ul>
+        <button id="run">更新</button>
+    </main>
+</body>
+
+</html>

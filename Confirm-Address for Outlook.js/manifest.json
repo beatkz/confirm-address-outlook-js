@@ -1,274 +1,268 @@
 {
-    "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.17/MicrosoftTeams.schema.json",
-    "id": "5ab14cd7-dbe1-4d20-ab4c-7368e9e25e16",
-    "manifestVersion": "1.17",
-    "version": "1.0.0",
-    "name": {
-        "short": "Confirm-Address for Outlook.js",
-        "full": "Confirm-Address for Outlook.js"
-    },
-    "description": {
-        "short": "送信前チェック",
-        "full": "メールの送信前に、受信者のメールアドレス・添付ファイル名・本文冒頭を確認します。"
-    },
-    "developer": {
-        "name": "Keiji Momose",
-        "websiteUrl": "https://github.com/beatkz/confirm-address-outlook-js",
-        "privacyUrl": "https://github.com/beatkz/confirm-address-outlook-js/blob/main/README.md",
-        "termsOfUseUrl": "https://github.com/beatkz/confirm-address-outlook-js/blob/main/README.md"
-    },
-    "icons": {
-        "outline": "assets/ConfirmAddress-Outline.png",
-        "color": "assets/ConfirmAddress-192x192.png"
-    },
-    "accentColor": "#232859",
-    "localizationInfo": {
-        "defaultLanguageTag": "ja-jp",
-        "additionalLanguages": []
-    },
-    "authorization": {
-        "permissions": {
-            "resourceSpecific": [
-                {
-                    "name": "MailboxItem.Read.User",
-                    "type": "Delegated"
-                }
-            ]
-        }
-    },
-    "validDomains": ["github.com"],
-    "extensions": [
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.17/MicrosoftTeams.schema.json",
+  "id": "5ab14cd7-dbe1-4d20-ab4c-7368e9e25e16",
+  "manifestVersion": "1.17",
+  "version": "1.0.0",
+  "name": {
+    "short": "Confirm-Address for Outlook.js",
+    "full": "Confirm-Address for Outlook.js"
+  },
+  "description": {
+    "short": "送信前チェック",
+    "full": "メールの送信前に、受信者のメールアドレス・添付ファイル名・本文冒頭を確認します。"
+  },
+  "developer": {
+    "name": "Keiji Momose",
+    "websiteUrl": "https://github.com/beatkz/confirm-address-outlook-js",
+    "privacyUrl": "https://github.com/beatkz/confirm-address-outlook-js/blob/main/README.md",
+    "termsOfUseUrl": "https://github.com/beatkz/confirm-address-outlook-js/blob/main/README.md"
+  },
+  "icons": {
+    "outline": "assets/ConfirmAddress-Outline.png",
+    "color": "assets/ConfirmAddress-192x192.png"
+  },
+  "accentColor": "#232859",
+  "localizationInfo": {
+    "defaultLanguageTag": "ja-jp",
+    "additionalLanguages": []
+  },
+  "authorization": {
+    "permissions": {
+      "resourceSpecific": [
         {
-            "requirements": {
-                "scopes": [
-                    "mail"
-                ],
-                "capabilities": [
-                    {
-                        "name": "Mailbox",
-                        "minVersion": "1.3"
-                    }
-                ]
-            },
-            "runtimes": [
-                {
-                    "requirements": {
-                        "capabilities": [
-                            {
-                                "name": "Mailbox",
-                                "minVersion": "1.14"
-                            }
-                        ]
-                    },
-                    "id": "TaskPaneRuntime",
-                    "type": "general",
-                    "code": {
-                        "page": "https://localhost:3000/taskpane.html"
-                    },
-                    "lifetime": "short",
-                    "actions": [
-                        {
-                            "id": "TaskPaneRuntimeShow",
-                            "type": "openPage",
-                            "pinnable": false,
-                            "view": "dashboard"
-                        }
-                    ]
-                },
-                {
-                    "requirements": {
-                        "capabilities": [
-                            {
-                                "name": "Mailbox",
-                                "minVersion": "1.14"
-                            }
-                        ]
-                    },
-                    "id": "WorkBedRuntime",
-                    "type": "general",
-                    "code": {
-                        "page": "https://localhost:3000/workbed.html"
-                    },
-                    "lifetime": "short",
-                    "actions": [
-                        {
-                            "id": "WorkBedRuntimeShow",
-                            "type": "openPage",
-                            "pinnable": false,
-                            "view": "dashboard"
-                        }
-                    ]
-                },
-                {
-                    "id": "CommandsRuntime",
-                    "type": "general",
-                    "code": {
-                        "page": "https://localhost:3000/commands.html",
-                        "script": "https://localhost:3000/commands.js"
-                    },
-                    "lifetime": "short",
-                    "actions": [
-                        {
-                            "id": "action",
-                            "type": "executeFunction"
-                        }
-                    ]
-                },
-                {
-                    "requirements": {
-                        "capabilities": [
-                            {
-                                "name": "Mailbox",
-                                "minVersion": "1.14"
-                            }
-                        ]
-                    },
-                    "id": "AutorunRuntime",
-                    "type": "general",
-                    "code": {
-                        "page": "https://localhost:3000/commands.html",
-                        "script": "https://localhost:3000/launchevent.js"
-                    },
-                    "lifetime": "short",
-                    "actions": [
-                        {
-                            "id": "onMessageSendHandler",
-                            "type": "executeFunction",
-                            "displayName": "onMessageSendHandler"
-                        }
-                    ]
-                }
-            ],
-            "autoRunEvents": [
-                {
-                    "requirements": {
-                        "capabilities": [
-                            {
-                                "name": "Mailbox",
-                                "minVersion": "1.15"
-                            }
-                        ],
-                        "scopes": [
-                            "mail"
-                        ]
-                    },
-                    "events": [
-                      {
-                          "type": "messageSending",
-                          "actionId": "onMessageSendHandler",
-                          "options": {
-                              "sendMode": "softBlock"
-                          }
-                      }
-                    ]
-                }
-            ],
-            "ribbons": [
-                {
-                    "contexts": [
-                        "mailCompose"
-                    ],
-                    "tabs": [
-                        {
-                            "builtInTabId": "TabDefault",
-                            "groups": [
-                                {
-                                    "id": "msgComposeGroup",
-                                    "label": "Confirm-Address",
-                                    "icons": [
-                                        {
-                                            "size": 16,
-                                            "url": "https://localhost:3000/assets/ConfirmAddress-16x16.png"
-                                        },
-                                        {
-                                            "size": 32,
-                                            "url": "https://localhost:3000/assets/ConfirmAddress-32x32.png"
-                                        },
-                                        {
-                                            "size": 80,
-                                            "url": "https://localhost:3000/assets/ConfirmAddress-80x80.png"
-                                        }
-                                    ],
-                                    "controls": [
-                                        {
-                                            "id": "msgComposeOpenPaneButton",
-                                            "type": "button",
-                                            "label": "送信前チェック",
-                                            "icons": [
-                                                {
-                                                    "size": 16,
-                                                    "url": "https://localhost:3000/assets/ConfirmAddress-16x16.png"
-                                                },
-                                                {
-                                                    "size": 32,
-                                                    "url": "https://localhost:3000/assets/ConfirmAddress-32x32.png"
-                                                },
-                                                {
-                                                    "size": 80,
-                                                    "url": "https://localhost:3000/assets/ConfirmAddress-80x80.png"
-                                                }
-                                            ],
-                                            "supertip": {
-                                                "title": "送信前チェック",
-                                                "description": "メールの送信前に、受信者のメールアドレス・添付ファイル名・本文冒頭を確認します。"
-                                            },
-                                            "actionId": "TaskPaneRuntimeShow"
-                                        },
-                                        {
-                                            "id": "msgComposeOpenPaneButton",
-                                            "type": "button",
-                                            "label": "ワークベッドを表示",
-                                            "icons": [
-                                                {
-                                                    "size": 16,
-                                                    "url": "https://localhost:3000/assets/ConfirmAddress-16x16.png"
-                                                },
-                                                {
-                                                    "size": 32,
-                                                    "url": "https://localhost:3000/assets/ConfirmAddress-32x32.png"
-                                                },
-                                                {
-                                                    "size": 80,
-                                                    "url": "https://localhost:3000/assets/ConfirmAddress-80x80.png"
-                                                }
-                                            ],
-                                            "supertip": {
-                                                "title": "ワークベッドを表示",
-                                                "description": "ワークベッドを開き、利用可能なプロパティを表示します。"
-                                            },
-                                            "actionId": "WorkBedRuntimeShow"
-                                        },
-                                        {
-                                            "id": "ActionButton",
-                                            "type": "button",
-                                            "label": "アクションの実行",
-                                            "icons": [
-                                                {
-                                                    "size": 16,
-                                                    "url": "https://localhost:3000/assets/ConfirmAddress-16x16.png"
-                                                },
-                                                {
-                                                    "size": 32,
-                                                    "url": "https://localhost:3000/assets/ConfirmAddress-32x32.png"
-                                                },
-                                                {
-                                                    "size": 80,
-                                                    "url": "https://localhost:3000/assets/ConfirmAddress-80x80.png"
-                                                }
-                                            ],
-                                            "supertip": {
-                                                "title": "アクションの実行",
-                                                "description": "クリックすると、アクションが実行されます。"
-                                            },
-                                            "actionId": "action"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                } 
-            ]
+          "name": "MailboxItem.Read.User",
+          "type": "Delegated"
         }
-    ]
+      ]
+    }
+  },
+  "validDomains": ["github.com"],
+  "extensions": [
+    {
+      "requirements": {
+        "scopes": ["mail"],
+        "capabilities": [
+          {
+            "name": "Mailbox",
+            "minVersion": "1.3"
+          }
+        ]
+      },
+      "runtimes": [
+        {
+          "requirements": {
+            "capabilities": [
+              {
+                "name": "Mailbox",
+                "minVersion": "1.14"
+              }
+            ]
+          },
+          "id": "TaskPaneRuntime",
+          "type": "general",
+          "code": {
+            "page": "https://localhost:3000/taskpane.html"
+          },
+          "lifetime": "short",
+          "actions": [
+            {
+              "id": "TaskPaneRuntimeShow",
+              "type": "openPage",
+              "pinnable": false,
+              "view": "dashboard"
+            }
+          ]
+        },
+        {
+          "requirements": {
+            "capabilities": [
+              {
+                "name": "Mailbox",
+                "minVersion": "1.14"
+              }
+            ]
+          },
+          "id": "PropertiesRuntime",
+          "type": "general",
+          "code": {
+            "page": "https://localhost:3000/properties.html"
+          },
+          "lifetime": "short",
+          "actions": [
+            {
+              "id": "PropertiesRuntimeShow",
+              "type": "openPage",
+              "pinnable": false,
+              "view": "dashboard"
+            }
+          ]
+        },
+        {
+          "id": "CommandsRuntime",
+          "type": "general",
+          "code": {
+            "page": "https://localhost:3000/commands.html",
+            "script": "https://localhost:3000/commands.js"
+          },
+          "lifetime": "short",
+          "actions": [
+            {
+              "id": "action",
+              "type": "executeFunction"
+            }
+          ]
+        },
+        {
+          "requirements": {
+            "capabilities": [
+              {
+                "name": "Mailbox",
+                "minVersion": "1.14"
+              }
+            ]
+          },
+          "id": "AutorunRuntime",
+          "type": "general",
+          "code": {
+            "page": "https://localhost:3000/commands.html",
+            "script": "https://localhost:3000/launchevent.js"
+          },
+          "lifetime": "short",
+          "actions": [
+            {
+              "id": "onMessageSendHandler",
+              "type": "executeFunction",
+              "displayName": "onMessageSendHandler"
+            }
+          ]
+        }
+      ],
+      "autoRunEvents": [
+        {
+          "requirements": {
+            "capabilities": [
+              {
+                "name": "Mailbox",
+                "minVersion": "1.15"
+              }
+            ],
+            "scopes": ["mail"]
+          },
+          "events": [
+            {
+              "type": "messageSending",
+              "actionId": "onMessageSendHandler",
+              "options": {
+                "sendMode": "softBlock"
+              }
+            }
+          ]
+        }
+      ],
+      "ribbons": [
+        {
+          "contexts": ["mailCompose"],
+          "tabs": [
+            {
+              "builtInTabId": "TabDefault",
+              "groups": [
+                {
+                  "id": "msgComposeGroup",
+                  "label": "Confirm-Address",
+                  "icons": [
+                    {
+                      "size": 16,
+                      "url": "https://localhost:3000/assets/ConfirmAddress-16x16.png"
+                    },
+                    {
+                      "size": 32,
+                      "url": "https://localhost:3000/assets/ConfirmAddress-32x32.png"
+                    },
+                    {
+                      "size": 80,
+                      "url": "https://localhost:3000/assets/ConfirmAddress-80x80.png"
+                    }
+                  ],
+                  "controls": [
+                    {
+                      "id": "msgComposeOpenPaneButton",
+                      "type": "button",
+                      "label": "送信前チェック",
+                      "icons": [
+                        {
+                          "size": 16,
+                          "url": "https://localhost:3000/assets/ConfirmAddress-16x16.png"
+                        },
+                        {
+                          "size": 32,
+                          "url": "https://localhost:3000/assets/ConfirmAddress-32x32.png"
+                        },
+                        {
+                          "size": 80,
+                          "url": "https://localhost:3000/assets/ConfirmAddress-80x80.png"
+                        }
+                      ],
+                      "supertip": {
+                        "title": "送信前チェック",
+                        "description": "メールの送信前に、受信者のメールアドレス・添付ファイル名・本文冒頭を確認します。"
+                      },
+                      "actionId": "TaskPaneRuntimeShow"
+                    },
+                    {
+                      "id": "msgComposeOpenPaneButton",
+                      "type": "button",
+                      "label": "メールプロパティを表示",
+                      "icons": [
+                        {
+                          "size": 16,
+                          "url": "https://localhost:3000/assets/ConfirmAddress-16x16.png"
+                        },
+                        {
+                          "size": 32,
+                          "url": "https://localhost:3000/assets/ConfirmAddress-32x32.png"
+                        },
+                        {
+                          "size": 80,
+                          "url": "https://localhost:3000/assets/ConfirmAddress-80x80.png"
+                        }
+                      ],
+                      "supertip": {
+                        "title": "メールプロパティを表示",
+                        "description": "利用可能なプロパティを表示します。"
+                      },
+                      "actionId": "PropertiesRuntimeShow"
+                    },
+                    {
+                      "id": "ActionButton",
+                      "type": "button",
+                      "label": "アクションの実行",
+                      "icons": [
+                        {
+                          "size": 16,
+                          "url": "https://localhost:3000/assets/ConfirmAddress-16x16.png"
+                        },
+                        {
+                          "size": 32,
+                          "url": "https://localhost:3000/assets/ConfirmAddress-32x32.png"
+                        },
+                        {
+                          "size": 80,
+                          "url": "https://localhost:3000/assets/ConfirmAddress-80x80.png"
+                        }
+                      ],
+                      "supertip": {
+                        "title": "アクションの実行",
+                        "description": "クリックすると、アクションが実行されます。"
+                      },
+                      "actionId": "action"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
