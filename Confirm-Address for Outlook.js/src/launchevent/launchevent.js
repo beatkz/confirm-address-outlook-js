@@ -15,7 +15,7 @@ function getBodyCallback(asyncResult) {
   if (asyncResult.status !== Office.AsyncResultStatus.Failed && asyncResult.value !== undefined) {
     body = asyncResult.value;
   } else {
-    const message = "Failed to get body text";
+    const message = "本文の取得に失敗しました。";
     console.error(message);
     event.completed({ allowEvent: false, errorMessage: message });
     return;
@@ -37,7 +37,7 @@ function hasMatches(body) {
     return false;
   }
 
-  const arrayOfTerms = ["send", "picture", "document", "attachment"];
+  const arrayOfTerms = ["ファイル", "添付"];
   for (let index = 0; index < arrayOfTerms.length; index++) {
     const term = arrayOfTerms[index].trim();
     const regex = RegExp(term, "i");

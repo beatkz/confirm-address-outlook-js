@@ -58,30 +58,6 @@
               }
             ]
           },
-          "id": "TaskPaneRuntime",
-          "type": "general",
-          "code": {
-            "page": "https://localhost:3000/taskpane.html"
-          },
-          "lifetime": "short",
-          "actions": [
-            {
-              "id": "TaskPaneRuntimeShow",
-              "type": "openPage",
-              "pinnable": false,
-              "view": "dashboard"
-            }
-          ]
-        },
-        {
-          "requirements": {
-            "capabilities": [
-              {
-                "name": "Mailbox",
-                "minVersion": "1.14"
-              }
-            ]
-          },
           "id": "PropertiesRuntime",
           "type": "general",
           "code": {
@@ -94,21 +70,6 @@
               "type": "openPage",
               "pinnable": false,
               "view": "dashboard"
-            }
-          ]
-        },
-        {
-          "id": "CommandsRuntime",
-          "type": "general",
-          "code": {
-            "page": "https://localhost:3000/commands.html",
-            "script": "https://localhost:3000/commands.js"
-          },
-          "lifetime": "short",
-          "actions": [
-            {
-              "id": "action",
-              "type": "executeFunction"
             }
           ]
         },
@@ -231,30 +192,6 @@
                         "description": "利用可能なプロパティを表示します。"
                       },
                       "actionId": "PropertiesRuntimeShow"
-                    },
-                    {
-                      "id": "ActionButton",
-                      "type": "button",
-                      "label": "アクションの実行",
-                      "icons": [
-                        {
-                          "size": 16,
-                          "url": "https://localhost:3000/assets/ConfirmAddress-16x16.png"
-                        },
-                        {
-                          "size": 32,
-                          "url": "https://localhost:3000/assets/ConfirmAddress-32x32.png"
-                        },
-                        {
-                          "size": 80,
-                          "url": "https://localhost:3000/assets/ConfirmAddress-80x80.png"
-                        }
-                      ],
-                      "supertip": {
-                        "title": "アクションの実行",
-                        "description": "クリックすると、アクションが実行されます。"
-                      },
-                      "actionId": "action"
                     }
                   ]
                 }

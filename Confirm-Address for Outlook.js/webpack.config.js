@@ -17,24 +17,12 @@ module.exports = async (env, options) => {
     entry: {
       polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
       properties: ["./src/properties/properties.js", "./src/properties/properties.html"],
-      taskpane: ["./src/taskpane/taskpane.js", "./src/taskpane/taskpane.html"],
-      commands: "./src/commands/commands.js",
     },
     plugins: [
       new HtmlWebpackPlugin({
         filename: "properties.html",
         template: "./src/properties/properties.html",
         chunks: ["polyfill", "properties"],
-      }),
-      new HtmlWebpackPlugin({
-        filename: "taskpane.html",
-        template: "./src/taskpane/taskpane.html",
-        chunks: ["polyfill", "taskpane"],
-      }),
-      new HtmlWebpackPlugin({
-        filename: "commands.html",
-        template: "./src/commands/commands.html",
-        chunks: ["polyfill", "commands"],
       }),
       new CopyWebpackPlugin({
         patterns: [
