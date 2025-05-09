@@ -25,15 +25,17 @@ function onMessageFromParent(recv) {
   try {
     const emailDetails = JSON.parse(recv.message);
     console.log("confirm.js: メール詳細を受信:", emailDetails);
-    document.getElementById("recipients").textContent = emailDetails.recipients;
-    document.getElementById("bodyPreview").textContent = emailDetails.bodyPreview;
-    document.getElementById("attachments").textContent = emailDetails.attachments;
+    document.getElementById("toReci").textContent = emailDetails.toReci;
+    document.getElementById("ccReci").textContent = emailDetails.ccReci;
+    document.getElementById("bccReci").textContent = emailDetails.bccReci;
+    document.getElementById("body").textContent = emailDetails.body;
+    document.getElementById("attNames").textContent = emailDetails.attNames;
   } catch (error) {
     console.error("confirm.js: メール詳細の解析エラー:", error);
   }
 }
 
-function onRegisterMessageComplete(result){
+function onRegisterMessageComplete(result) {
   if (result.status === Office.AsyncResultStatus.Failed) {
     console.error("confirm.js: addHandlerAsync エラー:", result.error.message);
   } else {

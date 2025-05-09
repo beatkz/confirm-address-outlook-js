@@ -35,9 +35,24 @@
   <div class="container">
     <h2>送信確認</h2>
     <div class="details">
-      <p><strong>受信者:</strong> <span id="recipients">読み込み中...</span></p>
-      <p><strong>本文 (冒頭):</strong> <span id="bodyPreview">読み込み中...</span></p>
-      <p><strong>添付ファイル:</strong> <span id="attachments">読み込み中...</span></p>
+      <p>
+        <h3>To:</h3>
+        <pre id="toReci">読み込み中...</pre>
+        
+        <h3>Cc:</h3>
+        <pre id="ccReci">読み込み中...</pre>
+
+        <h3>Bcc:</h3>
+        <pre id="bccReci">読み込み中...</pre>
+      </p>
+      <p>
+        <h3>本文 (冒頭):</h3>
+        <pre id="body">読み込み中...</pre>
+      </p>
+      <p>
+        <h3>添付ファイル:</h3>
+        <pre id="attNames">読み込み中...</pre>
+      </p>
     </div>
     <div class="buttons">
       <button onclick="cancelSend()">キャンセル</button>
