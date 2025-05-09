@@ -17,12 +17,24 @@ module.exports = async (env, options) => {
     entry: {
       polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
       properties: ["./src/properties/properties.js", "./src/properties/properties.html"],
+      confirm: "./src/confirm/confirm.js",
+      bgevent: "./src/bgevent/bgevent.js",
     },
     plugins: [
       new HtmlWebpackPlugin({
         filename: "properties.html",
         template: "./src/properties/properties.html",
         chunks: ["polyfill", "properties"],
+      }),
+      new HtmlWebpackPlugin({
+        filename: "confirm.html",
+        template: "./src/confirm/confirm.html",
+        chunks: ["confirm"],
+      }),
+      new HtmlWebpackPlugin({
+        filename: "bgevent.html",
+        template: "./src/bgevent/bgevent.html",
+        chunks: ["bgevent"],
       }),
       new CopyWebpackPlugin({
         patterns: [
@@ -40,10 +52,6 @@ module.exports = async (env, options) => {
                 return content.toString().replace(new RegExp(urlDev, "g"), urlProd);
               }
             },
-          },
-          {
-            from: "./src/launchevent/launchevent.js",
-            to: "launchevent.js",
           },
         ],
       }),

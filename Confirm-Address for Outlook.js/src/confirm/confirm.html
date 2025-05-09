@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+  <title>送信確認</title>
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  <script src="confirm.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .details {
+      margin-bottom: 20px;
+    }
+    .details p {
+      margin: 5px 0;
+    }
+    .buttons {
+      text-align: right;
+    }
+    button {
+      padding: 10px 20px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>送信確認</h2>
+    <div class="details">
+      <p><strong>受信者:</strong> <span id="recipients">読み込み中...</span></p>
+      <p><strong>本文 (冒頭):</strong> <span id="bodyPreview">読み込み中...</span></p>
+      <p><strong>添付ファイル:</strong> <span id="attachments">読み込み中...</span></p>
+    </div>
+    <div class="buttons">
+      <button onclick="cancelSend()">キャンセル</button>
+      <button onclick="confirmSend()">送信</button>
+    </div>
+  </div>
+</body>
+</html>
