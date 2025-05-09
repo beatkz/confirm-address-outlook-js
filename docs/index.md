@@ -9,6 +9,12 @@
 - [Outlook アドインで Smart Alerts を使用して OnMessageSend および OnAppointmentSend イベントを処理する(en-US) 2025/2/26追加](https://learn.microsoft.com/en-us/office/dev/add-ins/outlook/onmessagesend-onappointmentsend-events?tabs=windows)
 - [Officeアドインチュートリアル：メッセージを送信する前に添付ファイルを自動的にチェックする(en-US) 2025/2/26追加](https://learn.microsoft.com/en-us/office/dev/add-ins/outlook/smart-alerts-onmessagesend-walkthrough?tabs=jsonmanifest)
 - [Microsoft 365 の統合マニフェストを使用する Office アドインをサイドロードする(en-US) 2025/3/28追加](https://learn.microsoft.com/en-us/office/dev/add-ins/testing/sideload-add-in-with-unified-manifest)
+- [OfficeアドインのUXデザインパターン 2025/4/16追加](https://learn.microsoft.com/en-us/office/dev/add-ins/design/ux-design-pattern-templates)
+
+## Grok(X AI社のLLM AI)スレッド
+
+- [Outlookアドインスレッド](https://grok.com/chat/b79c016d-375b-4c64-9aef-f34d0d12d6f2)
+- [(旧)Outlookアドインスレッド](https://grok.com/chat/0e2d4fde-2e06-4f10-a343-ebcfe2f22b92)
 
 ## VSCodeのターミナルを用いたnpmコマンドの使い方
 
