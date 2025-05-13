@@ -17,6 +17,7 @@ module.exports = async (env, options) => {
     entry: {
       polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
       properties: ["./src/properties/properties.js", "./src/properties/properties.html"],
+      settings: "./src/settings/settings.js",
       confirm: "./src/confirm/confirm.js",
       bgevent: "./src/bgevent/bgevent.js",
     },
@@ -27,6 +28,10 @@ module.exports = async (env, options) => {
         chunks: ["polyfill", "properties"],
       }),
       new HtmlWebpackPlugin({
+        filename: "settings.html",
+        template: "./src/settings/settings.html",
+        chunks: ["settings"],
+      }),     new HtmlWebpackPlugin({
         filename: "confirm.html",
         template: "./src/confirm/confirm.html",
         chunks: ["confirm"],
@@ -87,6 +92,8 @@ module.exports = async (env, options) => {
       ],
     },
     devServer: {
+      hot: false,
+      liveReload: false,
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
