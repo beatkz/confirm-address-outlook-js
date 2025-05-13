@@ -82,6 +82,30 @@
               }
             ]
           },
+          "id": "SettingsRuntime",
+          "type": "general",
+          "code": {
+            "page": "https://localhost:3000/settings.html"
+          },
+          "lifetime": "short",
+          "actions": [
+            {
+              "id": "SettingsRuntimeShow",
+              "type": "openPage",
+              "pinnable": false,
+              "view": "dashboard"
+            }
+          ]
+        },
+        {
+          "requirements": {
+            "capabilities": [
+              {
+                "name": "Mailbox",
+                "minVersion": "1.14"
+              }
+            ]
+          },
           "id": "AutorunRuntime",
           "type": "general",
           "code": {
@@ -171,7 +195,7 @@
                     {
                       "id": "msgComposeOpenPaneButton",
                       "type": "button",
-                      "label": "メールプロパティを表示",
+                      "label": "設定",
                       "icons": [
                         {
                           "size": 16,
@@ -187,10 +211,10 @@
                         }
                       ],
                       "supertip": {
-                        "title": "メールプロパティを表示",
-                        "description": "利用可能なプロパティを表示します。"
+                        "title": "設定を表示",
+                        "description": "このアドインの設定を表示します。"
                       },
-                      "actionId": "PropertiesRuntimeShow"
+                      "actionId": "SettingsRuntimeShow"
                     }
                   ]
                 }
