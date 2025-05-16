@@ -4,6 +4,14 @@ console.log("confirm.js: スクリプトロード開始");
 
 // Office.js の初期化
 Office.onReady((info) => {
+  // ここでClassic Outlookを判定
+  if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
+    console.warn("confirm.js: Outlook Classic (Win32) ではサポートされていません。処理を中断します。");
+    document.body.innerHTML = "<div id='platformError'>このアドインはOutlook Classicではサポートされていません。</div>";
+    return;
+  }
+
+  // ここから既存の初期化処理
   console.log("confirm.js: Office.js 初期化完了:", JSON.stringify(info));
   console.log("confirm.js: ホスト:", info.host, "プラットフォーム:", info.platform);
   console.log("confirm.js: Office.context:", Office.context);

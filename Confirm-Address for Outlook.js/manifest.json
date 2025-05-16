@@ -58,30 +58,6 @@
               }
             ]
           },
-          "id": "PropertiesRuntime",
-          "type": "general",
-          "code": {
-            "page": "https://localhost:3000/properties.html"
-          },
-          "lifetime": "short",
-          "actions": [
-            {
-              "id": "PropertiesRuntimeShow",
-              "type": "openPage",
-              "pinnable": false,
-              "view": "dashboard"
-            }
-          ]
-        },
-        {
-          "requirements": {
-            "capabilities": [
-              {
-                "name": "Mailbox",
-                "minVersion": "1.14"
-              }
-            ]
-          },
           "id": "SettingsRuntime",
           "type": "general",
           "code": {
@@ -125,7 +101,7 @@
             "capabilities": [
               {
                 "name": "Mailbox",
-                "minVersion": "1.14"
+                "minVersion": "1.12"
               }
             ]
           },
@@ -151,7 +127,7 @@
             "capabilities": [
               {
                 "name": "Mailbox",
-                "minVersion": "1.15"
+                "minVersion": "1.12"
               }
             ],
             "scopes": ["mail"]
@@ -172,42 +148,26 @@
           "contexts": ["mailCompose"],
           "tabs": [
             {
-              "builtInTabId": "TabDefault",
+              "builtInTabId": "TabMessage",
               "groups": [
                 {
-                  "id": "msgComposeGroup",
+                  "id": "msgComposeGroup2",
                   "label": "Confirm-Address",
                   "icons": [
                     {
                       "size": 16,
                       "url": "https://localhost:3000/assets/ConfirmAddress-16x16.png"
-                    },
-                    {
-                      "size": 32,
-                      "url": "https://localhost:3000/assets/ConfirmAddress-32x32.png"
-                    },
-                    {
-                      "size": 80,
-                      "url": "https://localhost:3000/assets/ConfirmAddress-80x80.png"
                     }
                   ],
                   "controls": [
                     {
-                      "id": "msgComposeOpenPaneButton",
+                      "id": "msgComposeOpenPaneButton2",
                       "type": "button",
                       "label": "設定",
                       "icons": [
                         {
                           "size": 16,
                           "url": "https://localhost:3000/assets/ConfirmAddress-16x16.png"
-                        },
-                        {
-                          "size": 32,
-                          "url": "https://localhost:3000/assets/ConfirmAddress-32x32.png"
-                        },
-                        {
-                          "size": 80,
-                          "url": "https://localhost:3000/assets/ConfirmAddress-80x80.png"
                         }
                       ],
                       "supertip": {

@@ -16,17 +16,11 @@ module.exports = async (env, options) => {
   const config = {
     entry: {
       polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
-      properties: ["./src/properties/properties.js", "./src/properties/properties.html"],
       settings: "./src/settings/settings.js",
       confirm: "./src/confirm/confirm.js",
       bgevent: "./src/bgevent/bgevent.js",
     },
     plugins: [
-      new HtmlWebpackPlugin({
-        filename: "properties.html",
-        template: "./src/properties/properties.html",
-        chunks: ["polyfill", "properties"],
-      }),
       new HtmlWebpackPlugin({
         filename: "settings.html",
         template: "./src/settings/settings.html",

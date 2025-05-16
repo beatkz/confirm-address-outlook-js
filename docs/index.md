@@ -15,8 +15,9 @@
 
 ## Grok(X AI社のLLM AI)スレッド
 
-- [Outlookアドインスレッド(V2)](https://grok.com/chat/b79c016d-375b-4c64-9aef-f34d0d12d6f2)
-- [Outlookアドインスレッド(V1)](https://grok.com/chat/0e2d4fde-2e06-4f10-a343-ebcfe2f22b92)
+- [Outlookアドインスレッド(v3)](https://grok.com/chat/d6b0bd02-c6df-4ad8-9ab7-ace0b1f7c172)
+- [Outlookアドインスレッド(v2)](https://grok.com/chat/b79c016d-375b-4c64-9aef-f34d0d12d6f2)
+- [Outlookアドインスレッド(v1)](https://grok.com/chat/0e2d4fde-2e06-4f10-a343-ebcfe2f22b92)
 
 ## VSCodeのターミナルを用いたnpmコマンドの使い方
 

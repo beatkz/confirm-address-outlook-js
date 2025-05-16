@@ -8,6 +8,13 @@ if (window.settingsJsLoaded) {
   window.settingsJsLoaded = true;
 
   Office.onReady((info) => {
+    // ここでClassic Outlookを判定
+    if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
+      console.warn("settings.js: Outlook Classic (Win32) ではサポートされていません。処理を中断します。");
+      document.body.innerHTML = "<div id='platformError'>このアドインはOutlook Classicではサポートされていません。<a href='https://github.com/beatkz/confirm-address-outlook/'>Confirm-Address for Outlook Classicをご利用ください。</a></div>";
+      return;
+    }
+
     if (isInitialized) {
       console.log("settings.js: 既に初期化済み、スキップ");
       return;
