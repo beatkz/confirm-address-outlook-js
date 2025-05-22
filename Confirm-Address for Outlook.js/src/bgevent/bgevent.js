@@ -1,10 +1,13 @@
-/* global Office, console */
+/* global Office, console, document */
 
 Office.onReady((info) => {
   // ここでClassic Outlookを判定
   if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
-    console.warn("bgevent.js: Outlook Classic (Win32) ではサポートされていません。処理を中断します。");
-    document.body.innerHTML = "<div id='platformError'>このアドインはOutlook Classicではサポートされていません。</div>";
+    console.warn(
+      "bgevent.js: Outlook Classic (Win32) ではサポートされていません。処理を中断します。"
+    );
+    document.body.innerHTML =
+      "<div id='platformError'>このアドインはOutlook Classicではサポートされていません。</div>";
     return;
   }
 
@@ -21,7 +24,7 @@ function showConfirmDialog(sendEvent) {
   console.log("bgevent.js: ダイアログ表示を試行: https://localhost:3000/confirm.html");
 
   Office.context.ui.displayDialogAsync(
-    "https://localhost:3000/confirm.html",
+    "https://localhost:3000/capopup.html",
     { height: 50, width: 30 },
     (result) => {
       if (result.status === Office.AsyncResultStatus.Failed) {

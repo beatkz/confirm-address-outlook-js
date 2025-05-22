@@ -8,8 +8,8 @@
     "full": "Confirm-Address for Outlook.js"
   },
   "description": {
-    "short": "送信前チェック",
-    "full": "メールの送信前に、受信者のメールアドレス・添付ファイル名・本文冒頭を確認します。"
+    "short": "メール送信前に、送信先メールアドレス・添付ファイル名・本文冒頭を確認します。",
+    "full": "注意：このアドインはOutlook(new)および、Outlook on the Web用です。Outlook Classicご利用の方はConfirm-Address for Outlook Classicをご利用ください。(https://github.com/beatkz/confirm-address-outlook/)"
   },
   "developer": {
     "name": "Keiji Momose",
@@ -18,8 +18,8 @@
     "termsOfUseUrl": "https://github.com/beatkz/confirm-address-outlook-js/blob/main/README.md"
   },
   "icons": {
-    "outline": "assets/ConfirmAddress-Outline.png",
-    "color": "assets/ConfirmAddress-192x192.png"
+    "outline": "assets/img/ConfirmAddress-Outline.png",
+    "color": "assets/img/ConfirmAddress-192x192.png"
   },
   "accentColor": "#232859",
   "localizationInfo": {
@@ -36,7 +36,7 @@
       ]
     }
   },
-  "validDomains": ["github.com", "localhost"],
+  "validDomains": ["https://localhost:3000", "https://github.com/beatkz/confirm-address-outlook/"],
   "extensions": [
     {
       "requirements": {
@@ -108,7 +108,7 @@
           "id": "SendConfirmRuntime",
           "type": "general",
           "code": {
-            "page": "https://localhost:3000/confirm.html"
+            "page": "https://localhost:3000/capopup.html"
           },
           "lifetime": "short",
           "actions": [
@@ -156,7 +156,7 @@
                   "icons": [
                     {
                       "size": 16,
-                      "url": "https://localhost:3000/assets/ConfirmAddress-16x16.png"
+                      "url": "https://localhost:3000/assets/img/ConfirmAddress-16x16.png"
                     }
                   ],
                   "controls": [
@@ -167,7 +167,7 @@
                       "icons": [
                         {
                           "size": 16,
-                          "url": "https://localhost:3000/assets/ConfirmAddress-16x16.png"
+                          "url": "https://localhost:3000/assets/img/ConfirmAddress-16x16.png"
                         }
                       ],
                       "supertip": {

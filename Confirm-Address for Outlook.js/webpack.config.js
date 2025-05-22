@@ -12,12 +12,14 @@ async function getHttpsOptions() {
   return { ca: httpsOptions.ca, key: httpsOptions.key, cert: httpsOptions.cert };
 }
 
+const path = require('path');
+
 module.exports = async (env, options) => {
   const config = {
     entry: {
       polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
       settings: "./src/settings/settings.js",
-      confirm: "./src/confirm/confirm.js",
+      capopup: "./src/capopup/capopup.js",
       bgevent: "./src/bgevent/bgevent.js",
     },
     plugins: [
@@ -25,10 +27,11 @@ module.exports = async (env, options) => {
         filename: "settings.html",
         template: "./src/settings/settings.html",
         chunks: ["settings"],
-      }),     new HtmlWebpackPlugin({
-        filename: "confirm.html",
-        template: "./src/confirm/confirm.html",
-        chunks: ["confirm"],
+      }),
+      new HtmlWebpackPlugin({
+        filename: "capopup.html",
+        template: "./src/capopup/capopup.html",
+        chunks: ["capopup"],
       }),
       new HtmlWebpackPlugin({
         filename: "bgevent.html",
@@ -38,8 +41,8 @@ module.exports = async (env, options) => {
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: "assets/*",
-            to: "assets/[name][ext][query]",
+            from: path.resolve(__dirname, "assets"),
+            to: path.resolve(__dirname, "dist/assets"),
           },
           {
             from: "manifest*.json",

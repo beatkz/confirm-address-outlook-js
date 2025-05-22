@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+  <title>送信確認</title>
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  <script src="capopup.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/assets/bin/common.css">
+</head>
+<body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 font-sans p-5">
+  <div class="container mx-auto max-w-2xl">
+    <h1 class="text-2xl font-bold mb-4">送信確認</h1>
+    <div class="form-group space-y-4">
+      <div>
+        <h3 class="text-lg font-semibold">To:</h3>
+        <pre id="toReci" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-900 dark:text-gray-100">読み込み中...</pre>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold">Cc:</h3>
+        <pre id="ccReci" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-900 dark:text-gray-100">読み込み中...</pre>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold">Bcc:</h3>
+        <pre id="bccReci" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-900 dark:text-gray-100">読み込み中...</pre>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold">本文 (冒頭):</h3>
+        <pre id="body" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-900 dark:text-gray-100">読み込み中...</pre>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold">添付ファイル:</h3>
+        <pre id="attNames" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-900 dark:text-gray-100">読み込み中...</pre>
+      </div>
+    </div>
+    <div class="buttons flex justify-end space-x-2 mt-6">
+      <button onclick="cancelSend()" class="bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md">キャンセル</button>
+      <button onclick="confirmSend()" class="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md">送信</button>
+    </div>
+  </div>
+</body>
+</html>

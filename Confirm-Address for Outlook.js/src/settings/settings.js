@@ -1,4 +1,4 @@
-/* global Office, console, document */
+/* global Office, console, document, window, setTimeout */
 
 let isInitialized = false;
 
@@ -10,8 +10,11 @@ if (window.settingsJsLoaded) {
   Office.onReady((info) => {
     // ここでClassic Outlookを判定
     if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
-      console.warn("settings.js: Outlook Classic (Win32) ではサポートされていません。処理を中断します。");
-      document.body.innerHTML = "<div id='platformError'>このアドインはOutlook Classicではサポートされていません。<a href='https://github.com/beatkz/confirm-address-outlook/'>Confirm-Address for Outlook Classicをご利用ください。</a></div>";
+      console.warn(
+        "settings.js: Outlook Classic (Win32) ではサポートされていません。処理を中断します。"
+      );
+      document.body.innerHTML =
+        "<div id='platformError'>このアドインはOutlook Classicではサポートされていません。<a href='https://github.com/beatkz/confirm-address-outlook/'>Confirm-Address for Outlook Classicをご利用ください。</a></div>";
       return;
     }
 
@@ -93,7 +96,17 @@ if (window.settingsJsLoaded) {
     document.getElementById("otherDomainCheckEnabled").checked = otherDomainCheckEnabled;
     document.getElementById("attachmentCheckEnabled").checked = attachmentCheckEnabled;
 
-    console.log("settings.js: 設定をロード:", { domains, skipSelfDomains, countdownEnabled, countdownSeconds, showBodyLinesEnabled, bodyLines, selfDomainCheckEnabled, otherDomainCheckEnabled, attachmentCheckEnabled });
+    console.log("settings.js: 設定をロード:", {
+      domains,
+      skipSelfDomains,
+      countdownEnabled,
+      countdownSeconds,
+      showBodyLinesEnabled,
+      bodyLines,
+      selfDomainCheckEnabled,
+      otherDomainCheckEnabled,
+      attachmentCheckEnabled,
+    });
   }
 
   function saveSettings(event) {
@@ -119,7 +132,10 @@ if (window.settingsJsLoaded) {
       document.getElementById("domainsError").classList.remove("hidden");
       isValid = false;
     }
-    if (countdownEnabled && (isNaN(countdownSeconds) || countdownSeconds < 1 || countdownSeconds > 60)) {
+    if (
+      countdownEnabled &&
+      (isNaN(countdownSeconds) || countdownSeconds < 1 || countdownSeconds > 60)
+    ) {
       document.getElementById("countdownError").classList.remove("hidden");
       isValid = false;
     }
@@ -153,7 +169,12 @@ if (window.settingsJsLoaded) {
 
     function saveAsync(result, retryCount = 0) {
       if (result.status === Office.AsyncResultStatus.Failed) {
-        console.error("settings.js: 設定保存エラー:", result.error.message, "詳細:", JSON.stringify(result.error, null, 2));
+        console.error(
+          "settings.js: 設定保存エラー:",
+          result.error.message,
+          "詳細:",
+          JSON.stringify(result.error, null, 2)
+        );
         if (retryCount < 3) {
           console.log("settings.js: リトライ", retryCount + 1);
           setTimeout(() => settings.saveAsync((r) => saveAsync(r, retryCount + 1)), 1000);
@@ -168,7 +189,17 @@ if (window.settingsJsLoaded) {
           setTimeout(() => errorDiv.remove(), 3000);
         }
       } else {
-        console.log("settings.js: 設定を保存:", { domains, skipSelfDomains, countdownEnabled, countdownSeconds, showBodyLinesEnabled, bodyLines, selfDomainCheckEnabled, otherDomainCheckEnabled, attachmentCheckEnabled });
+        console.log("settings.js: 設定を保存:", {
+          domains,
+          skipSelfDomains,
+          countdownEnabled,
+          countdownSeconds,
+          showBodyLinesEnabled,
+          bodyLines,
+          selfDomainCheckEnabled,
+          otherDomainCheckEnabled,
+          attachmentCheckEnabled,
+        });
         const successDiv = document.createElement("div");
         successDiv.id = "successMessage";
         successDiv.className = document.body.classList.contains("dark")
