@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-  <title>送信確認</title>
+  <title>あて先メールアドレスの確認</title>
   <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
   <script src="capopup.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -11,27 +11,44 @@
 </head>
 <body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 font-sans p-5">
   <div class="container mx-auto max-w-2xl">
-    <h1 class="text-2xl font-bold mb-4">送信確認</h1>
+    <h1 class="text-2xl font-bold mb-4">あて先メールアドレスを確認してください。</h1>
+    <p class="mb-4">※宛先の編集に戻るにはキャンセルボタンをクリックします。</p>
     <div class="form-group space-y-4">
       <div>
-        <h3 class="text-lg font-semibold">To:</h3>
-        <pre id="toReci" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-900 dark:text-gray-100">読み込み中...</pre>
+        <input type="checkbox" name="batchCheck_insiderReci" id="batchCheck_insiderReci">
+        <label for="batchCheck_insiderReci" class="text-lg font-semibold">
+          組織内へのメール
+        </label>
+        <div id="insiderReci" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-900 dark:text-gray-100 h-24 overflow-y-auto">
+          読み込み中...
+        </div>
       </div>
       <div>
-        <h3 class="text-lg font-semibold">Cc:</h3>
-        <pre id="ccReci" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-900 dark:text-gray-100">読み込み中...</pre>
+        <input type="checkbox" name="batchCheck_outsiderReci" id="batchCheck_outsiderReci">
+        <label for="batchCheck_outsiderReci" class="text-lg font-semibold">
+          組織外へのメール
+        </label>
+        <div id="outsiderReci" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-900 dark:text-gray-100 h-24 overflow-y-auto">
+          読み込み中...
+        </div>
       </div>
       <div>
-        <h3 class="text-lg font-semibold">Bcc:</h3>
-        <pre id="bccReci" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-900 dark:text-gray-100">読み込み中...</pre>
+        <input type="checkbox" name="check_firstLinesOfBody" id="check_firstLinesOfBody">
+        <label for="check_firstLinesOfBody" class="text-lg font-semibold">
+          メール本文の冒頭数行
+        </label>
+        <pre id="body" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-900 dark:text-gray-100 h-24 overflow-y-auto">
+          読み込み中...
+        </pre>
       </div>
       <div>
-        <h3 class="text-lg font-semibold">本文 (冒頭):</h3>
-        <pre id="body" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-900 dark:text-gray-100">読み込み中...</pre>
-      </div>
-      <div>
-        <h3 class="text-lg font-semibold">添付ファイル:</h3>
-        <pre id="attNames" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-900 dark:text-gray-100">読み込み中...</pre>
+        <input type="checkbox" name="batchCheck_Attachments" id="batchCheck_Attachments">
+        <label for="batchCheck_Attachments" class="text-lg font-semibold">
+          添付ファイル名
+        </label>
+        <div id="attNames" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-900 dark:text-gray-100 h-24 overflow-y-auto">
+          読み込み中...
+        </div>
       </div>
     </div>
     <div class="buttons flex justify-end space-x-2 mt-6">

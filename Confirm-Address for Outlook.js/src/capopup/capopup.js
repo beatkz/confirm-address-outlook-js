@@ -36,9 +36,8 @@ function onMessageFromParent(recv) {
   try {
     const emailDetails = JSON.parse(recv.message);
     console.log("capopup.js: メール詳細を受信:", emailDetails);
-    document.getElementById("toReci").textContent = emailDetails.toReci;
-    document.getElementById("ccReci").textContent = emailDetails.ccReci;
-    document.getElementById("bccReci").textContent = emailDetails.bccReci;
+    document.getElementById("insiderReci").textContent = emailDetails.insiderReci;
+    document.getElementById("outsiderReci").textContent = emailDetails.outsiderReci;
     document.getElementById("body").textContent = emailDetails.body;
     document.getElementById("attNames").textContent = emailDetails.attNames;
   } catch (error) {
