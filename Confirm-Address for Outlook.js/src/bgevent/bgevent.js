@@ -85,45 +85,138 @@ function uniqueMessageSendHandler(event) {
   showConfirmDialog(event);
 }
 
-async function collectEmailDetails() {
-  console.log("bgevent.js: collectEmailDetails 開始");
+async function checkAddress() {
+  console.log("bgevent.js: checkAddress 開始");
+  const msgCompFields = Office.context.mailbox.item;
 
-  const item = Office.context.mailbox.item;
-  // 宛先
-  const toResult = await new Promise((resolve) => item.to.getAsync(resolve));
-  const toReci = toResult.value.map((r) => r.emailAddress).join("\n") || "なし";
+  var toList = [];
+  var ccList = [];
+  var bccList = [];
+  await collectAddress(msgCompFields, toList, ccList, bccList);
+  console.log("bgevent.js: メールアドレス収集完了");
+  console.log("bgevent.js: To:", toList, "Cc:", ccList, "Bcc:", bccList);
 
-  // Cc
-  const ccResult = await new Promise((resolve) => item.cc.getAsync(resolve));
-  const ccReci = ccResult.value.map((r) => r.emailAddress).join("\n") || "なし";
+  var domainList = getDomainList(); // 組織のドメインリスト
+  console.log("bgevent.js: 組織のドメインリスト:", domainList);
 
-  // Bcc
-  const bccResult = await new Promise((resolve) => item.bcc.getAsync(resolve));
-  const bccReci = bccResult.value.map((r) => r.emailAddress).join("\n") || "なし";
+  var insiderReci = [];
+  var outsiderReci = [];
+  judgeAddress(toList, domainList, insiderReci, outsiderReci);
+  judgeAddress(ccList, domainList, insiderReci, outsiderReci);
+  judgeAddress(bccList, domainList, insiderReci, outsiderReci);
+  console.log("bgevent.js: 組織内アドレス:", insiderReci.map((r) => r.address).join(", "));
+  console.log("bgevent.js: 組織外アドレス:", outsiderReci.map((r) => r.address).join(", "));
 
   // 本文冒頭
-  const bodyResult = await new Promise((resolve) => item.body.getAsync("text", resolve));
+  const bodyResult = await new Promise((resolve) => msgCompFields.body.getAsync("text", resolve));
   const lines = 10;
-  const body = bodyResult.value.split("\n").slice(0, lines).join("\n") || "なし";
+  const body = bodyResult.value.split("\n").slice(0, lines).join("\n") || "本文なし";
 
   // 添付ファイル名
-  const attResult = await new Promise((resolve) => item.getAttachmentsAsync(resolve));
-  const attNames = attResult.value.map((att) => att.name).join("\n") || "なし";
+  const attResult = await new Promise((resolve) => msgCompFields.getAttachmentsAsync(resolve));
+  const attNames = attResult.value.map((att) => att.name) || [];
 
   return {
-    toReci: toReci,
-    ccReci: ccReci,
-    bccReci: bccReci,
+    insiderReci: insiderReci,
+    outsiderReci: outsiderReci,
     body: body,
     attNames: attNames,
   };
+}
+
+function judgeAddress(addressArray, domainList, insiderAddress, outsiderAddress) {
+  console.log("bgevent.js: judgeAddress 開始");
+  console.log("[JUDGE] " + addressArray.map((a) => a.address).join(", ") + "\n");
+
+  // domainListが空の場合、全て外部とみなす
+  if (domainList.length === 0) {
+    for (const address of addressArray) {
+      outsiderAddress.push(address);
+    }
+    return;
+  }
+
+  // 登録されたドメインリストとアドレスを比較
+  for (const target of addressArray) {
+    const address = target.address;
+    if (address.length === 0) {
+      continue;
+    }
+    const domain = address.substring(address.indexOf("@")).toLowerCase();
+
+    let match = false;
+    for (const insiderDomain of domainList) {
+      if (domain.includes(insiderDomain.toLowerCase())) {
+        match = true;
+        break;
+      }
+    }
+    if (match) {
+      insiderAddress.push(target);
+    } else {
+      outsiderAddress.push(target);
+    }
+  }
+}
+
+function getDomainList() {
+  console.log("bgevent.js: getDomainList 開始");
+  const domainList = [];
+  const settings = Office.context.roamingSettings;
+  const insiderDomains = settings.get("insiderDomains");
+  if (insiderDomains) {
+    const domains = insiderDomains.split(",").map((domain) => domain.trim());
+    for (const domain of domains) {
+      if (domain) {
+        domainList.push(domain);
+      }
+    }
+  }
+  return domainList;
+}
+
+async function collectAddress(msgCompFields, toList, ccList, bccList) {
+  console.log("bgevent.js: collectAddress 開始");
+
+  // To
+  const toMap =
+    (await new Promise((resolve) => msgCompFields.to.getAsync(resolve)).value.map(
+      (r) => r.emailAddress
+    )) || [];
+  for (const reci of toMap) {
+    if (reci) {
+      toList.push({ type: "To: ", address: reci });
+    }
+  }
+
+  // Cc
+  const ccMap =
+    (await new Promise((resolve) => msgCompFields.cc.getAsync(resolve)).value.map(
+      (r) => r.emailAddress
+    )) || [];
+  for (const reci of ccMap) {
+    if (reci) {
+      ccList.push({ type: "Cc: ", address: reci });
+    }
+  }
+
+  // Bcc
+  const bccMap =
+    (await new Promise((resolve) => msgCompFields.bcc.getAsync(resolve)).value.map(
+      (r) => r.emailAddress
+    )) || [];
+  for (const reci of bccMap) {
+    if (reci) {
+      bccList.push({ type: "Bcc: ", address: reci });
+    }
+  }
 }
 
 async function sendEmailDetails() {
   console.log("bgevent.js: sendEmailDetails 開始");
 
   // メールの詳細を収集する処理をここに追加
-  const emailDetails = await collectEmailDetails();
+  const emailDetails = await checkAddress();
 
   console.log("bgevent.js: 詳細:", emailDetails);
   caDialog.messageChild(JSON.stringify(emailDetails));
