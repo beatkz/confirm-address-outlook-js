@@ -179,33 +179,27 @@ async function collectAddress(msgCompFields, toList, ccList, bccList) {
   console.log("bgevent.js: collectAddress 開始");
 
   // To
-  const toMap =
-    (await new Promise((resolve) => msgCompFields.to.getAsync(resolve)).value.map(
-      (r) => r.emailAddress
-    )) || [];
-  for (const reci of toMap) {
+  const toMap = (await new Promise((resolve) => msgCompFields.to.getAsync(resolve)));
+  const tempTo =  toMap.value.map((r) => r.emailAddress) || [];
+  for (const reci of tempTo) {
     if (reci) {
       toList.push({ type: "To: ", address: reci });
     }
   }
 
   // Cc
-  const ccMap =
-    (await new Promise((resolve) => msgCompFields.cc.getAsync(resolve)).value.map(
-      (r) => r.emailAddress
-    )) || [];
-  for (const reci of ccMap) {
+  const ccMap = (await new Promise((resolve) => msgCompFields.cc.getAsync(resolve)));
+  const tempCc = ccMap.value.map((r) => r.emailAddress) || [];
+  for (const reci of tempCc) {
     if (reci) {
       ccList.push({ type: "Cc: ", address: reci });
     }
   }
 
   // Bcc
-  const bccMap =
-    (await new Promise((resolve) => msgCompFields.bcc.getAsync(resolve)).value.map(
-      (r) => r.emailAddress
-    )) || [];
-  for (const reci of bccMap) {
+  const bccMap = (await new Promise((resolve) => msgCompFields.bcc.getAsync(resolve)));
+  const tempBcc = bccMap.value.map((r) => r.emailAddress) || [];
+  for (const reci of tempBcc) {
     if (reci) {
       bccList.push({ type: "Bcc: ", address: reci });
     }

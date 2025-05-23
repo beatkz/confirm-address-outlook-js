@@ -36,10 +36,10 @@ function onMessageFromParent(recv) {
   try {
     const emailDetails = JSON.parse(recv.message);
     console.log("capopup.js: メール詳細を受信:", emailDetails);
-    document.getElementById("insiderReci").textContent = emailDetails.insiderReci;
-    document.getElementById("outsiderReci").textContent = emailDetails.outsiderReci;
+    //document.getElementById("insiderReci").textContent = emailDetails.insiderReci;
+    //document.getElementById("outsiderReci").textContent = emailDetails.outsiderReci;
     document.getElementById("body").textContent = emailDetails.body;
-    document.getElementById("attNames").textContent = emailDetails.attNames;
+    //document.getElementById("attNames").textContent = emailDetails.attNames;
   } catch (error) {
     console.error("capopup.js: メール詳細の解析エラー:", error);
   }
