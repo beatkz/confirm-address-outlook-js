@@ -1,6 +1,7 @@
 /* global Office, console, document, window, setTimeout */
 
 let isInitialized = false;
+let prefsJson = {};
 
 if (window.settingsJsLoaded) {
   console.log("settings.js: 既にロード済み、スキップ");
@@ -34,7 +35,15 @@ if (window.settingsJsLoaded) {
       console.log("settings.js: システムダークモード検出");
       isDarkTheme = true;
     }
+    applyTheme(isDarkTheme);
 
+    loadSettings();
+    document.getElementById("settingsForm").addEventListener("submit", saveSettings);
+  }).catch((error) => {
+    console.error("settings.js: Office.js 初期化エラー:", error);
+  });
+
+  function applyTheme(isDarkTheme) {
     // 配色を適用
     if (isDarkTheme) {
       document.body.classList.add("dark", "bg-gray-900", "text-gray-100");
@@ -67,84 +76,110 @@ if (window.settingsJsLoaded) {
       });
       console.log("settings.js: ライトテーマ配色を適用");
     }
-
-    loadSettings();
-    document.getElementById("settingsForm").addEventListener("submit", saveSettings);
-  }).catch((error) => {
-    console.error("settings.js: Office.js 初期化エラー:", error);
-  });
-
-  function loadSettings() {
-    const settings = Office.context.roamingSettings;
-    const domains = settings.get("domains") || "";
-    const skipSelfDomains = settings.get("skipSelfDomains") || false;
-    const countdownEnabled = settings.get("countdownEnabled") || false;
-    const countdownSeconds = settings.get("countdownSeconds") || 5;
-    const showBodyLinesEnabled = settings.get("showBodyLinesEnabled") || false;
-    const bodyLines = settings.get("bodyLines") || 3;
-    const selfDomainCheckEnabled = settings.get("selfDomainCheckEnabled") || false;
-    const otherDomainCheckEnabled = settings.get("otherDomainCheckEnabled") || false;
-    const attachmentCheckEnabled = settings.get("attachmentCheckEnabled") || false;
-
-    document.getElementById("domains").value = domains;
-    document.getElementById("skipSelfDomains").checked = skipSelfDomains;
-    document.getElementById("countdownEnabled").checked = countdownEnabled;
-    document.getElementById("countdownSeconds").value = countdownSeconds;
-    document.getElementById("showBodyLinesEnabled").checked = showBodyLinesEnabled;
-    document.getElementById("bodyLines").value = bodyLines;
-    document.getElementById("selfDomainCheckEnabled").checked = selfDomainCheckEnabled;
-    document.getElementById("otherDomainCheckEnabled").checked = otherDomainCheckEnabled;
-    document.getElementById("attachmentCheckEnabled").checked = attachmentCheckEnabled;
-
-    console.log("settings.js: 設定をロード:", {
-      domains,
-      skipSelfDomains,
-      countdownEnabled,
-      countdownSeconds,
-      showBodyLinesEnabled,
-      bodyLines,
-      selfDomainCheckEnabled,
-      otherDomainCheckEnabled,
-      attachmentCheckEnabled,
-    });
   }
 
-  function saveSettings(event) {
-    event.preventDefault();
-    const settings = Office.context.roamingSettings;
+  function reloadPrefsJson() {
+    const prefs = Office.context.roamingSettings;
+    prefsJson = {
+      insiderDomains: {
+        type: "text",
+        lval: prefs.get("insiderDomains") || "",
+        sval: document.getElementById("insiderDomains").value.trim(),
+        validate: function (val) {
+          return val.match(/^([a-zA-Z0-9.-]+,)*[a-zA-Z0-9.-]+$/);
+        },
+      },
+      noDisplayInsiderDomainOnly: {
+        type: "checkbox",
+        lval: prefs.get("noDisplayInsiderDomainOnly") || false,
+        sval: document.getElementById("noDisplayInsiderDomainOnly").checked,
+      },
+      countDown: {
+        type: "checkbox",
+        lval: prefs.get("countDown") || false,
+        sval: document.getElementById("countDown").checked,
+      },
+      countDownTime: {
+        type: "text",
+        lval: prefs.get("countDownTime") || 5,
+        sval: parseInt(document.getElementById("countDownTime").value, 10),
+        validate: function (val) {
+          return !isNaN(val) && val >= 1 && val <= 60;
+        },
+      },
+      confirmMailBody: {
+        type: "checkbox",
+        lval: prefs.get("confirmMailBody") || false,
+        sval: document.getElementById("confirmMailBody").checked,
+      },
+      confirmMailBodyLines: {
+        type: "text",
+        lval: prefs.get("confirmMailBodyLines") || 5,
+        sval: parseInt(document.getElementById("confirmMailBodyLines").value, 10),
+        validate: function (val) {
+          return !isNaN(val) && val >= 1 && val <= 15;
+        },
+      },
+      insiderDomainBatchCheck: {
+        type: "checkbox",
+        lval: prefs.get("insiderDomainBatchCheck") || false,
+        sval: document.getElementById("insiderDomainBatchCheck").checked,
+      },
+      outsiderDomainBatchCheck: {
+        type: "checkbox",
+        lval: prefs.get("outsiderDomainBatchCheck") || false,
+        sval: document.getElementById("outsiderDomainBatchCheck").checked,
+      },
+      attachmentBatchCheck: {
+        type: "checkbox",
+        lval: prefs.get("attachmentBatchCheck") || false,
+        sval: document.getElementById("attachmentBatchCheck").checked,
+      },
+    };
+  }
 
-    const domains = document.getElementById("domains").value.trim();
-    const skipSelfDomains = document.getElementById("skipSelfDomains").checked;
-    const countdownEnabled = document.getElementById("countdownEnabled").checked;
-    const countdownSeconds = parseInt(document.getElementById("countdownSeconds").value, 10);
-    const showBodyLinesEnabled = document.getElementById("showBodyLinesEnabled").checked;
-    const bodyLines = parseInt(document.getElementById("bodyLines").value, 10);
-    const selfDomainCheckEnabled = document.getElementById("selfDomainCheckEnabled").checked;
-    const otherDomainCheckEnabled = document.getElementById("otherDomainCheckEnabled").checked;
-    const attachmentCheckEnabled = document.getElementById("attachmentCheckEnabled").checked;
+  function loadSettings() {
+    reloadPrefsJson();
 
-    let isValid = true;
-    document.getElementById("domainsError").classList.add("hidden");
-    document.getElementById("countdownError").classList.add("hidden");
-    document.getElementById("bodyLinesError").classList.add("hidden");
-
-    if (domains && !domains.match(/^([a-zA-Z0-9.-]+,)*[a-zA-Z0-9.-]+$/)) {
-      document.getElementById("domainsError").classList.remove("hidden");
-      isValid = false;
+    for (const [key, { type, lval }] of Object.entries(prefsJson)) {
+      if (type === "text") {
+        document.getElementById(key).value = lval;
+      } else if (type === "checkbox") {
+        document.getElementById(key).checked = lval;
+      }
     }
+
+    console.log("settings.js: 設定をロード:", prefsJson);
+  }
+
+  function validateSettings() {
+    let allClear = true;
+    document.getElementById("domainsErr").classList.add("hidden");
+    document.getElementById("countdownErr").classList.add("hidden");
+    document.getElementById("bodyLinesErr").classList.add("hidden");
+
+    if (!prefsJson["insiderDomains"].validate(prefsJson["insiderDomains"].sval)) {
+      document.getElementById("domainsErr").classList.remove("hidden");
+      allClear = false;
+    }
+
     if (
-      countdownEnabled &&
-      (isNaN(countdownSeconds) || countdownSeconds < 1 || countdownSeconds > 60)
+      prefsJson["countDown"].val &&
+      !prefsJson["countDownTime"].validate(prefsJson["countDownTime"].sval)
     ) {
-      document.getElementById("countdownError").classList.remove("hidden");
-      isValid = false;
-    }
-    if (showBodyLinesEnabled && (isNaN(bodyLines) || bodyLines < 1 || bodyLines > 10)) {
-      document.getElementById("bodyLinesError").classList.remove("hidden");
-      isValid = false;
+      document.getElementById("countdownErr").classList.remove("hidden");
+      allClear = false;
     }
 
-    if (!isValid) {
+    if (
+      prefsJson["confirmMailBody"].val &&
+      !prefsJson["confirmMailBodyLines"].validate(prefsJson["confirmMailBodyLines"].sval)
+    ) {
+      document.getElementById("bodyLinesErr").classList.remove("hidden");
+      allClear = false;
+    }
+
+    if (!allClear) {
       console.error("settings.js: バリデーションエラー");
       const errorDiv = document.createElement("div");
       errorDiv.id = "errorMessage";
@@ -154,63 +189,56 @@ if (window.settingsJsLoaded) {
       errorDiv.textContent = "入力にエラーがあります。確認してください。";
       document.getElementById("settingsForm").appendChild(errorDiv);
       setTimeout(() => errorDiv.remove(), 3000);
-      return;
     }
+    return allClear;
+  }
 
-    settings.set("domains", domains);
-    settings.set("skipSelfDomains", skipSelfDomains);
-    settings.set("countdownEnabled", countdownEnabled);
-    settings.set("countdownSeconds", countdownSeconds);
-    settings.set("showBodyLinesEnabled", showBodyLinesEnabled);
-    settings.set("bodyLines", bodyLines);
-    settings.set("selfDomainCheckEnabled", selfDomainCheckEnabled);
-    settings.set("otherDomainCheckEnabled", otherDomainCheckEnabled);
-    settings.set("attachmentCheckEnabled", attachmentCheckEnabled);
+  function saveSettings(event) {
+    event.preventDefault();
+    reloadPrefsJson();
 
-    function saveAsync(result, retryCount = 0) {
-      if (result.status === Office.AsyncResultStatus.Failed) {
-        console.error(
-          "settings.js: 設定保存エラー:",
-          result.error.message,
-          "詳細:",
-          JSON.stringify(result.error, null, 2)
-        );
-        if (retryCount < 3) {
-          console.log("settings.js: リトライ", retryCount + 1);
-          setTimeout(() => settings.saveAsync((r) => saveAsync(r, retryCount + 1)), 1000);
-        } else {
-          const errorDiv = document.createElement("div");
-          errorDiv.id = "errorMessage";
-          errorDiv.className = document.body.classList.contains("dark")
-            ? "bg-red-700 text-white p-2 mt-2 rounded"
-            : "bg-red-600 text-white p-2 mt-2 rounded";
-          errorDiv.textContent = "設定の保存に失敗しました。後で再試行してください。";
-          document.getElementById("settingsForm").appendChild(errorDiv);
-          setTimeout(() => errorDiv.remove(), 3000);
-        }
-      } else {
-        console.log("settings.js: 設定を保存:", {
-          domains,
-          skipSelfDomains,
-          countdownEnabled,
-          countdownSeconds,
-          showBodyLinesEnabled,
-          bodyLines,
-          selfDomainCheckEnabled,
-          otherDomainCheckEnabled,
-          attachmentCheckEnabled,
-        });
-        const successDiv = document.createElement("div");
-        successDiv.id = "successMessage";
-        successDiv.className = document.body.classList.contains("dark")
-          ? "bg-green-700 text-white p-2 mt-2 rounded"
-          : "bg-green-600 text-white p-2 mt-2 rounded";
-        successDiv.textContent = "設定を保存しました。";
-        document.getElementById("settingsForm").appendChild(successDiv);
-        setTimeout(() => successDiv.remove(), 3000);
+    const allClear = validateSettings();
+    if (allClear) {
+      const settings = Office.context.roamingSettings;
+      for (const [key, val] of Object.entries(prefsJson)) {
+        settings.set(key, val.sval);
       }
-    }
 
-    settings.saveAsync(saveAsync);
+      function saveAsync(result, retryCount = 0) {
+        if (result.status === Office.AsyncResultStatus.Failed) {
+          console.error(
+            "settings.js: 設定保存エラー:",
+            result.error.message,
+            "詳細:",
+            JSON.stringify(result.error, null, 2)
+          );
+          if (retryCount < 3) {
+            console.log("settings.js: リトライ", retryCount + 1);
+            setTimeout(() => settings.saveAsync((r) => saveAsync(r, retryCount + 1)), 1000);
+          } else {
+            const errorDiv = document.createElement("div");
+            errorDiv.id = "errorMessage";
+            errorDiv.className = document.body.classList.contains("dark")
+              ? "bg-red-700 text-white p-2 mt-2 rounded"
+              : "bg-red-600 text-white p-2 mt-2 rounded";
+            errorDiv.textContent = "設定の保存に失敗しました。後で再試行してください。";
+            document.getElementById("settingsForm").appendChild(errorDiv);
+            setTimeout(() => errorDiv.remove(), 3000);
+          }
+        } else {
+          console.log("settings.js: 設定を保存:", JSON.stringify(prefsJson));
+          const successDiv = document.createElement("div");
+          successDiv.id = "successMessage";
+          successDiv.className = document.body.classList.contains("dark")
+            ? "bg-green-700 text-white p-2 mt-2 rounded"
+            : "bg-green-600 text-white p-2 mt-2 rounded";
+          successDiv.textContent = "設定を保存しました。";
+          document.getElementById("settingsForm").appendChild(successDiv);
+          setTimeout(() => successDiv.remove(), 3000);
+        }
+      }
+
+      settings.saveAsync(saveAsync);
+    }
   }
 }
