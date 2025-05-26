@@ -4,7 +4,7 @@ console.log("capopup.js: スクリプトロード開始");
 
 // Office.js の初期化
 Office.onReady((info) => {
-  // ここでClassic Outlookを判定
+  // Classic Outlookを判定
   if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
     console.warn(
       "capopup.js: Outlook Classic (Win32) ではサポートされていません。処理を中断します。"
@@ -14,11 +14,29 @@ Office.onReady((info) => {
     return;
   }
 
-  // ここから既存の初期化処理
+  // 初期化処理
   console.log("capopup.js: Office.js 初期化完了:", JSON.stringify(info));
   console.log("capopup.js: ホスト:", info.host, "プラットフォーム:", info.platform);
   console.log("capopup.js: Office.context:", Office.context);
   console.log("capopup.js: Office.context.ui:", Office.context.ui);
+
+  // 一括チェックボタンのイベントリスナーを関数化
+  const setupCheckboxListener = (checkboxId, targetId = null, logMessage) => {
+    const checkbox = document.getElementById(checkboxId);
+    checkbox.addEventListener("change", (event) => {
+      console.log(`capopup.js: ${logMessage}:`, event.target.checked);
+      if (targetId) {
+        batchCheck(targetId, event.target.checked);
+      }
+      checkAllChecked(); // 送信ボタンの状態を更新
+    });
+  };
+
+  // チェックボックスリスナーの設定
+  setupCheckboxListener("batchCheck_insiderReci", "insiderReci", "組織内メールの一括チェックボタンが変更されました");
+  setupCheckboxListener("batchCheck_outsiderReci", "outsiderReci", "組織外メールの一括チェックボタンが変更されました");
+  setupCheckboxListener("batchCheck_Attachments", "attNames", "添付ファイルの一括チェックボタンが変更されました");
+  setupCheckboxListener("check_firstLinesOfBody", null, "メール本文チェックボタンが変更されました");
 
   Office.context.ui.addHandlerAsync(
     Office.EventType.DialogParentMessageReceived,
@@ -30,6 +48,22 @@ Office.onReady((info) => {
 }).catch((error) => {
   console.error("capopup.js: Office.js 初期化エラー:", error);
 });
+
+function onRegisterMessageComplete(result) {
+  if (result.status === Office.AsyncResultStatus.Failed) {
+    console.error("capopup.js: addHandlerAsync エラー:", result.error.message);
+  } else {
+    console.log("capopup.js: DialogParentMessageReceived ハンドラ登録成功");
+  }
+}
+
+function batchCheck(targetId, val) {
+  const targetDiv = document.getElementById(targetId);
+  const inputs = targetDiv.getElementsByTagName("input");
+  for (let i = 0; i < inputs.length; i++) {
+    inputs[i].checked = val;
+  }
+}
 
 // メッセージを処理
 function onMessageFromParent(recv) {
@@ -55,53 +89,77 @@ function onMessageFromParent(recv) {
       listType: "Attachments",
       pushingList: emailDetails.attNames
     });
+    checkAllChecked(); // 送信ボタンの状態を初期化
   } catch (error) {
     console.error("capopup.js: メール詳細の解析エラー:", error);
   }
 }
 
 function pushToList(args) {
-    /*
-    args:
-    {
-        targetId: "divfoo",
-        listType: "Addresses" or "Attachments",
-        pushingList: []
-    }
-    */
-   //console.dir(args);
-   var targetDiv = document.getElementById(args.targetId);
-   var pushTxtNode;
+  /*
+  args:
+  {
+      targetId: "divfoo",
+      listType: "Addresses" or "Attachments",
+      pushingList: []
+  }
+  */
+  const targetDiv = document.getElementById(args.targetId);
+  let pushTxtNode;
 
-   for (var i = 0; i < args.pushingList.length; i++) {
-       switch(args.listType){
-           case "Addresses":
-               pushTxtNode = args.pushingList[i].type + args.pushingList[i].address;
-               break;
-           case "Attachments":
-               pushTxtNode = args.pushingList[i].name;
-               break;
-       }
-       var chkbox = document.createElement("input");
-       chkbox.setAttribute("type", "checkbox");
-       chkbox.setAttribute("id", Math.random());
-       chkbox.addEventListener("change", (event) => {
-           checkAllChecked();
-       });
-       var label = document.createElement("label");
-       label.appendChild(chkbox);
-       label.appendChild(document.createTextNode(pushTxtNode));
-       targetDiv.appendChild(label);
-       targetDiv.appendChild(document.createElement("br"));
-   }
+  for (let i = 0; i < args.pushingList.length; i++) {
+    switch(args.listType) {
+      case "Addresses":
+        pushTxtNode = args.pushingList[i].type + args.pushingList[i].address;
+        break;
+      case "Attachments":
+        pushTxtNode = args.pushingList[i].name;
+        break;
+    }
+    const chkbox = document.createElement("input");
+    chkbox.setAttribute("type", "checkbox");
+    chkbox.setAttribute("id", `checkbox-${args.targetId}-${i}`);
+    chkbox.addEventListener("change", () => {
+      checkAllChecked(); // 送信ボタンの状態を更新
+    });
+    const label = document.createElement("label");
+    label.setAttribute("for", `checkbox-${args.targetId}-${i}`);
+    label.appendChild(chkbox);
+    label.appendChild(document.createTextNode(pushTxtNode));
+    targetDiv.appendChild(label);
+    targetDiv.appendChild(document.createElement("br"));
+  }
 }
 
+function checkAllChecked() {
+  // チェックボックスリストの状態を確認する汎用関数
+  const areAllCheckboxesChecked = (containerId) => {
+    const container = document.getElementById(containerId);
+    const checkboxes = container.getElementsByTagName('input');
+    return Array.from(checkboxes).every(checkbox => checkbox.checked);
+  };
 
-function onRegisterMessageComplete(result) {
-  if (result.status === Office.AsyncResultStatus.Failed) {
-    console.error("capopup.js: addHandlerAsync エラー:", result.error.message);
+  // 各セクションのチェック状態を確認
+  const isInsiderDomainsChecked = areAllCheckboxesChecked('insiderReci');
+  const isOutsiderDomainsChecked = areAllCheckboxesChecked('outsiderReci');
+  const isMailHeadChecked = document.getElementById('check_firstLinesOfBody').checked;
+  const isAttachmentsChecked = areAllCheckboxesChecked('attNames');
+
+  // バッチチェックボックスの状態を更新
+  document.getElementById('batchCheck_insiderReci').checked = isInsiderDomainsChecked;
+  document.getElementById('batchCheck_outsiderReci').checked = isOutsiderDomainsChecked;
+  document.getElementById('batchCheck_Attachments').checked = isAttachmentsChecked;
+
+  // 送信ボタンの有効/無効と色を切り替え
+  const sendButton = document.getElementById("btn_send");
+  const isAllChecked = isInsiderDomainsChecked && isOutsiderDomainsChecked && isMailHeadChecked && isAttachmentsChecked;
+  sendButton.disabled = !isAllChecked;
+  if (isAllChecked) {
+    sendButton.classList.remove('bg-gray-500', 'hover:bg-gray-600', 'dark:bg-gray-600', 'dark:hover:bg-gray-700');
+    sendButton.classList.add('bg-blue-500', 'hover:bg-blue-600', 'dark:bg-blue-600', 'dark:hover:bg-blue-700');
   } else {
-    console.log("capopup.js: DialogParentMessageReceived ハンドラ登録成功");
+    sendButton.classList.remove('bg-blue-500', 'hover:bg-blue-600', 'dark:bg-blue-600', 'dark:hover:bg-blue-700');
+    sendButton.classList.add('bg-gray-500', 'hover:bg-gray-600', 'dark:bg-gray-600', 'dark:hover:bg-gray-700');
   }
 }
 
@@ -112,7 +170,6 @@ function cancelSend() {
 }
 
 function confirmSend() {
-  // 送信処理をここに追加
   console.log("capopup.js: confirmSend 実行");
   const msgTo = { type: "confirm" };
   Office.context.ui.messageParent(JSON.stringify(msgTo));
