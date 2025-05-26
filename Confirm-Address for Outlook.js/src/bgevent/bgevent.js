@@ -112,9 +112,9 @@ async function checkAddress() {
   const lines = 10;
   const body = bodyResult.value.split("\n").slice(0, lines).join("\n") || "本文なし";
 
-  // 添付ファイル名
-  const attResult = await new Promise((resolve) => msgCompFields.getAttachmentsAsync(resolve));
-  const attNames = attResult.value.map((att) => att.name) || [];
+  var attNames = [];
+  await getAttachments(msgCompFields,attNames);
+  console.log("bgevent.js: 添付ファイル名:", attNames.map((att) => att.name).join(", "));
 
   return {
     insiderReci: insiderReci,
@@ -202,6 +202,17 @@ async function collectAddress(msgCompFields, toList, ccList, bccList) {
   for (const reci of tempBcc) {
     if (reci) {
       bccList.push({ type: "Bcc: ", address: reci });
+    }
+  }
+}
+
+async function getAttachments(msgCompFields, attList){
+  // 添付ファイル名
+  const attResult = await new Promise((resolve) => msgCompFields.getAttachmentsAsync(resolve));
+  const tempAtt = attResult.value.map((att) => att.name) || [];
+  for (const att of tempAtt) {
+    if (att) {
+      attList.push({ name: att });
     }
   }
 }

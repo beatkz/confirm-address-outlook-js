@@ -36,14 +36,66 @@ function onMessageFromParent(recv) {
   try {
     const emailDetails = JSON.parse(recv.message);
     console.log("capopup.js: メール詳細を受信:", emailDetails);
-    //document.getElementById("insiderReci").textContent = emailDetails.insiderReci;
-    //document.getElementById("outsiderReci").textContent = emailDetails.outsiderReci;
+    document.getElementById("insiderReci").textContent = "";
+    pushToList({
+      targetId: "insiderReci",
+      listType: "Addresses",
+      pushingList: emailDetails.insiderReci
+    });
+    document.getElementById("outsiderReci").textContent = "";
+    pushToList({
+      targetId: "outsiderReci",
+      listType: "Addresses",
+      pushingList: emailDetails.outsiderReci
+    });
     document.getElementById("body").textContent = emailDetails.body;
-    //document.getElementById("attNames").textContent = emailDetails.attNames;
+    document.getElementById("attNames").textContent = "";
+    pushToList({
+      targetId: "attNames",
+      listType: "Attachments",
+      pushingList: emailDetails.attNames
+    });
   } catch (error) {
     console.error("capopup.js: メール詳細の解析エラー:", error);
   }
 }
+
+function pushToList(args) {
+    /*
+    args:
+    {
+        targetId: "divfoo",
+        listType: "Addresses" or "Attachments",
+        pushingList: []
+    }
+    */
+   //console.dir(args);
+   var targetDiv = document.getElementById(args.targetId);
+   var pushTxtNode;
+
+   for (var i = 0; i < args.pushingList.length; i++) {
+       switch(args.listType){
+           case "Addresses":
+               pushTxtNode = args.pushingList[i].type + args.pushingList[i].address;
+               break;
+           case "Attachments":
+               pushTxtNode = args.pushingList[i].name;
+               break;
+       }
+       var chkbox = document.createElement("input");
+       chkbox.setAttribute("type", "checkbox");
+       chkbox.setAttribute("id", Math.random());
+       chkbox.addEventListener("change", (event) => {
+           checkAllChecked();
+       });
+       var label = document.createElement("label");
+       label.appendChild(chkbox);
+       label.appendChild(document.createTextNode(pushTxtNode));
+       targetDiv.appendChild(label);
+       targetDiv.appendChild(document.createElement("br"));
+   }
+}
+
 
 function onRegisterMessageComplete(result) {
   if (result.status === Office.AsyncResultStatus.Failed) {
