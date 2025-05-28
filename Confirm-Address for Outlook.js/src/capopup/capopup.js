@@ -102,6 +102,15 @@ function onMessageFromParent(recv) {
     }
 
     const emailDetails = message;
+    const prefs = Office.context.roamingSettings;
+    const outsiderAddressCount = emailDetails.outsiderReci.length;
+    if (prefs.get("noDisplayInsiderDomainOnly") 
+      && outsiderAddressCount === 0) {
+      checkAllChecked(outsiderAddressCount);
+      confirmSend();
+      return;
+    }
+
     handleHiddenContainers(emailDetails);
     console.log("capopup.js: メール詳細を受信:", emailDetails);
     document.getElementById("insiderReci").textContent = "";
@@ -110,12 +119,14 @@ function onMessageFromParent(recv) {
       listType: "Addresses",
       pushingList: emailDetails.insiderReci
     });
+
     document.getElementById("outsiderReci").textContent = "";
     pushToList({
       targetId: "outsiderReci",
       listType: "Addresses",
       pushingList: emailDetails.outsiderReci
     });
+
     document.getElementById("body").textContent = emailDetails.body;
     document.getElementById("attNames").textContent = "";
     pushToList({
@@ -123,6 +134,7 @@ function onMessageFromParent(recv) {
       listType: "Attachments",
       pushingList: emailDetails.attNames
     });
+
     checkAllChecked(); // 送信ボタンの状態を初期化
   } catch (error) {
     console.error("capopup.js: メール詳細の解析エラー:", error);
@@ -165,7 +177,7 @@ function pushToList(args) {
   }
 }
 
-function checkAllChecked() {
+function checkAllChecked(outsiderAddressCount) {
   // チェックボックスリストの状態を確認する汎用関数
   const areAllCheckboxesChecked = (containerId) => {
     const container = document.getElementById(containerId);
@@ -190,7 +202,12 @@ function checkAllChecked() {
 
   // 送信ボタンの有効/無効と色を切り替え
   const sendButton = document.getElementById("btn_send");
-  const isAllChecked = isInsiderDomainsChecked && isOutsiderDomainsChecked && isMailHeadChecked && isAttachmentsChecked;
+  let isAllChecked;
+  if (prefs.get("noDisplayInsiderDomainOnly") && outsiderAddressCount === 0) {
+    isAllChecked = true; // 組織内ドメインのみの場合は送信ボタンを有効にする
+  } else {
+    isAllChecked = isInsiderDomainsChecked && isOutsiderDomainsChecked && isMailHeadChecked && isAttachmentsChecked;
+  }
   sendButton.disabled = !isAllChecked;
   if (isAllChecked) {
     sendButton.classList.remove('bg-gray-500', 'hover:bg-gray-600', 'dark:bg-gray-600', 'dark:hover:bg-gray-700');
