@@ -9,8 +9,6 @@ Office.onReady((info) => {
     console.warn(
       "capopup.js: Outlook Classic (Win32) ではサポートされていません。処理を中断します。"
     );
-    document.body.innerHTML =
-      "<div id='platformError'>このアドインはOutlook Classicではサポートされていません。</div>";
     return;
   }
 
@@ -73,10 +71,38 @@ function batchCheck(targetId, val) {
   }
 }
 
+function handleHiddenContainers(emailDetails) {
+  // 隠しコンテナの表示/非表示を切り替える
+  if( emailDetails.insiderReci.length > 0) {
+    const insiderContainer = document.getElementById("insiderContainer");
+    insiderContainer.hidden = false;
+  }
+  if( emailDetails.outsiderReci.length > 0) {
+    const outsiderContainer = document.getElementById("outsiderContainer");
+    outsiderContainer.hidden = false;
+  }
+  if( emailDetails.attNames.length > 0) {
+    const attNamesContainer = document.getElementById("attNamesContainer");
+    attNamesContainer.hidden = false;
+  }
+
+  const prefs = Office.context.roamingSettings;
+  if(prefs.get("confirmMailBody")) {
+    document.getElementById("mailBodyContainer").hidden = false;
+  }
+}
 // メッセージを処理
 function onMessageFromParent(recv) {
   try {
-    const emailDetails = JSON.parse(recv.message);
+    const message = JSON.parse(recv.message);
+    console.log("capopup.js: メッセージ受信:", message);
+    if (message.type === "countdownUpdate") {
+      document.getElementById("countdown").textContent = `あと${message.seconds}秒で送信します。`;
+      return;
+    }
+
+    const emailDetails = message;
+    handleHiddenContainers(emailDetails);
     console.log("capopup.js: メール詳細を受信:", emailDetails);
     document.getElementById("insiderReci").textContent = "";
     pushToList({
@@ -178,7 +204,14 @@ function cancelSend() {
 }
 
 function confirmSend() {
-  console.log("capopup.js: confirmSend 実行");
-  const msgTo = { type: "confirm" };
-  Office.context.ui.messageParent(JSON.stringify(msgTo));
+  console.log("capopup.js: confirmSend実行");
+  const prefs = Office.context.roamingSettings;
+  if (prefs.get("countDown")) {
+    const seconds = parseInt(prefs.get("countDownTime") || 5, 10);
+    document.getElementById("countdown").textContent = `あと${seconds}秒で送信します。`;
+    Office.context.ui.messageParent(JSON.stringify({ type: "countDown", seconds }));
+  } else {
+    const msgTo = { type: "confirm" };
+    Office.context.ui.messageParent(JSON.stringify(msgTo));
+  } 
 }

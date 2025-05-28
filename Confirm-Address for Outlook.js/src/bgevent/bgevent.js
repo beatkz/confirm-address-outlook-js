@@ -31,7 +31,7 @@ function showConfirmDialog(sendEvent) {
 
   Office.context.ui.displayDialogAsync(
     "https://localhost:3000/capopup.html",
-    { height: 66, width: 30 },
+    { height: 50, width: 30 },
     (result) => {
       if (result.status === Office.AsyncResultStatus.Failed) {
         console.error("bgevent.js: ダイアログ表示エラー:", result.error.message);
@@ -71,6 +71,14 @@ function handleMessage(recv, sendEvent, dialog) {
       console.log("bgevent.js: 確認メッセージを受信、送信を許可");
       dialog.close();
       sendEvent.completed({ allowEvent: true });
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+      }
+      break;
+    case "countDown":
+      console.log("bgevent.js: カウントダウン開始:", msgDlg.seconds);
+      startCountdown(msgDlg.seconds, sendEvent, dialog);
       break;
     case "cancel":
       console.log("bgevent.js: キャンセルメッセージを受信、送信をキャンセル");
@@ -83,6 +91,23 @@ function handleMessage(recv, sendEvent, dialog) {
     default:
       console.warn("bgevent.js: 無効なメッセージを無視:", recv, "タイプ:", typeof recv);
   }
+}
+
+function startCountdown(seconds, sendEvent, dialog) {
+  let remaining = seconds;
+  countdownInterval = setInterval(() => {
+    if (remaining <= 0) {
+      console.log("bgevent.js: カウントダウン終了、送信を許可");
+      clearInterval(countdownInterval);
+      countdownInterval = null;
+      dialog.close();
+      sendEvent.completed({ allowEvent: true });
+      return;
+    }
+    console.log("bgevent.js: カウントダウン残り:", remaining);
+    dialog.messageChild(JSON.stringify({ type: "countdownUpdate", seconds: remaining }));
+    remaining--;
+  }, 1000);
 }
 
 async function checkAddress() {
@@ -109,7 +134,7 @@ async function checkAddress() {
 
   // 本文冒頭
   const bodyResult = await new Promise((resolve) => msgCompFields.body.getAsync("text", resolve));
-  const lines = 10;
+  const lines = Office.context.roamingSettings.get("confirmMailBodyLines") || 5;
   const body = bodyResult.value.split("\n").slice(0, lines).join("\n") || "本文なし";
 
   var attNames = [];
