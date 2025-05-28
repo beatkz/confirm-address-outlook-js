@@ -20,12 +20,18 @@ Office.onReady((info) => {
 // ダイアログを表示
 let caDialog; // confirmダイアログのグローバル変数
 
+// メインのイベントハンドラ
+function uniqueMessageSendHandler(event) {
+  console.log("bgevent.js: uniqueMessageSendHandler 開始");
+  showConfirmDialog(event);
+}
+
 function showConfirmDialog(sendEvent) {
   console.log("bgevent.js: ダイアログ表示を試行: https://localhost:3000/confirm.html");
 
   Office.context.ui.displayDialogAsync(
     "https://localhost:3000/capopup.html",
-    { height: 50, width: 30 },
+    { height: 66, width: 30 },
     (result) => {
       if (result.status === Office.AsyncResultStatus.Failed) {
         console.error("bgevent.js: ダイアログ表示エラー:", result.error.message);
@@ -77,12 +83,6 @@ function handleMessage(recv, sendEvent, dialog) {
     default:
       console.warn("bgevent.js: 無効なメッセージを無視:", recv, "タイプ:", typeof recv);
   }
-}
-
-// メインのイベントハンドラ
-function uniqueMessageSendHandler(event) {
-  console.log("bgevent.js: uniqueMessageSendHandler 開始");
-  showConfirmDialog(event);
 }
 
 async function checkAddress() {

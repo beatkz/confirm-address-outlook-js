@@ -17,14 +17,11 @@ Office.onReady((info) => {
   // 初期化処理
   console.log("capopup.js: Office.js 初期化完了:", JSON.stringify(info));
   console.log("capopup.js: ホスト:", info.host, "プラットフォーム:", info.platform);
-  console.log("capopup.js: Office.context:", Office.context);
-  console.log("capopup.js: Office.context.ui:", Office.context.ui);
 
   // 一括チェックボタンのイベントリスナーを関数化
-  const setupCheckboxListener = (checkboxId, targetId = null, logMessage) => {
+  const setupCheckboxListener = (checkboxId, targetId = null) => {
     const checkbox = document.getElementById(checkboxId);
     checkbox.addEventListener("change", (event) => {
-      console.log(`capopup.js: ${logMessage}:`, event.target.checked);
       if (targetId) {
         batchCheck(targetId, event.target.checked);
       }
@@ -33,10 +30,21 @@ Office.onReady((info) => {
   };
 
   // チェックボックスリスナーの設定
-  setupCheckboxListener("batchCheck_insiderReci", "insiderReci", "組織内メールの一括チェックボタンが変更されました");
-  setupCheckboxListener("batchCheck_outsiderReci", "outsiderReci", "組織外メールの一括チェックボタンが変更されました");
-  setupCheckboxListener("batchCheck_Attachments", "attNames", "添付ファイルの一括チェックボタンが変更されました");
-  setupCheckboxListener("check_firstLinesOfBody", null, "メール本文チェックボタンが変更されました");
+  setupCheckboxListener("batchCheck_insiderReci", "insiderReci");
+  setupCheckboxListener("batchCheck_outsiderReci", "outsiderReci");
+  setupCheckboxListener("batchCheck_Attachments", "attNames");
+  setupCheckboxListener("check_firstLinesOfBody", null);
+
+  // 一括チェックボタンの有効化/無効化
+  const prefs = Office.context.roamingSettings;
+  const setupBatchCheckButton = (buttonId, prefId) => {
+    if (prefs.get(prefId)){
+      document.getElementById(buttonId).disabled = false;
+    }
+  };
+  setupBatchCheckButton("batchCheck_insiderReci", "insiderDomainBatchCheck");
+  setupBatchCheckButton("batchCheck_outsiderReci", "outsiderDomainBatchCheck");
+  setupBatchCheckButton("batchCheck_Attachments", "attachmentBatchCheck");
 
   Office.context.ui.addHandlerAsync(
     Office.EventType.DialogParentMessageReceived,
