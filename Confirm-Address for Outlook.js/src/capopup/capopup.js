@@ -172,11 +172,15 @@ function checkAllChecked() {
     const checkboxes = container.getElementsByTagName('input');
     return Array.from(checkboxes).every(checkbox => checkbox.checked);
   };
-
+  const prefs = Office.context.roamingSettings;
+  
   // 各セクションのチェック状態を確認
   const isInsiderDomainsChecked = areAllCheckboxesChecked('insiderReci');
   const isOutsiderDomainsChecked = areAllCheckboxesChecked('outsiderReci');
-  const isMailHeadChecked = document.getElementById('check_firstLinesOfBody').checked;
+  let isMailHeadChecked = true; // confirmMailBodyが無効な場合はtrueに設定
+  if(prefs.get("confirmMailBody")) {
+    isMailHeadChecked = document.getElementById('check_firstLinesOfBody').checked;
+  }
   const isAttachmentsChecked = areAllCheckboxesChecked('attNames');
 
   // バッチチェックボックスの状態を更新
