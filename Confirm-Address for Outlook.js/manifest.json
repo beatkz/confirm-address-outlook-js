@@ -36,7 +36,12 @@
       ]
     }
   },
-  "validDomains": ["https://localhost:3000", "https://github.com/beatkz/confirm-address-outlook/"],
+  "validDomains": [
+    "https://localhost:3000",
+    "https://github.com/beatkz/confirm-address-outlook/",
+    "https://github.com/beatkz/confirm-address-outlook-js/",
+    "https://beatkz.github.io/confirm-address-outlook-js/"
+  ],
   "extensions": [
     {
       "requirements": {
