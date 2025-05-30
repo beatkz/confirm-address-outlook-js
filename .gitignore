@@ -136,4 +136,4 @@ out
 .pnp.*
 
 # Work in Progress document files
-docs/DevWorkInProgress
+notes/DevWorkInProgress
