@@ -55,6 +55,17 @@ module.exports = async (env, options) => {
               }
             },
           },
+          {
+            from: "manifest*.xml",
+            to: "[name]" + "[ext]",
+            transform(content) {
+              if (dev) {
+                return content;
+              } else {
+                return content.toString().replace(new RegExp(urlDev, "g"), urlProd);
+              }
+            },
+          },
         ],
       }),
     ],

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OfficeApp 
+    xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+    xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
+    xsi:type="MailApp">
+    
+    <!-- アドインの基本情報 -->
+    <Id>5ab14cd7-dbe1-4d20-ab4c-7368e9e25e16</Id>
+    <Version>1.0.0</Version>
+    <ProviderName>Keiji Momose</ProviderName>
+    <DefaultLocale>ja-JP</DefaultLocale>
+    <DisplayName DefaultValue="Confirm-Address for Outlook.js"/>
+    <Description DefaultValue="メール送信前に、送信先メールアドレス・添付ファイル名・本文冒頭を確認します。注意：このアドインはOutlook(new)および、Outlook on the Web用です。Outlook Classicご利用の方はConfirm-Address for Outlook Classicをご利用ください。(https://github.com/beatkz/confirm-address-outlook/)"/>
+    <IconUrl DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-192x192.png"/>
+    <HighResolutionIconUrl DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-192x192.png"/>
+    <SupportUrl DefaultValue="https://github.com/beatkz/confirm-address-outlook-js/blob/main/README.md"/>
+    <AppDomains>
+        <AppDomain>https://localhost:3000</AppDomain>
+        <AppDomain>https://github.com/beatkz/confirm-address-outlook/</AppDomain>
+        <AppDomain>https://github.com/beatkz/confirm-address-outlook-js/</AppDomain>
+        <AppDomain>https://beatkz.github.io/confirm-address-outlook-js/</AppDomain>
+    </AppDomains>
+    
+    <!-- パーミッション -->
+    <Permissions>ReadWriteMailbox</Permissions>
+    
+    <!-- ローカライズ用リソース -->
+    <Resources>
+        <bt:Images>
+            <bt:Image id="Icon16" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-16x16.png"/>
+            <bt:Image id="Icon192" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-192x192.png"/>
+        </bt:Images>
+        <bt:Urls>
+            <bt:Url id="SettingsPage" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/settings.html"/>
+            <bt:Url id="EventPage" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/bgevent.html"/>
+            <bt:Url id="ConfirmPage" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/capopup.html"/>
+        </bt:Urls>
+        <bt:ShortStrings>
+            <bt:String id="AddinName" DefaultValue="Confirm-Address"/>
+            <bt:String id="GroupLabel" DefaultValue="Confirm-Address"/>
+            <bt:String id="ButtonLabel" DefaultValue="設定"/>
+            <bt:String id="SupertipTitle" DefaultValue="設定を表示"/>
+        </bt:ShortStrings>
+        <bt:LongStrings>
+            <bt:String id="SupertipDescription" DefaultValue="このアドインの設定を表示します。"/>
+            <bt:String id="AddinDescription" DefaultValue="メール送信前に、送信先メールアドレス・添付ファイル名・本文冒頭を確認します。注意：このアドインはOutlook(new)および、Outlook on the Web用です。Outlook Classicご利用の方はConfirm-Address for Outlook Classicをご利用ください。(https://github.com/beatkz/confirm-address-outlook/)"/>
+        </bt:LongStrings>
+    </Resources>
+    
+    <!-- Outlook向けバージョンオーバーライド -->
+    <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
+        <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides/1.1" xsi:type="VersionOverridesV1_1">
+            <Requirements>
+                <bt:Sets>
+                    <bt:Set Name="Mailbox" MinVersion="1.12"/>
+                </bt:Sets>
+            </Requirements>
+            <Hosts>
+                <Host xsi:type="MailHost">
+                    <DesktopFormFactor>
+                        <!-- 設定用タスクペイン -->
+                        <ExtensionPoint xsi:type="MessageComposeCommandSurface">
+                            <OfficeTab id="TabMessage">
+                                <Group id="msgComposeGroup2">
+                                    <Label resid="GroupLabel"/>
+                                    <Control xsi:type="Button" id="msgComposeOpenPaneButton2">
+                                        <Label resid="ButtonLabel"/>
+                                        <Supertip>
+                                            <Title resid="SupertipTitle"/>
+                                            <Description resid="SupertipDescription"/>
+                                        </Supertip>
+                                        <Icon>
+                                            <bt:Image size="16" resid="Icon16"/>
+                                        </Icon>
+                                        <Action xsi:type="ShowTaskpane">
+                                            <SourceLocation resid="SettingsPage"/>
+                                        </Action>
+                                    </Control>
+                                </Group>
+                            </OfficeTab>
+                        </ExtensionPoint>
+                        
+                        <!-- イベントベースのアクティベーション -->
+                        <ExtensionPoint xsi:type="Events">
+                            <Event Type="MessageSending" FunctionExecution="synchronous" FunctionName="uniqueMessageSendHandler" Options="softBlock"/>
+                        </ExtensionPoint>
+                    </DesktopFormFactor>
+                </Host>
+            </Hosts>
+            
+            <!-- イベントハンドリング用関数ファイル -->
+            <FunctionFile resid="EventPage"/>
+            
+            <!-- 確認ポップアップ用タスクペイン -->
+            <ExtensionPoint xsi:type="CustomPane">
+                <SourceLocation resid="ConfirmPage"/>
+                <Label resid="AddinName"/>
+            </ExtensionPoint>
+        </VersionOverrides>
+    </VersionOverrides>
+</OfficeApp>
