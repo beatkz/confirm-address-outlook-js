@@ -1,4 +1,4 @@
-/* global Office, console, document */
+/* global Office, console, document, setInterval, clearInterval */
 
 Office.onReady((info) => {
   // ここでClassic Outlookを判定
@@ -19,6 +19,7 @@ Office.onReady((info) => {
 
 // ダイアログを表示
 let caDialog; // confirmダイアログのグローバル変数
+let countdownInterval = null; // カウントダウン用のグローバル変数
 
 // メインのイベントハンドラ
 function uniqueMessageSendHandler(event) {
@@ -138,7 +139,7 @@ async function checkAddress() {
   const body = bodyResult.value.split("\n").slice(0, lines).join("\n") || "本文なし";
 
   var attNames = [];
-  await getAttachments(msgCompFields,attNames);
+  await getAttachments(msgCompFields, attNames);
   console.log("bgevent.js: 添付ファイル名:", attNames.map((att) => att.name).join(", "));
 
   return {
@@ -204,8 +205,8 @@ async function collectAddress(msgCompFields, toList, ccList, bccList) {
   console.log("bgevent.js: collectAddress 開始");
 
   // To
-  const toMap = (await new Promise((resolve) => msgCompFields.to.getAsync(resolve)));
-  const tempTo =  toMap.value.map((r) => r.emailAddress) || [];
+  const toMap = await new Promise((resolve) => msgCompFields.to.getAsync(resolve));
+  const tempTo = toMap.value.map((r) => r.emailAddress) || [];
   for (const reci of tempTo) {
     if (reci) {
       toList.push({ type: "To: ", address: reci });
@@ -213,7 +214,7 @@ async function collectAddress(msgCompFields, toList, ccList, bccList) {
   }
 
   // Cc
-  const ccMap = (await new Promise((resolve) => msgCompFields.cc.getAsync(resolve)));
+  const ccMap = await new Promise((resolve) => msgCompFields.cc.getAsync(resolve));
   const tempCc = ccMap.value.map((r) => r.emailAddress) || [];
   for (const reci of tempCc) {
     if (reci) {
@@ -222,7 +223,7 @@ async function collectAddress(msgCompFields, toList, ccList, bccList) {
   }
 
   // Bcc
-  const bccMap = (await new Promise((resolve) => msgCompFields.bcc.getAsync(resolve)));
+  const bccMap = await new Promise((resolve) => msgCompFields.bcc.getAsync(resolve));
   const tempBcc = bccMap.value.map((r) => r.emailAddress) || [];
   for (const reci of tempBcc) {
     if (reci) {
@@ -231,7 +232,7 @@ async function collectAddress(msgCompFields, toList, ccList, bccList) {
   }
 }
 
-async function getAttachments(msgCompFields, attList){
+async function getAttachments(msgCompFields, attList) {
   // 添付ファイル名
   const attResult = await new Promise((resolve) => msgCompFields.getAttachmentsAsync(resolve));
   const tempAtt = attResult.value.map((att) => att.name) || [];

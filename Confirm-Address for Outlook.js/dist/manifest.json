@@ -1,0 +1,193 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.21/MicrosoftTeams.schema.json",
+  "id": "5ab14cd7-dbe1-4d20-ab4c-7368e9e25e16",
+  "manifestVersion": "1.21",
+  "version": "0.1.0",
+  "name": {
+    "short": "Confirm-Address for Outlook.js",
+    "full": "Confirm-Address for Outlook.js"
+  },
+  "description": {
+    "short": "メール送信前に、送信先メールアドレス・添付ファイル名・本文冒頭を確認します。",
+    "full": "注意：このアドインはOutlook(new)および、Outlook on the Web用です。Outlook Classicご利用の方はConfirm-Address for Outlook Classicをご利用ください。(https://github.com/beatkz/confirm-address-outlook/)"
+  },
+  "developer": {
+    "name": "Keiji Momose",
+    "websiteUrl": "https://github.com/beatkz/confirm-address-outlook-js",
+    "privacyUrl": "https://github.com/beatkz/confirm-address-outlook-js/blob/main/README.md",
+    "termsOfUseUrl": "https://github.com/beatkz/confirm-address-outlook-js/blob/main/README.md"
+  },
+  "icons": {
+    "outline": "assets/img/ConfirmAddress-Outline.png",
+    "color": "assets/img/ConfirmAddress-192x192.png"
+  },
+  "accentColor": "#232859",
+  "localizationInfo": {
+    "defaultLanguageTag": "ja-jp",
+    "additionalLanguages": []
+  },
+  "authorization": {
+    "permissions": {
+      "resourceSpecific": [
+        {
+          "name": "MailboxItem.Read.User",
+          "type": "Delegated"
+        }
+      ]
+    }
+  },
+  "validDomains": [
+    "https://localhost:3000",
+    "https://github.com/beatkz/confirm-address-outlook/",
+    "https://github.com/beatkz/confirm-address-outlook-js/",
+    "https://beatkz.github.io/confirm-address-outlook-js/"
+  ],
+  "extensions": [
+    {
+      "requirements": {
+        "scopes": ["mail"],
+        "capabilities": [
+          {
+            "name": "Mailbox",
+            "minVersion": "1.15"
+          }
+        ]
+      },
+      "runtimes": [
+        {
+          "requirements": {
+            "capabilities": [
+              {
+                "name": "Mailbox",
+                "minVersion": "1.14"
+              }
+            ]
+          },
+          "id": "SettingsRuntime",
+          "type": "general",
+          "code": {
+            "page": "https://beatkz.github.io/confirm-address-outlook-js/settings.html"
+          },
+          "lifetime": "short",
+          "actions": [
+            {
+              "id": "SettingsRuntimeShow",
+              "type": "openPage",
+              "pinnable": false,
+              "view": "dashboard"
+            }
+          ]
+        },
+        {
+          "requirements": {
+            "capabilities": [
+              {
+                "name": "Mailbox",
+                "minVersion": "1.14"
+              }
+            ]
+          },
+          "id": "AutorunRuntime",
+          "type": "general",
+          "code": {
+            "page": "https://beatkz.github.io/confirm-address-outlook-js/bgevent.html"
+          },
+          "lifetime": "short",
+          "actions": [
+            {
+              "id": "uniqueMessageSendHandler",
+              "type": "executeFunction",
+              "displayName": "uniqueMessageSendHandler"
+            }
+          ]
+        },
+        {
+          "requirements": {
+            "capabilities": [
+              {
+                "name": "Mailbox",
+                "minVersion": "1.12"
+              }
+            ]
+          },
+          "id": "SendConfirmRuntime",
+          "type": "general",
+          "code": {
+            "page": "https://beatkz.github.io/confirm-address-outlook-js/capopup.html"
+          },
+          "lifetime": "short",
+          "actions": [
+            {
+              "id": "ShowSendConfirm",
+              "type": "openPage",
+              "pinnable": false,
+              "view": "confirm"
+            }
+          ]
+        }
+      ],
+      "autoRunEvents": [
+        {
+          "requirements": {
+            "capabilities": [
+              {
+                "name": "Mailbox",
+                "minVersion": "1.12"
+              }
+            ],
+            "scopes": ["mail"]
+          },
+          "events": [
+            {
+              "type": "messageSending",
+              "actionId": "uniqueMessageSendHandler",
+              "options": {
+                "sendMode": "softBlock"
+              }
+            }
+          ]
+        }
+      ],
+      "ribbons": [
+        {
+          "contexts": ["mailCompose"],
+          "tabs": [
+            {
+              "builtInTabId": "TabMessage",
+              "groups": [
+                {
+                  "id": "msgComposeGroup2",
+                  "label": "Confirm-Address",
+                  "icons": [
+                    {
+                      "size": 16,
+                      "url": "https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-16x16.png"
+                    }
+                  ],
+                  "controls": [
+                    {
+                      "id": "msgComposeOpenPaneButton2",
+                      "type": "button",
+                      "label": "設定",
+                      "icons": [
+                        {
+                          "size": 16,
+                          "url": "https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-16x16.png"
+                        }
+                      ],
+                      "supertip": {
+                        "title": "設定を表示",
+                        "description": "このアドインの設定を表示します。"
+                      },
+                      "actionId": "SettingsRuntimeShow"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

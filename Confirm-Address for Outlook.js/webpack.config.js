@@ -17,7 +17,7 @@ const path = require('path');
 module.exports = async (env, options) => {
   const config = {
     entry: {
-      polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
+      //polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
       settings: "./src/settings/settings.js",
       capopup: "./src/capopup/capopup.js",
       bgevent: "./src/bgevent/bgevent.js",

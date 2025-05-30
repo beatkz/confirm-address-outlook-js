@@ -1,0 +1,74 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  @apply bg-gray-100 text-gray-900;
+}
+.error {
+  @apply text-red-500;
+}
+input, button {
+  @apply bg-white border-gray-300 text-gray-900 rounded-md;
+}
+#successMessage {
+  @apply bg-green-600 text-white p-2 mt-2 rounded;
+}
+#errorMessage {
+  @apply bg-red-600 text-white p-2 mt-2 rounded;
+}
+button.bg-blue-500 {
+  @apply bg-blue-500 hover:bg-blue-600;
+}
+button.bg-red-500 {
+  @apply bg-red-500 hover:bg-red-600;
+}
+button[id*="Check"] {
+  @apply bg-gray-500 hover:bg-gray-600;
+}
+#countdown {
+  @apply text-blue-600;
+}
+.form-group {
+  margin-bottom: 1rem;
+}
+.inline-flex-group {
+  @apply flex items-center flex-wrap gap-2;
+}
+.inline-input {
+  @apply w-16 h-8 px-2;
+}
+#platformError {
+  @apply text-red-500 dark:text-red-400 p-4 rounded bg-gray-200 dark:bg-gray-800;
+}
+.ms-TaskPane-root, .ms-TaskPane-content, .ms-Dialog-content, .ms-Dialog-inner {
+  @apply bg-gray-100 text-gray-900;
+}
+.dark body {
+  @apply bg-gray-900 text-gray-100;
+}
+.dark .error {
+  @apply text-red-400;
+}
+.dark input, .dark button {
+  @apply bg-gray-800 border-gray-600 text-gray-100;
+}
+.dark #successMessage {
+  @apply bg-green-700 text-white;
+}
+.dark #errorMessage {
+  @apply bg-red-700 text-white;
+}
+.dark button.bg-blue-500 {
+  @apply bg-blue-600 hover:bg-blue-700;
+}
+.dark button.bg-red-500 {
+  @apply bg-red-600 hover:bg-red-700;
+}
+.dark button[id*="Check"] {
+  @apply bg-gray-600 hover:bg-gray-700;
+}
+.dark #countdown {
+  @apply text-blue-400;
+}
+.dark .ms-TaskPane-root, .dark .ms-TaskPane-content, .dark .ms-Dialog-content, .dark .ms-Dialog-inner {
+  @apply bg-gray-900 text-gray-100;
+}

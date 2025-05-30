@@ -33,10 +33,17 @@ Office.onReady((info) => {
   setupCheckboxListener("batchCheck_Attachments", "attNames");
   setupCheckboxListener("check_firstLinesOfBody", null);
 
+  // 送信ボタンのイベントリスナー
+  const sendButton = document.getElementById("btn_send");
+  sendButton.addEventListener("click", confirmSend);
+  // キャンセルボタンのイベントリスナー
+  const cancelButton = document.getElementById("btn_cancel");
+  cancelButton.addEventListener("click", cancelSend);
+
   // 一括チェックボタンの有効化/無効化
   const prefs = Office.context.roamingSettings;
   const setupBatchCheckButton = (buttonId, prefId) => {
-    if (prefs.get(prefId)){
+    if (prefs.get(prefId)) {
       document.getElementById(buttonId).disabled = false;
     }
   };
@@ -73,21 +80,21 @@ function batchCheck(targetId, val) {
 
 function handleHiddenContainers(emailDetails) {
   // 隠しコンテナの表示/非表示を切り替える
-  if( emailDetails.insiderReci.length > 0) {
+  if (emailDetails.insiderReci.length > 0) {
     const insiderContainer = document.getElementById("insiderContainer");
     insiderContainer.hidden = false;
   }
-  if( emailDetails.outsiderReci.length > 0) {
+  if (emailDetails.outsiderReci.length > 0) {
     const outsiderContainer = document.getElementById("outsiderContainer");
     outsiderContainer.hidden = false;
   }
-  if( emailDetails.attNames.length > 0) {
+  if (emailDetails.attNames.length > 0) {
     const attNamesContainer = document.getElementById("attNamesContainer");
     attNamesContainer.hidden = false;
   }
 
   const prefs = Office.context.roamingSettings;
-  if(prefs.get("confirmMailBody")) {
+  if (prefs.get("confirmMailBody")) {
     document.getElementById("mailBodyContainer").hidden = false;
   }
 }
@@ -104,8 +111,7 @@ function onMessageFromParent(recv) {
     const emailDetails = message;
     const prefs = Office.context.roamingSettings;
     const outsiderAddressCount = emailDetails.outsiderReci.length;
-    if (prefs.get("noDisplayInsiderDomainOnly") 
-      && outsiderAddressCount === 0) {
+    if (prefs.get("noDisplayInsiderDomainOnly") && outsiderAddressCount === 0) {
       checkAllChecked(outsiderAddressCount);
       confirmSend();
       return;
@@ -117,14 +123,14 @@ function onMessageFromParent(recv) {
     pushToList({
       targetId: "insiderReci",
       listType: "Addresses",
-      pushingList: emailDetails.insiderReci
+      pushingList: emailDetails.insiderReci,
     });
 
     document.getElementById("outsiderReci").textContent = "";
     pushToList({
       targetId: "outsiderReci",
       listType: "Addresses",
-      pushingList: emailDetails.outsiderReci
+      pushingList: emailDetails.outsiderReci,
     });
 
     document.getElementById("body").textContent = emailDetails.body;
@@ -132,7 +138,7 @@ function onMessageFromParent(recv) {
     pushToList({
       targetId: "attNames",
       listType: "Attachments",
-      pushingList: emailDetails.attNames
+      pushingList: emailDetails.attNames,
     });
 
     checkAllChecked(); // 送信ボタンの状態を初期化
@@ -154,7 +160,7 @@ function pushToList(args) {
   let pushTxtNode;
 
   for (let i = 0; i < args.pushingList.length; i++) {
-    switch(args.listType) {
+    switch (args.listType) {
       case "Addresses":
         pushTxtNode = args.pushingList[i].type + args.pushingList[i].address;
         break;
@@ -181,24 +187,24 @@ function checkAllChecked(outsiderAddressCount) {
   // チェックボックスリストの状態を確認する汎用関数
   const areAllCheckboxesChecked = (containerId) => {
     const container = document.getElementById(containerId);
-    const checkboxes = container.getElementsByTagName('input');
-    return Array.from(checkboxes).every(checkbox => checkbox.checked);
+    const checkboxes = container.getElementsByTagName("input");
+    return Array.from(checkboxes).every((checkbox) => checkbox.checked);
   };
   const prefs = Office.context.roamingSettings;
-  
+
   // 各セクションのチェック状態を確認
-  const isInsiderDomainsChecked = areAllCheckboxesChecked('insiderReci');
-  const isOutsiderDomainsChecked = areAllCheckboxesChecked('outsiderReci');
+  const isInsiderDomainsChecked = areAllCheckboxesChecked("insiderReci");
+  const isOutsiderDomainsChecked = areAllCheckboxesChecked("outsiderReci");
   let isMailHeadChecked = true; // confirmMailBodyが無効な場合はtrueに設定
-  if(prefs.get("confirmMailBody")) {
-    isMailHeadChecked = document.getElementById('check_firstLinesOfBody').checked;
+  if (prefs.get("confirmMailBody")) {
+    isMailHeadChecked = document.getElementById("check_firstLinesOfBody").checked;
   }
-  const isAttachmentsChecked = areAllCheckboxesChecked('attNames');
+  const isAttachmentsChecked = areAllCheckboxesChecked("attNames");
 
   // バッチチェックボックスの状態を更新
-  document.getElementById('batchCheck_insiderReci').checked = isInsiderDomainsChecked;
-  document.getElementById('batchCheck_outsiderReci').checked = isOutsiderDomainsChecked;
-  document.getElementById('batchCheck_Attachments').checked = isAttachmentsChecked;
+  document.getElementById("batchCheck_insiderReci").checked = isInsiderDomainsChecked;
+  document.getElementById("batchCheck_outsiderReci").checked = isOutsiderDomainsChecked;
+  document.getElementById("batchCheck_Attachments").checked = isAttachmentsChecked;
 
   // 送信ボタンの有効/無効と色を切り替え
   const sendButton = document.getElementById("btn_send");
@@ -206,15 +212,39 @@ function checkAllChecked(outsiderAddressCount) {
   if (prefs.get("noDisplayInsiderDomainOnly") && outsiderAddressCount === 0) {
     isAllChecked = true; // 組織内ドメインのみの場合は送信ボタンを有効にする
   } else {
-    isAllChecked = isInsiderDomainsChecked && isOutsiderDomainsChecked && isMailHeadChecked && isAttachmentsChecked;
+    isAllChecked =
+      isInsiderDomainsChecked &&
+      isOutsiderDomainsChecked &&
+      isMailHeadChecked &&
+      isAttachmentsChecked;
   }
   sendButton.disabled = !isAllChecked;
   if (isAllChecked) {
-    sendButton.classList.remove('bg-gray-500', 'hover:bg-gray-600', 'dark:bg-gray-600', 'dark:hover:bg-gray-700');
-    sendButton.classList.add('bg-blue-500', 'hover:bg-blue-600', 'dark:bg-blue-600', 'dark:hover:bg-blue-700');
+    sendButton.classList.remove(
+      "bg-gray-500",
+      "hover:bg-gray-600",
+      "dark:bg-gray-600",
+      "dark:hover:bg-gray-700"
+    );
+    sendButton.classList.add(
+      "bg-blue-500",
+      "hover:bg-blue-600",
+      "dark:bg-blue-600",
+      "dark:hover:bg-blue-700"
+    );
   } else {
-    sendButton.classList.remove('bg-blue-500', 'hover:bg-blue-600', 'dark:bg-blue-600', 'dark:hover:bg-blue-700');
-    sendButton.classList.add('bg-gray-500', 'hover:bg-gray-600', 'dark:bg-gray-600', 'dark:hover:bg-gray-700');
+    sendButton.classList.remove(
+      "bg-blue-500",
+      "hover:bg-blue-600",
+      "dark:bg-blue-600",
+      "dark:hover:bg-blue-700"
+    );
+    sendButton.classList.add(
+      "bg-gray-500",
+      "hover:bg-gray-600",
+      "dark:bg-gray-600",
+      "dark:hover:bg-gray-700"
+    );
   }
 }
 
@@ -234,5 +264,5 @@ function confirmSend() {
   } else {
     const msgTo = { type: "confirm" };
     Office.context.ui.messageParent(JSON.stringify(msgTo));
-  } 
+  }
 }
