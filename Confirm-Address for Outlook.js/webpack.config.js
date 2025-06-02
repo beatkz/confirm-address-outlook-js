@@ -1,9 +1,9 @@
 /* eslint-disable no-undef */
 
+const webpack = require('webpack'); // DefinePluginのために追加
 const devCerts = require("office-addin-dev-certs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const urlDev = "https://localhost:3000/";
 const urlProd = "https://beatkz.github.io/confirm-address-outlook-js/";
@@ -61,6 +61,9 @@ module.exports = async (env, options) => {
             },
           },
         ],
+      }),
+      new webpack.DefinePlugin({
+        'process.env.BASE_URL': JSON.stringify(dev ? urlDev : urlProd),
       }),
     ],
     devtool: "source-map",

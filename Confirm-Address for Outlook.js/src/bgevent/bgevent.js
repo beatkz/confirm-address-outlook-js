@@ -28,10 +28,11 @@ function uniqueMessageSendHandler(event) {
 }
 
 function showConfirmDialog(sendEvent) {
-  console.log("bgevent.js: ダイアログ表示を試行: https://localhost:3000/confirm.html");
+  const dialogUrl = `${process.env.BASE_URL}capopup.html`;
+  console.log("bgevent.js: ダイアログ表示を試行", dialogUrl);
 
   Office.context.ui.displayDialogAsync(
-    "https://localhost:3000/capopup.html",
+    dialogUrl,
     { height: 50, width: 30 },
     (result) => {
       if (result.status === Office.AsyncResultStatus.Failed) {
