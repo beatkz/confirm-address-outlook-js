@@ -15,4 +15,4 @@ Due to its platform limit, this Office Add-in is only for Outlook (new) and Outl
 
 If you wish to use on Outlook Classic, please use [Confirm-Address for Outlook Classic](https://github.com/beatkz/confirm-address-outlook/) instead.
 
-To get started, upload the [Add-in only Manifest](https://beatkz.github.io/confirm-address-outlook-js/manifest.xml) into [olksideload page](https://aka.ms/olksideload). More information, please see the [Sideload Outlook add-ins for testing | Microsoft Learn](https://learn.microsoft.com/en-us/office/dev/add-ins/outlook/sideload-outlook-add-ins-for-testing?tabs=xmlmanifest).
+To get started, upload the [Add-in only Manifest](https://beatkz.github.io/confirm-address-outlook-js/manifest.xml) into [olksideload page](https://aka.ms/olksideload). More information, please see the [Microsoft Learn article](https://learn.microsoft.com/en-us/office/dev/add-ins/outlook/sideload-outlook-add-ins-for-testing?tabs=xmlmanifest).
