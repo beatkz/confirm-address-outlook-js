@@ -3,6 +3,7 @@
 const devCerts = require("office-addin-dev-certs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const urlDev = "https://localhost:3000/";
 const urlProd = "https://beatkz.github.io/confirm-address-outlook-js/";
@@ -15,6 +16,7 @@ async function getHttpsOptions() {
 const path = require('path');
 
 module.exports = async (env, options) => {
+  const dev = options.mode === "development";
   const config = {
     entry: {
       //polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
@@ -27,16 +29,19 @@ module.exports = async (env, options) => {
         filename: "settings.html",
         template: "./src/settings/settings.html",
         chunks: ["settings"],
+        hash: false, // ～.min.jsにファイル名固定したため
       }),
       new HtmlWebpackPlugin({
         filename: "capopup.html",
         template: "./src/capopup/capopup.html",
         chunks: ["capopup"],
+        hash: false, // ～.min.jsにファイル名固定したため
       }),
       new HtmlWebpackPlugin({
         filename: "bgevent.html",
         template: "./src/bgevent/bgevent.html",
         chunks: ["bgevent"],
+        hash: false, // ～.min.jsにファイル名固定したため
       }),
       new CopyWebpackPlugin({
         patterns: [
@@ -45,7 +50,7 @@ module.exports = async (env, options) => {
             to: path.resolve(__dirname, "dist/assets"),
           },
           {
-            from: "manifest*.json",
+            from: "manifest*.*",
             to: "[name]" + "[ext]",
             transform(content) {
               if (dev) {
@@ -61,6 +66,10 @@ module.exports = async (env, options) => {
     devtool: "source-map",
     output: {
       clean: true,
+      // モードに応じてファイル名を条件付きで設定
+      filename: dev ? "[name].js" : "[name].min.js",
+      chunkFilename: dev ? "[name].chunk.js" : "[name].min.chunk.js", // チャンクファイル名を制御
+      path: path.resolve(__dirname, "dist"),      
     },
     resolve: {
       extensions: [".html", ".js"],
@@ -101,6 +110,5 @@ module.exports = async (env, options) => {
       port: process.env.npm_package_config_dev_server_port || 3000,
     },
   };
-  const dev = options.mode === "development";
   return config;
 };
