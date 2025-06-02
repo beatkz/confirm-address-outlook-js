@@ -33,7 +33,11 @@ function showConfirmDialog(sendEvent) {
 
   Office.context.ui.displayDialogAsync(
     dialogUrl,
-    { height: 50, width: 30 },
+    { 
+      height: 50, 
+      width: 30,
+      displayInIframe: true // iframe 内で表示（URL バー非表示を試みる）
+    },
     (result) => {
       if (result.status === Office.AsyncResultStatus.Failed) {
         console.error("bgevent.js: ダイアログ表示エラー:", result.error.message);
