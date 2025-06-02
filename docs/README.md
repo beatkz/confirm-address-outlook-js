@@ -1,5 +1,7 @@
 # Confirm-Address for Outlook.js
 
+- [Released on GitHub Pages](https://beatkz.github.io/confirm-address-outlook-js/)
+
 - Original by Meatian [Confirm-Address for Thunderbird](https://github.com/Meatian/confirm-address/)
 - Outlook version ported by [Keiji Momose](https://github.com/beatkz/)
 
