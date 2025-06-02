@@ -4,8 +4,8 @@
   "manifestVersion": "1.21",
   "version": "1.0.0",
   "name": {
-    "short": "Confirm-Address for Outlook.js",
-    "full": "Confirm-Address for Outlook.js"
+    "short": "Confirm-Address for Outlook",
+    "full": "Confirm-Address for Outlook"
   },
   "description": {
     "short": "メール送信前に、送信先メールアドレス・添付ファイル名・本文冒頭を確認します。",

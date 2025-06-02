@@ -5,7 +5,7 @@
   <ProviderName>Keiji Momose</ProviderName>
   <DefaultLocale>ja-JP</DefaultLocale>
   <DisplayName DefaultValue="Confirm-Address for Outlook"/>
-  <Description DefaultValue="メール送信前に、送信先メールアドレス・添付ファイル名・本文冒頭を確認します。"/>
+  <Description DefaultValue="メール送信前に、送信先メールアドレス・添付ファイル名・本文冒頭を確認します。注意：このアドインはOutlook(new)および、Outlook on the Web用です。Outlook Classicご利用の方はConfirm-Address for Outlook Classicをご利用ください。(https://github.com/beatkz/confirm-address-outlook/)"/>
   <IconUrl DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-64x64.png"/>
   <HighResolutionIconUrl DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-192x192.png"/>
   <SupportUrl DefaultValue="https://github.com/beatkz/"/>
