@@ -36,7 +36,6 @@ function showConfirmDialog(sendEvent) {
     { 
       height: 50, 
       width: 30,
-      displayInIframe: true // iframe 内で表示（URL バー非表示を試みる）
     },
     (result) => {
       if (result.status === Office.AsyncResultStatus.Failed) {
