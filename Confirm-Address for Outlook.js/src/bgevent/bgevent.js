@@ -1,4 +1,4 @@
-/* global Office, console, document, setInterval, clearInterval */
+/* global Office, console, document, setInterval, clearInterval, process */
 
 Office.onReady((info) => {
   // ここでClassic Outlookを判定
@@ -28,26 +28,15 @@ function uniqueMessageSendHandler(event) {
 }
 
 function showConfirmDialog(sendEvent) {
-  const settings = Office.context.roamingSettings;
-  const dialogTrusted = settings.get("dialogTrusted") || false;
-
-  if (!dialogTrusted) {
-    console.log("bgevent.js: ダイアログの信頼状態を保存");
-    settings.set("dialogTrusted", true);
-    settings.saveAsync((result) => {
-      if (result.status === Office.AsyncResultStatus.Failed) {
-        console.error("bgevent.js: 設定保存エラー:", result.error.message);
-      }
-    });
-  }
   const dialogUrl = `${process.env.BASE_URL}capopup.html`;
   console.log("bgevent.js: ダイアログ表示を試行", dialogUrl);
 
   Office.context.ui.displayDialogAsync(
     dialogUrl,
-    { 
-      height: 50, 
+    {
+      height: 50,
       width: 30,
+      promptBeforeOpen: false,
     },
     (result) => {
       if (result.status === Office.AsyncResultStatus.Failed) {
