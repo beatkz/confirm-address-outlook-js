@@ -37,7 +37,7 @@ function uniqueMessageSendHandler(event) {
   showConfirmDialog(event);
 }
 function showConfirmDialog(sendEvent) {
-  var dialogUrl = "".concat("https://localhost:3000/", "capopup.html");
+  var dialogUrl = "".concat("https://beatkz.github.io/confirm-address-outlook-js/beta/", "capopup.html");
   console.log("bgevent.js: ダイアログ表示を試行", dialogUrl);
   Office.context.ui.displayDialogAsync(dialogUrl, {
     height: 50,

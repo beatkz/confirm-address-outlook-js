@@ -5,7 +5,8 @@ const devCerts = require("office-addin-dev-certs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-const urlDev = "https://localhost:3000/";
+//const urlDev = "https://localhost:3000/";
+const urlDev = "https://beatkz.github.io/confirm-address-outlook-js/beta/";
 const urlProd = "https://beatkz.github.io/confirm-address-outlook-js/";
 
 async function getHttpsOptions() {
