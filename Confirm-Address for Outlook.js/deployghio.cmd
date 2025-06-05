@@ -1,4 +1,5 @@
 @echo off
+pushd "%~dp0"
 setlocal enabledelayedexpansion
 :: If your current git branch is dev, set BETA_MODE to TRUE.
 REM get current git branch name
@@ -20,21 +21,20 @@ IF "%BRANCH%" == "dev" (
   set BETA_MODE=FALSE
 )
 
-pushd "%~dp0"
 if "%BETA_MODE%" == "TRUE" (
-  echo "Running in beta branch mode..."
+  echo Running in beta branch mode...
   call npm run build:dev
 ) else (
-  echo "Running in release branch mode..."
+  echo Running in release branch mode...
   call npm run build
 )
 if %errorlevel% neq 0 (
-  echo "Build failed. Please check the errors above."
+  echo Build failed. Please check the errors above.
   pause .
   exit /b %errorlevel%
 )
 if "%BETA_MODE%" == "TRUE" (
-  echo "Starting beta branch deployment..."
+  echo Starting beta branch deployment...
   del /q /s /f "dist\manifest.*"
   rd /s /q "..\docs\beta"
   xcopy /s /y /i dist "..\docs\beta"
@@ -42,7 +42,7 @@ if "%BETA_MODE%" == "TRUE" (
   copy /y "..\README.md" "..\docs\beta"
   copy /y manifest_beta.xml "..\docs\beta\manifest_beta.xml"
 ) else (
-  echo "Starting release branch deployment..."
+  echo Starting release branch deployment...
   xcopy /s /y /i dist "..\docs"
   xcopy /s /y /i "..\notes\manual" "..\docs\manual"
   copy /y "..\README.md" "..\docs"
