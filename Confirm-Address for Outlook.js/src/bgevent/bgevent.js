@@ -2,7 +2,9 @@
 
 Office.onReady((info) => {
   if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
-    console.warn("bgevent.js: Outlook Classic (Win32) ではサポートされていません。処理を終了します。");
+    console.warn(
+      "bgevent.js: Outlook Classic (Win32) ではサポートされていません。処理を終了します。"
+    );
     return;
   }
 
