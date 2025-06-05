@@ -1,13 +1,8 @@
-/* global Office, console, document, setInterval, clearInterval, process */
+/* global Office, console, setInterval, clearInterval, process */
 
 Office.onReady((info) => {
-  // ここでClassic Outlookを判定
   if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
-    console.warn(
-      "bgevent.js: Outlook Classic (Win32) ではサポートされていません。処理を中断します。"
-    );
-    document.body.innerHTML =
-      "<div id='platformError'>このアドインはOutlook Classicではサポートされていません。</div>";
+    console.warn("bgevent.js: Outlook Classic (Win32) ではサポートされていません。処理を終了します。");
     return;
   }
 
@@ -18,12 +13,16 @@ Office.onReady((info) => {
 });
 
 // ダイアログを表示
+let supressDialog = false; // ダイアログを抑制するフラグ
 let caDialog; // confirmダイアログのグローバル変数
 let countdownInterval = null; // カウントダウン用のグローバル変数
 
 // メインのイベントハンドラ
 function uniqueMessageSendHandler(event) {
   console.log("bgevent.js: uniqueMessageSendHandler 開始");
+  if (supressDialog) {
+    return;
+  }
   showConfirmDialog(event);
 }
 

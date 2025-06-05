@@ -4,14 +4,6 @@ console.log("capopup.js: スクリプトロード開始");
 
 // Office.js の初期化
 Office.onReady((info) => {
-  // Classic Outlookを判定
-  if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
-    console.warn(
-      "capopup.js: Outlook Classic (Win32) ではサポートされていません。処理を中断します。"
-    );
-    return;
-  }
-
   // 初期化処理
   console.log("capopup.js: Office.js 初期化完了:", JSON.stringify(info));
   console.log("capopup.js: ホスト:", info.host, "プラットフォーム:", info.platform);
