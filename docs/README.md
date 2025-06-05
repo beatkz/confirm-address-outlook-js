@@ -4,11 +4,9 @@
 
 - [GitHub Pagesのリリースページ](https://beatkz.github.io/confirm-address-outlook-js/)
 
-- [安定版マニフェスト](https://beatkz.github.io/confirm-address-outlook-js/manifest.xml)
-- [Beta版マニフェスト](https://beatkz.github.io/confirm-address-outlook-js/beta/manifest_beta.xml)
+- マニフェスト [安定版](https://beatkz.github.io/confirm-address-outlook-js/manifest.xml) [β版](https://beatkz.github.io/confirm-address-outlook-js/beta/manifest_beta.xml)
 
-- [解説書ページ](https://beatkz.github.io/confirm-address-outlook-js/manual/manual_ja.html)
-- [解説書ページ(β)](https://beatkz.github.io/confirm-address-outlook-js/beta/manual/manual_ja.html)
+- [解説書ページ](https://beatkz.github.io/confirm-address-outlook-js/manual/manual_ja.html) [(β)](https://beatkz.github.io/confirm-address-outlook-js/beta/manual/manual_ja.html)
 
 - Original by Meatian [Confirm-Address for Thunderbird](https://github.com/Meatian/confirm-address/)
 - Outlook version ported by [Keiji Momose](https://github.com/beatkz/)
@@ -27,8 +25,7 @@ Outlook Classic版のアドインを使いたい場合は、[Confirm-Address for
 
 - [Released on GitHub Pages](https://beatkz.github.io/confirm-address-outlook-js/)
 
-- [Manifest: Stable branch](https://beatkz.github.io/confirm-address-outlook-js/manifest.xml)
-- [Manifest: Beta branch](https://beatkz.github.io/confirm-address-outlook-js/beta/manifest_beta.xml)
+- Manifest: [Stable branch](https://beatkz.github.io/confirm-address-outlook-js/manifest.xml) [Beta branch](https://beatkz.github.io/confirm-address-outlook-js/beta/manifest_beta.xml)
 
 - Original by Meatian [Confirm-Address for Thunderbird](https://github.com/Meatian/confirm-address/)
 - Outlook version ported by [Keiji Momose](https://github.com/beatkz/)
