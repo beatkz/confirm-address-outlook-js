@@ -16,7 +16,7 @@
       script.src = "bgevent.js";
       script.type = "module";
       script.onerror = () => {
-        console.error("bgevent.html: bgevent.js のロードエラー:", scriptPath);
+        console.error("bgevent.html: bgevent.js のロードエラー:", script.src);
       };
       document.head.appendChild(script);
     }).catch((error) => {
