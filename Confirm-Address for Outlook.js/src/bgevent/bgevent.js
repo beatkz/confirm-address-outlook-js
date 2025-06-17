@@ -1,5 +1,7 @@
 /* global Office, console, setInterval, clearInterval, process */
 
+let isOLClassic = false; // [Outlook Classic向け]ダイアログを抑制するフラグ
+
 Office.onReady((info) => {
   if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
     isOLClassic = true;
@@ -12,7 +14,6 @@ Office.onReady((info) => {
 });
 
 // ダイアログを表示
-let isOLClassic = false; // [Outlook Classic向け]ダイアログを抑制するフラグ
 let caDialog; // confirmダイアログのグローバル変数
 let countdownInterval = null; // カウントダウン用のグローバル変数
 
