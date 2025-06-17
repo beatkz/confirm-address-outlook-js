@@ -1,11 +1,10 @@
 /* eslint-disable no-undef */
 
-const webpack = require('webpack'); // DefinePluginのために追加
+const webpack = require('webpack');
 const devCerts = require("office-addin-dev-certs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-//const urlDev = "https://localhost:3000/";
 const urlDev = "https://beatkz.github.io/confirm-address-outlook-js/beta/";
 const urlProd = "https://beatkz.github.io/confirm-address-outlook-js/";
 
@@ -20,7 +19,6 @@ module.exports = async (env, options) => {
   const dev = options.mode === "development";
   const config = {
     entry: {
-      //polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
       settings: "./src/settings/settings.js",
       capopup: "./src/capopup/capopup.js",
       bgevent: "./src/bgevent/bgevent.js",
@@ -65,16 +63,14 @@ module.exports = async (env, options) => {
       }),
       new webpack.DefinePlugin({
         'process.env.BASE_URL': JSON.stringify(dev ? urlDev : urlProd),
-        'process.env.NODE_ENV': JSON.stringify(dev ? "development" : "production"),
       }),
     ],
     devtool: "source-map",
     output: {
       clean: true,
-      // モードに応じてファイル名を条件付きで設定
-      filename: dev ? "[name].js" : "[name].min.js",
-      chunkFilename: dev ? "[name].chunk.js" : "[name].min.chunk.js", // チャンクファイル名を制御
-      path: path.resolve(__dirname, "dist"),      
+      filename: "[name].js",
+      chunkFilename: dev ? "[name].chunk.js" : "[name].min.chunk.js",
+      path: path.resolve(__dirname, "dist"),
     },
     resolve: {
       extensions: [".html", ".js"],
