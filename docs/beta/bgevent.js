@@ -18,11 +18,6 @@ var countdownInterval = null; // カウントダウン用のグローバル変�
 var isOLClassic = false; // [Outlook Classic向け]ダイアログを抑制するフラグ
 
 Office.onReady(function (info) {
-  // ここでClassic Outlookを判定
-  if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
-    console.warn("settings.js: Outlook Classic (Win32) ではサポートされていません。処理を中断します。");
-    return;
-  }
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
   Office.actions.associate("uniqueMessageSendHandler", uniqueMessageSendHandler);
 }).catch(function (error) {

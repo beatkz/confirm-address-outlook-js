@@ -22,6 +22,7 @@ module.exports = async (env, options) => {
       settings: "./src/settings/settings.js",
       capopup: "./src/capopup/capopup.js",
       bgevent: "./src/bgevent/bgevent.js",
+      forolclassic: "./src/bgevent/forolclassic.js", // For Outlook Classic
     },
     plugins: [
       new HtmlWebpackPlugin({
@@ -39,7 +40,7 @@ module.exports = async (env, options) => {
       new HtmlWebpackPlugin({
         filename: "bgevent.html",
         template: "./src/bgevent/bgevent.html",
-        chunks: [], // bgevent.js の自動挿入を防止
+        chunks: ["bgevent"], 
         hash: false,
       }),
       new CopyWebpackPlugin({
@@ -68,7 +69,7 @@ module.exports = async (env, options) => {
     devtool: "source-map",
     output: {
       clean: true,
-      filename: "[name].js",
+      filename: dev ? "[name].js" : "[name].min.js",
       chunkFilename: dev ? "[name].chunk.js" : "[name].min.chunk.js",
       path: path.resolve(__dirname, "dist"),
     },

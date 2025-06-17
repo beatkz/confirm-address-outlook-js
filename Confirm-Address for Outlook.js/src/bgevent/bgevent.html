@@ -3,24 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
-  <script>
-    Office.onReady((info) => {
-      // Outlook Classic (Win32) の場合、スルーさせる
-      if (Office.context.platform === Office.PlatformType.WEB) {
-        console.log("bgevent.html: 動的ロード開始:");
-        // bgevent.js を動的にロード
-        const script = document.createElement("script");
-        script.src = "bgevent.js";
-        script.type = "module";
-        script.onerror = () => {
-          console.error("bgevent.html: bgevent.js のロードエラー:", script.src);
-        };
-        document.head.appendChild(script);
-      }
-    }).catch((error) => {
-      console.error("bgevent.html: Office.js 初期化エラー:", error);
-    });
-  </script>
 </head>
 <body></body>
 </html>
