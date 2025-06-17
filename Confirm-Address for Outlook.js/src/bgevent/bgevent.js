@@ -1,5 +1,8 @@
 /* global Office, console, setInterval, clearInterval, process */
 
+// ダイアログを表示
+let caDialog; // confirmダイアログのグローバル変数
+let countdownInterval = null; // カウントダウン用のグローバル変数
 let isOLClassic = false; // [Outlook Classic向け]ダイアログを抑制するフラグ
 
 Office.onReady((info) => {
@@ -12,10 +15,6 @@ Office.onReady((info) => {
 }).catch((error) => {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
-
-// ダイアログを表示
-let caDialog; // confirmダイアログのグローバル変数
-let countdownInterval = null; // カウントダウン用のグローバル変数
 
 // メインのイベントハンドラ
 function uniqueMessageSendHandler(event) {

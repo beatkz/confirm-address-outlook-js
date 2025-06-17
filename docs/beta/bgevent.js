@@ -12,6 +12,11 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 /* global Office, console, setInterval, clearInterval, process */
 
+// ダイアログを表示
+var caDialog; // confirmダイアログのグローバル変数
+var countdownInterval = null; // カウントダウン用のグローバル変数
+var isOLClassic = false; // [Outlook Classic向け]ダイアログを抑制するフラグ
+
 Office.onReady(function (info) {
   if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
     isOLClassic = true;
@@ -21,11 +26,6 @@ Office.onReady(function (info) {
 }).catch(function (error) {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
-
-// ダイアログを表示
-var isOLClassic = false; // [Outlook Classic向け]ダイアログを抑制するフラグ
-var caDialog; // confirmダイアログのグローバル変数
-var countdownInterval = null; // カウントダウン用のグローバル変数
 
 // メインのイベントハンドラ
 function uniqueMessageSendHandler(event) {
