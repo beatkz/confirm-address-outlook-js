@@ -5,6 +5,7 @@ Office.onReady((info) => {
     console.warn(
       "bgevent.js: Outlook Classic (Win32) ではサポートされていません。処理を終了します。"
     );
+    supressDialog = true; // ダイアログを抑制
     return;
   }
 
@@ -15,7 +16,7 @@ Office.onReady((info) => {
 });
 
 // ダイアログを表示
-let supressDialog = false; // ダイアログを抑制するフラグ
+let supressDialog = false; // [Outlook Classic向け]ダイアログを抑制するフラグ
 let caDialog; // confirmダイアログのグローバル変数
 let countdownInterval = null; // カウントダウン用のグローバル変数
 

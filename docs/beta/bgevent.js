@@ -15,6 +15,7 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
 Office.onReady(function (info) {
   if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
     console.warn("bgevent.js: Outlook Classic (Win32) ではサポートされていません。処理を終了します。");
+    supressDialog = true; // ダイアログを抑制
     return;
   }
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
@@ -24,7 +25,7 @@ Office.onReady(function (info) {
 });
 
 // ダイアログを表示
-var supressDialog = false; // ダイアログを抑制するフラグ
+var supressDialog = false; // [Outlook Classic向け]ダイアログを抑制するフラグ
 var caDialog; // confirmダイアログのグローバル変数
 var countdownInterval = null; // カウントダウン用のグローバル変数
 
