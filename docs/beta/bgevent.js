@@ -18,8 +18,11 @@ var countdownInterval = null; // カウントダウン用のグローバル変�
 var isOLClassic = false; // [Outlook Classic向け]ダイアログを抑制するフラグ
 
 Office.onReady(function (info) {
+  // ここでClassic Outlookを判定
   if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
-    isOLClassic = true;
+    console.warn("settings.js: Outlook Classic (Win32) ではサポートされていません。処理を中断します。");
+    document.body.innerHTML = "<div id='platformError'>このアドインはOutlook Classicではサポートされていません。<a href='https://github.com/beatkz/confirm-address-outlook/'>Confirm-Address for Outlook Classicをご利用ください。</a></div>";
+    return;
   }
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
   Office.actions.associate("uniqueMessageSendHandler", uniqueMessageSendHandler);
