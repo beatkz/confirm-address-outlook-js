@@ -30,19 +30,19 @@ module.exports = async (env, options) => {
         filename: "settings.html",
         template: "./src/settings/settings.html",
         chunks: ["settings"],
-        hash: false, // ～.min.jsにファイル名固定したため
+        hash: false,
       }),
       new HtmlWebpackPlugin({
         filename: "capopup.html",
         template: "./src/capopup/capopup.html",
         chunks: ["capopup"],
-        hash: false, // ～.min.jsにファイル名固定したため
+        hash: false,
       }),
       new HtmlWebpackPlugin({
         filename: "bgevent.html",
         template: "./src/bgevent/bgevent.html",
-        chunks: ["bgevent"],
-        hash: false, // ～.min.jsにファイル名固定したため
+        chunks: [], // bgevent.js の自動挿入を防止
+        hash: false,
       }),
       new CopyWebpackPlugin({
         patterns: [
@@ -52,7 +52,7 @@ module.exports = async (env, options) => {
           },
           {
             from: "manifest*.*",
-            to: "[name]" + "[ext]",
+            to: "[name][ext]",
             transform(content) {
               if (dev) {
                 return content;
@@ -65,6 +65,7 @@ module.exports = async (env, options) => {
       }),
       new webpack.DefinePlugin({
         'process.env.BASE_URL': JSON.stringify(dev ? urlDev : urlProd),
+        'process.env.NODE_ENV': JSON.stringify(dev ? "development" : "production"),
       }),
     ],
     devtool: "source-map",

@@ -10,7 +10,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-/* global Office, console, setInterval, clearInterval, process */
+/* global Office, console, document, setInterval, clearInterval, process */
 
 // ダイアログを表示
 var caDialog; // confirmダイアログのグローバル変数
@@ -21,7 +21,6 @@ Office.onReady(function (info) {
   // ここでClassic Outlookを判定
   if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
     console.warn("settings.js: Outlook Classic (Win32) ではサポートされていません。処理を中断します。");
-    document.body.innerHTML = "<div id='platformError'>このアドインはOutlook Classicではサポートされていません。<a href='https://github.com/beatkz/confirm-address-outlook/'>Confirm-Address for Outlook Classicをご利用ください。</a></div>";
     return;
   }
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));

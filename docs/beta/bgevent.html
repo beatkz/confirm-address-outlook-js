@@ -2,14 +2,30 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-  <title>Confirm-Address bgevent</title>
   <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  <script>
+    Office.onReady((info) => {
+      // Outlook Classic (Win32) の場合、処理を終了
+      if (Office.context.platform === Office.PlatformType.PC) {
+        console.warn("bgevent.html: Outlook Classic (Win32) ではサポートされていません。");
+        return;
+      }
+      // BASE_URL からスクリプトパスを構築
+      const baseUrl = process.env.BASE_URL || "https://beatkz.github.io/confirm-address-outlook-js/";
+      const scriptPath = `${baseUrl}${process.env.NODE_ENV === "development" ? "bgevent.js" : "bgevent.min.js"}`;
+      console.log("bgevent.html: 動的ロード開始:", scriptPath);
+      // bgevent.js を動的にロード
+      const script = document.createElement("script");
+      script.src = scriptPath;
+      script.type = "module";
+      script.onerror = () => {
+        console.error("bgevent.html: bgevent.js のロードエラー:", scriptPath);
+      };
+      document.head.appendChild(script);
+    }).catch((error) => {
+      console.error("bgevent.html: Office.js 初期化エラー:", error);
+    });
+  </script>
 </head>
-<body>
-<script src="bgevent.js"></script>
-<!--
-There is no view. There is only background controller(s).  
--->
-</body>
+<body></body>
 </html>

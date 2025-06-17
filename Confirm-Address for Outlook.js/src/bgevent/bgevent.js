@@ -11,8 +11,6 @@ Office.onReady((info) => {
     console.warn(
       "settings.js: Outlook Classic (Win32) ではサポートされていません。処理を中断します。"
     );
-    document.body.innerHTML =
-      "<div id='platformError'>このアドインはOutlook Classicではサポートされていません。<a href='https://github.com/beatkz/confirm-address-outlook/'>Confirm-Address for Outlook Classicをご利用ください。</a></div>";
     return;
   }
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
