@@ -2,11 +2,7 @@
 
 Office.onReady((info) => {
   if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
-    console.warn(
-      "bgevent.js: Outlook Classic (Win32) ではサポートされていません。処理を終了します。"
-    );
-    supressDialog = true; // ダイアログを抑制
-    return;
+    isOLClassic = true;
   }
 
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
@@ -16,17 +12,24 @@ Office.onReady((info) => {
 });
 
 // ダイアログを表示
-let supressDialog = false; // [Outlook Classic向け]ダイアログを抑制するフラグ
+let isOLClassic = false; // [Outlook Classic向け]ダイアログを抑制するフラグ
 let caDialog; // confirmダイアログのグローバル変数
 let countdownInterval = null; // カウントダウン用のグローバル変数
 
 // メインのイベントハンドラ
 function uniqueMessageSendHandler(event) {
   console.log("bgevent.js: uniqueMessageSendHandler 開始");
-  if (supressDialog) {
+  if (isOLClassic) {
+    passingThruEvent(event);
+    console.log("bgevent.js: Outlook Classicではダイアログを表示せず、Confirm-Address for Outlook Classicに渡します。");
     return;
   }
   showConfirmDialog(event);
+}
+
+function passingThruEvent(event) {
+  console.log("bgevent.js: passingThruEvent 開始");
+  event.completed({ allowEvent: true });
 }
 
 function showConfirmDialog(sendEvent) {

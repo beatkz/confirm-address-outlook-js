@@ -11,17 +11,13 @@ xsi:type="MailApp">
   <DefaultLocale>ja-JP</DefaultLocale>
   <DisplayName DefaultValue="Confirm-Address for Outlook(Beta Branch)"/>
   <Description DefaultValue="メール送信前に、送信先メールアドレス・添付ファイル名・本文冒頭を確認します。注意：このアドインはOutlook(new)および、Outlook on the Web用です。Outlook Classicご利用の方はConfirm-Address for Outlook Classicをご利用ください。(https://github.com/beatkz/confirm-address-outlook/)"/>
-  
   <IconUrl DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/assets/img/ConfirmAddress-64x64.png"/>
   <HighResolutionIconUrl DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/assets/img/ConfirmAddress-192x192.png"/>
-  
   <SupportUrl DefaultValue="https://github.com/beatkz/"/>
-  
   <AppDomains>
     <AppDomain>https://localhost:3000</AppDomain>
     <AppDomain>https://beatkz.github.io</AppDomain>
   </AppDomains>
- 
   <!-- Page for Add-in Settings -->
   <Hosts>
     <Host Name="Mailbox"/>
@@ -39,13 +35,11 @@ xsi:type="MailApp">
       </DesktopSettings>
     </Form>
   </FormSettings>
-
   <Permissions>ReadWriteItem</Permissions>
   <Rule xsi:type="RuleCollection" Mode="Or">
     <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
   </Rule>
   <DisableEntityHighlighting>false</DisableEntityHighlighting>
-
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
     <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides/1.1" xsi:type="VersionOverridesV1_1">
       <Requirements>

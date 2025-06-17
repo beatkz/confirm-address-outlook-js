@@ -14,9 +14,7 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
 
 Office.onReady(function (info) {
   if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
-    console.warn("bgevent.js: Outlook Classic (Win32) ではサポートされていません。処理を終了します。");
-    supressDialog = true; // ダイアログを抑制
-    return;
+    isOLClassic = true;
   }
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
   Office.actions.associate("uniqueMessageSendHandler", uniqueMessageSendHandler);
@@ -25,17 +23,25 @@ Office.onReady(function (info) {
 });
 
 // ダイアログを表示
-var supressDialog = false; // [Outlook Classic向け]ダイアログを抑制するフラグ
+var isOLClassic = false; // [Outlook Classic向け]ダイアログを抑制するフラグ
 var caDialog; // confirmダイアログのグローバル変数
 var countdownInterval = null; // カウントダウン用のグローバル変数
 
 // メインのイベントハンドラ
 function uniqueMessageSendHandler(event) {
   console.log("bgevent.js: uniqueMessageSendHandler 開始");
-  if (supressDialog) {
+  if (isOLClassic) {
+    passingThruEvent(event);
+    console.log("bgevent.js: Outlook Classicではダイアログを表示せず、Confirm-Address for Outlook Classicに渡します。");
     return;
   }
   showConfirmDialog(event);
+}
+function passingThruEvent(event) {
+  console.log("bgevent.js: passingThruEvent 開始");
+  event.completed({
+    allowEvent: true
+  });
 }
 function showConfirmDialog(sendEvent) {
   var dialogUrl = "".concat("https://beatkz.github.io/confirm-address-outlook-js/beta/", "capopup.html");
