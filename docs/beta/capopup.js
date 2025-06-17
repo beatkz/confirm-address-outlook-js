@@ -1,18 +1,14 @@
 /******/ (function() { // webpackBootstrap
-/*!*********************************************************************************************************************************************************!*\
-  !*** ../../../../OneDrive - 株式会社ソリトンシステムズ/Junk/デスクトップ/Favs/Develop/confirm-address/forOutlook.js/Confirm-Address for Outlook.js/src/capopup/capopup.js ***!
-  \*********************************************************************************************************************************************************/
+/*!********************************!*\
+  !*** ./src/capopup/capopup.js ***!
+  \********************************/
 /* global Office, console, document */
 
 console.log("capopup.js: スクリプトロード開始");
+var isCountingDown = false; // カウントダウン状態を追跡
 
-// Office.js の初期化
 Office.onReady(function (info) {
-  // 初期化処理
   console.log("capopup.js: Office.js 初期化完了:", JSON.stringify(info));
-  console.log("capopup.js: ホスト:", info.host, "プラットフォーム:", info.platform);
-
-  // 一括チェックボタンのイベントリスナーを関数化
   var setupCheckboxListener = function setupCheckboxListener(checkboxId) {
     var targetId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     var checkbox = document.getElementById(checkboxId);
@@ -20,24 +16,17 @@ Office.onReady(function (info) {
       if (targetId) {
         batchCheck(targetId, event.target.checked);
       }
-      checkAllChecked(); // 送信ボタンの状態を更新
+      checkAllChecked();
     });
   };
-
-  // チェックボックスリスナーの設定
   setupCheckboxListener("batchCheck_insiderReci", "insiderReci");
   setupCheckboxListener("batchCheck_outsiderReci", "outsiderReci");
   setupCheckboxListener("batchCheck_Attachments", "attNames");
   setupCheckboxListener("check_firstLinesOfBody", null);
-
-  // 送信ボタンのイベントリスナー
   var sendButton = document.getElementById("btn_send");
   sendButton.addEventListener("click", confirmSend);
-  // キャンセルボタンのイベントリスナー
   var cancelButton = document.getElementById("btn_cancel");
   cancelButton.addEventListener("click", cancelSend);
-
-  // 一括チェックボタンの有効化/無効化
   var prefs = Office.context.roamingSettings;
   var setupBatchCheckButton = function setupBatchCheckButton(buttonId, prefId) {
     if (prefs.get(prefId)) {
@@ -70,31 +59,31 @@ function batchCheck(targetId, val) {
   }
 }
 function handleHiddenContainers(emailDetails) {
-  // 隠しコンテナの表示/非表示を切り替える
   if (emailDetails.insiderReci.length > 0) {
-    var insiderContainer = document.getElementById("insiderContainer");
-    insiderContainer.hidden = false;
+    document.getElementById("insiderContainer").hidden = false;
   }
   if (emailDetails.outsiderReci.length > 0) {
-    var outsiderContainer = document.getElementById("outsiderContainer");
-    outsiderContainer.hidden = false;
+    document.getElementById("outsiderContainer").hidden = false;
   }
   if (emailDetails.attNames.length > 0) {
-    var attNamesContainer = document.getElementById("attNamesContainer");
-    attNamesContainer.hidden = false;
+    document.getElementById("attNamesContainer").hidden = false;
   }
   var prefs = Office.context.roamingSettings;
   if (prefs.get("confirmMailBody")) {
     document.getElementById("mailBodyContainer").hidden = false;
   }
 }
-// メッセージを処理
 function onMessageFromParent(recv) {
   try {
     var message = JSON.parse(recv.message);
     console.log("capopup.js: メッセージ受信:", message);
     if (message.type === "countdownUpdate") {
       document.getElementById("countdown").textContent = "\u3042\u3068".concat(message.seconds, "\u79D2\u3067\u9001\u4FE1\u3057\u307E\u3059\u3002");
+      // カウントダウン中にボタンを「今すぐ送信」に維持
+      if (!isCountingDown) {
+        isCountingDown = true;
+        document.getElementById("btn_send").textContent = "今すぐ送信";
+      }
       return;
     }
     var emailDetails = message;
@@ -126,20 +115,12 @@ function onMessageFromParent(recv) {
       listType: "Attachments",
       pushingList: emailDetails.attNames
     });
-    checkAllChecked(); // 送信ボタンの状態を初期化
+    checkAllChecked();
   } catch (error) {
     console.error("capopup.js: メール詳細の解析エラー:", error);
   }
 }
 function pushToList(args) {
-  /*
-  args:
-  {
-      targetId: "divfoo",
-      listType: "Addresses" or "Attachments",
-      pushingList: []
-  }
-  */
   var targetDiv = document.getElementById(args.targetId);
   var pushTxtNode;
   for (var i = 0; i < args.pushingList.length; i++) {
@@ -155,7 +136,7 @@ function pushToList(args) {
     chkbox.setAttribute("type", "checkbox");
     chkbox.setAttribute("id", "checkbox-".concat(args.targetId, "-").concat(i));
     chkbox.addEventListener("change", function () {
-      checkAllChecked(); // 送信ボタンの状態を更新
+      checkAllChecked();
     });
     var label = document.createElement("label");
     label.setAttribute("for", "checkbox-".concat(args.targetId, "-").concat(i));
@@ -166,7 +147,6 @@ function pushToList(args) {
   }
 }
 function checkAllChecked(outsiderAddressCount) {
-  // チェックボックスリストの状態を確認する汎用関数
   var areAllCheckboxesChecked = function areAllCheckboxesChecked(containerId) {
     var container = document.getElementById(containerId);
     var checkboxes = container.getElementsByTagName("input");
@@ -175,26 +155,20 @@ function checkAllChecked(outsiderAddressCount) {
     });
   };
   var prefs = Office.context.roamingSettings;
-
-  // 各セクションのチェック状態を確認
   var isInsiderDomainsChecked = areAllCheckboxesChecked("insiderReci");
   var isOutsiderDomainsChecked = areAllCheckboxesChecked("outsiderReci");
-  var isMailHeadChecked = true; // confirmMailBodyが無効な場合はtrueに設定
+  var isMailHeadChecked = true;
   if (prefs.get("confirmMailBody")) {
     isMailHeadChecked = document.getElementById("check_firstLinesOfBody").checked;
   }
   var isAttachmentsChecked = areAllCheckboxesChecked("attNames");
-
-  // バッチチェックボックスの状態を更新
   document.getElementById("batchCheck_insiderReci").checked = isInsiderDomainsChecked;
   document.getElementById("batchCheck_outsiderReci").checked = isOutsiderDomainsChecked;
   document.getElementById("batchCheck_Attachments").checked = isAttachmentsChecked;
-
-  // 送信ボタンの有効/無効と色を切り替え
   var sendButton = document.getElementById("btn_send");
   var isAllChecked;
   if (prefs.get("noDisplayInsiderDomainOnly") && outsiderAddressCount === 0) {
-    isAllChecked = true; // 組織内ドメインのみの場合は送信ボタンを有効にする
+    isAllChecked = true;
   } else {
     isAllChecked = isInsiderDomainsChecked && isOutsiderDomainsChecked && isMailHeadChecked && isAttachmentsChecked;
   }
@@ -209,26 +183,33 @@ function checkAllChecked(outsiderAddressCount) {
 }
 function cancelSend() {
   console.log("capopup.js: cancelSend 実行");
-  var msgTo = {
+  // ボタンラベルを「送信」にリセット
+  document.getElementById("btn_send").textContent = "送信";
+  isCountingDown = false;
+  Office.context.ui.messageParent(JSON.stringify({
     type: "cancel"
-  };
-  Office.context.ui.messageParent(JSON.stringify(msgTo));
+  }));
 }
 function confirmSend() {
-  console.log("capopup.js: confirmSend実行");
+  console.log("capopup.js: confirmSend 実行");
   var prefs = Office.context.roamingSettings;
-  if (prefs.get("countDown")) {
+  if (prefs.get("countDown") && !isCountingDown) {
     var seconds = parseInt(prefs.get("countDownTime") || 5, 10);
     document.getElementById("countdown").textContent = "\u3042\u3068".concat(seconds, "\u79D2\u3067\u9001\u4FE1\u3057\u307E\u3059\u3002");
+    // ボタンラベルを「今すぐ送信」に変更
+    document.getElementById("btn_send").textContent = "今すぐ送信";
+    isCountingDown = true;
     Office.context.ui.messageParent(JSON.stringify({
       type: "countDown",
       seconds: seconds
     }));
   } else {
-    var msgTo = {
+    // カウントダウン中またはカウントダウン無効時に即時送信
+    document.getElementById("btn_send").textContent = "送信"; // ボタンラベルをリセット
+    isCountingDown = false;
+    Office.context.ui.messageParent(JSON.stringify({
       type: "confirm"
-    };
-    Office.context.ui.messageParent(JSON.stringify(msgTo));
+    }));
   }
 }
 /******/ })()

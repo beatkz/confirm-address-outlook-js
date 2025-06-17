@@ -2,37 +2,31 @@
 
 console.log("capopup.js: スクリプトロード開始");
 
-// Office.js の初期化
-Office.onReady((info) => {
-  // 初期化処理
-  console.log("capopup.js: Office.js 初期化完了:", JSON.stringify(info));
-  console.log("capopup.js: ホスト:", info.host, "プラットフォーム:", info.platform);
+let isCountingDown = false; // カウントダウン状態を追跡
 
-  // 一括チェックボタンのイベントリスナーを関数化
+Office.onReady((info) => {
+  console.log("capopup.js: Office.js 初期化完了:", JSON.stringify(info));
+
   const setupCheckboxListener = (checkboxId, targetId = null) => {
     const checkbox = document.getElementById(checkboxId);
     checkbox.addEventListener("change", (event) => {
       if (targetId) {
         batchCheck(targetId, event.target.checked);
       }
-      checkAllChecked(); // 送信ボタンの状態を更新
+      checkAllChecked();
     });
   };
 
-  // チェックボックスリスナーの設定
   setupCheckboxListener("batchCheck_insiderReci", "insiderReci");
   setupCheckboxListener("batchCheck_outsiderReci", "outsiderReci");
   setupCheckboxListener("batchCheck_Attachments", "attNames");
   setupCheckboxListener("check_firstLinesOfBody", null);
 
-  // 送信ボタンのイベントリスナー
   const sendButton = document.getElementById("btn_send");
   sendButton.addEventListener("click", confirmSend);
-  // キャンセルボタンのイベントリスナー
   const cancelButton = document.getElementById("btn_cancel");
   cancelButton.addEventListener("click", cancelSend);
 
-  // 一括チェックボタンの有効化/無効化
   const prefs = Office.context.roamingSettings;
   const setupBatchCheckButton = (buttonId, prefId) => {
     if (prefs.get(prefId)) {
@@ -71,18 +65,14 @@ function batchCheck(targetId, val) {
 }
 
 function handleHiddenContainers(emailDetails) {
-  // 隠しコンテナの表示/非表示を切り替える
   if (emailDetails.insiderReci.length > 0) {
-    const insiderContainer = document.getElementById("insiderContainer");
-    insiderContainer.hidden = false;
+    document.getElementById("insiderContainer").hidden = false;
   }
   if (emailDetails.outsiderReci.length > 0) {
-    const outsiderContainer = document.getElementById("outsiderContainer");
-    outsiderContainer.hidden = false;
+    document.getElementById("outsiderContainer").hidden = false;
   }
   if (emailDetails.attNames.length > 0) {
-    const attNamesContainer = document.getElementById("attNamesContainer");
-    attNamesContainer.hidden = false;
+    document.getElementById("attNamesContainer").hidden = false;
   }
 
   const prefs = Office.context.roamingSettings;
@@ -90,13 +80,18 @@ function handleHiddenContainers(emailDetails) {
     document.getElementById("mailBodyContainer").hidden = false;
   }
 }
-// メッセージを処理
+
 function onMessageFromParent(recv) {
   try {
     const message = JSON.parse(recv.message);
     console.log("capopup.js: メッセージ受信:", message);
     if (message.type === "countdownUpdate") {
       document.getElementById("countdown").textContent = `あと${message.seconds}秒で送信します。`;
+      // カウントダウン中にボタンを「今すぐ送信」に維持
+      if (!isCountingDown) {
+        isCountingDown = true;
+        document.getElementById("btn_send").textContent = "今すぐ送信";
+      }
       return;
     }
 
@@ -133,21 +128,13 @@ function onMessageFromParent(recv) {
       pushingList: emailDetails.attNames,
     });
 
-    checkAllChecked(); // 送信ボタンの状態を初期化
+    checkAllChecked();
   } catch (error) {
     console.error("capopup.js: メール詳細の解析エラー:", error);
   }
 }
 
 function pushToList(args) {
-  /*
-  args:
-  {
-      targetId: "divfoo",
-      listType: "Addresses" or "Attachments",
-      pushingList: []
-  }
-  */
   const targetDiv = document.getElementById(args.targetId);
   let pushTxtNode;
 
@@ -164,7 +151,7 @@ function pushToList(args) {
     chkbox.setAttribute("type", "checkbox");
     chkbox.setAttribute("id", `checkbox-${args.targetId}-${i}`);
     chkbox.addEventListener("change", () => {
-      checkAllChecked(); // 送信ボタンの状態を更新
+      checkAllChecked();
     });
     const label = document.createElement("label");
     label.setAttribute("for", `checkbox-${args.targetId}-${i}`);
@@ -176,7 +163,6 @@ function pushToList(args) {
 }
 
 function checkAllChecked(outsiderAddressCount) {
-  // チェックボックスリストの状態を確認する汎用関数
   const areAllCheckboxesChecked = (containerId) => {
     const container = document.getElementById(containerId);
     const checkboxes = container.getElementsByTagName("input");
@@ -184,25 +170,22 @@ function checkAllChecked(outsiderAddressCount) {
   };
   const prefs = Office.context.roamingSettings;
 
-  // 各セクションのチェック状態を確認
   const isInsiderDomainsChecked = areAllCheckboxesChecked("insiderReci");
   const isOutsiderDomainsChecked = areAllCheckboxesChecked("outsiderReci");
-  let isMailHeadChecked = true; // confirmMailBodyが無効な場合はtrueに設定
+  let isMailHeadChecked = true;
   if (prefs.get("confirmMailBody")) {
     isMailHeadChecked = document.getElementById("check_firstLinesOfBody").checked;
   }
   const isAttachmentsChecked = areAllCheckboxesChecked("attNames");
 
-  // バッチチェックボックスの状態を更新
   document.getElementById("batchCheck_insiderReci").checked = isInsiderDomainsChecked;
   document.getElementById("batchCheck_outsiderReci").checked = isOutsiderDomainsChecked;
   document.getElementById("batchCheck_Attachments").checked = isAttachmentsChecked;
 
-  // 送信ボタンの有効/無効と色を切り替え
   const sendButton = document.getElementById("btn_send");
   let isAllChecked;
   if (prefs.get("noDisplayInsiderDomainOnly") && outsiderAddressCount === 0) {
-    isAllChecked = true; // 組織内ドメインのみの場合は送信ボタンを有効にする
+    isAllChecked = true;
   } else {
     isAllChecked =
       isInsiderDomainsChecked &&
@@ -242,19 +225,26 @@ function checkAllChecked(outsiderAddressCount) {
 
 function cancelSend() {
   console.log("capopup.js: cancelSend 実行");
-  const msgTo = { type: "cancel" };
-  Office.context.ui.messageParent(JSON.stringify(msgTo));
+  // ボタンラベルを「送信」にリセット
+  document.getElementById("btn_send").textContent = "送信";
+  isCountingDown = false;
+  Office.context.ui.messageParent(JSON.stringify({ type: "cancel" }));
 }
 
 function confirmSend() {
-  console.log("capopup.js: confirmSend実行");
+  console.log("capopup.js: confirmSend 実行");
   const prefs = Office.context.roamingSettings;
-  if (prefs.get("countDown")) {
+  if (prefs.get("countDown") && !isCountingDown) {
     const seconds = parseInt(prefs.get("countDownTime") || 5, 10);
     document.getElementById("countdown").textContent = `あと${seconds}秒で送信します。`;
+    // ボタンラベルを「今すぐ送信」に変更
+    document.getElementById("btn_send").textContent = "今すぐ送信";
+    isCountingDown = true;
     Office.context.ui.messageParent(JSON.stringify({ type: "countDown", seconds }));
   } else {
-    const msgTo = { type: "confirm" };
-    Office.context.ui.messageParent(JSON.stringify(msgTo));
+    // カウントダウン中またはカウントダウン無効時に即時送信
+    document.getElementById("btn_send").textContent = "送信"; // ボタンラベルをリセット
+    isCountingDown = false;
+    Office.context.ui.messageParent(JSON.stringify({ type: "confirm" }));
   }
 }
