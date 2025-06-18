@@ -4,7 +4,7 @@
   "manifestVersion": "1.21",
   "version": "1.0.1",
   "name": {
-    "short": "Confirm-Address for Outlook",
+    "short": "Confirm-Address(Local)",
     "full": "Confirm-Address for Outlook(Local)"
   },
   "description": {
@@ -90,9 +90,9 @@
           "lifetime": "short",
           "actions": [
             {
-              "id": "uniqueMessageSendHandler",
+              "id": "onMessageSendHandler",
               "type": "executeFunction",
-              "displayName": "uniqueMessageSendHandler"
+              "displayName": "onMessageSendHandler"
             }
           ]
         },
@@ -135,7 +135,7 @@
           "events": [
             {
               "type": "messageSending",
-              "actionId": "uniqueMessageSendHandler",
+              "actionId": "onMessageSendHandler",
               "options": {
                 "sendMode": "softBlock"
               }

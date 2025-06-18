@@ -5,6 +5,7 @@ const devCerts = require("office-addin-dev-certs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
+// const urlDev = "https://localhost:3000/";
 const urlDev = "https://beatkz.github.io/confirm-address-outlook-js/beta/";
 const urlProd = "https://beatkz.github.io/confirm-address-outlook-js/";
 
@@ -22,6 +23,7 @@ module.exports = async (env, options) => {
       settings: "./src/settings/settings.js",
       capopup: "./src/capopup/capopup.js",
       bgevent: "./src/bgevent/bgevent.js",
+      bgevent_classic: "./src/bgevent/bgevent_classic.js",
     },
     plugins: [
       new HtmlWebpackPlugin({
@@ -99,8 +101,7 @@ module.exports = async (env, options) => {
       ],
     },
     devServer: {
-      hot: false,
-      liveReload: false,
+      liveReload: true,
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
