@@ -1,4 +1,4 @@
-/* global Office, console, document, setInterval, clearInterval, process */
+/* global Office, console, setInterval, clearInterval, process */
 
 // ダイアログを表示
 let caDialog; // confirmダイアログのグローバル変数
@@ -27,24 +27,10 @@ function uniqueMessageSendHandler(event) {
   showConfirmDialog(event);
 }
 
-async function showConfirmDialogOLClassic(sendEvent) {
-  const emailDetails = await checkAddress();
-  //console.log("bgevent.js: Outlook Classic用のメール詳細:", emailDetails);
-  /*
-  emailDetailsのデータ構造：
-  {
-    insiderReci: insiderReci,
-    outsiderReci: outsiderReci,
-    body: body,
-    attNames: attNames,
-  }
-  */
- sendEvent.completed({
+function showConfirmDialogOLClassic(sendEvent) {
+  sendEvent.completed({
     allowEvent: true,
-    errorMessageMarkdown:"送信してもよろしいですか？\n\n" +
-    "** 注)[Confirm-Address for Outlook Classic](https://github.com/beatkz/confirm-address-outlook)がインストールされている場合は、続けて確認ダイアログが表示されます。 **"
- });
-
+  });
 }
 
 function showConfirmDialog(sendEvent) {

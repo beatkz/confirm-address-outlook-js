@@ -7,10 +7,10 @@ function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { 
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t.return || t.return(); } finally { if (u) throw o; } } }; }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
-/* global Office, console, document, setInterval, clearInterval, process */
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+/* global Office, console, setInterval, clearInterval, process */
 
 // ダイアログを表示
 var caDialog; // confirmダイアログのグローバル変数
@@ -38,39 +38,10 @@ function uniqueMessageSendHandler(event) {
   }
   showConfirmDialog(event);
 }
-function showConfirmDialogOLClassic(_x) {
-  return _showConfirmDialogOLClassic.apply(this, arguments);
-}
-function _showConfirmDialogOLClassic() {
-  _showConfirmDialogOLClassic = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(sendEvent) {
-    var emailDetails;
-    return _regenerator().w(function (_context) {
-      while (1) switch (_context.n) {
-        case 0:
-          _context.n = 1;
-          return checkAddress();
-        case 1:
-          emailDetails = _context.v;
-          //console.log("bgevent.js: Outlook Classic用のメール詳細:", emailDetails);
-          /*
-          emailDetailsのデータ構造：
-          {
-            insiderReci: insiderReci,
-            outsiderReci: outsiderReci,
-            body: body,
-            attNames: attNames,
-          }
-          */
-          sendEvent.completed({
-            allowEvent: true,
-            errorMessageMarkdown: "送信してもよろしいですか？\n\n" + "** 注)[Confirm-Address for Outlook Classic](https://github.com/beatkz/confirm-address-outlook)がインストールされている場合は、続けて確認ダイアログが表示されます。 **"
-          });
-        case 2:
-          return _context.a(2);
-      }
-    }, _callee);
-  }));
-  return _showConfirmDialogOLClassic.apply(this, arguments);
+function showConfirmDialogOLClassic(sendEvent) {
+  sendEvent.completed({
+    allowEvent: true
+  });
 }
 function showConfirmDialog(sendEvent) {
   var dialogUrl = "".concat("https://beatkz.github.io/confirm-address-outlook-js/beta/", "capopup.html");
@@ -163,17 +134,17 @@ function checkAddress() {
   return _checkAddress.apply(this, arguments);
 }
 function _checkAddress() {
-  _checkAddress = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+  _checkAddress = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
     var msgCompFields, toList, ccList, bccList, domainList, insiderReci, outsiderReci, bodyResult, lines, body, attNames;
-    return _regenerator().w(function (_context2) {
-      while (1) switch (_context2.n) {
+    return _regenerator().w(function (_context) {
+      while (1) switch (_context.n) {
         case 0:
           console.log("bgevent.js: checkAddress 開始");
           msgCompFields = Office.context.mailbox.item;
           toList = [];
           ccList = [];
           bccList = [];
-          _context2.n = 1;
+          _context.n = 1;
           return collectAddress(msgCompFields, toList, ccList, bccList);
         case 1:
           console.log("bgevent.js: メールアドレス収集完了");
@@ -193,29 +164,29 @@ function _checkAddress() {
           }).join(", "));
 
           // 本文冒頭
-          _context2.n = 2;
+          _context.n = 2;
           return new Promise(function (resolve) {
             return msgCompFields.body.getAsync("text", resolve);
           });
         case 2:
-          bodyResult = _context2.v;
+          bodyResult = _context.v;
           lines = Office.context.roamingSettings.get("confirmMailBodyLines") || 5;
           body = bodyResult.value.split("\n").slice(0, lines).join("\n") || "本文なし";
           attNames = [];
-          _context2.n = 3;
+          _context.n = 3;
           return getAttachments(msgCompFields, attNames);
         case 3:
           console.log("bgevent.js: 添付ファイル名:", attNames.map(function (att) {
             return att.name;
           }).join(", "));
-          return _context2.a(2, {
+          return _context.a(2, {
             insiderReci: insiderReci,
             outsiderReci: outsiderReci,
             body: body,
             attNames: attNames
           });
       }
-    }, _callee2);
+    }, _callee);
   }));
   return _checkAddress.apply(this, arguments);
 }
@@ -307,24 +278,24 @@ function getDomainList() {
   }
   return domainList;
 }
-function collectAddress(_x2, _x3, _x4, _x5) {
+function collectAddress(_x, _x2, _x3, _x4) {
   return _collectAddress.apply(this, arguments);
 }
 function _collectAddress() {
-  _collectAddress = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(msgCompFields, toList, ccList, bccList) {
+  _collectAddress = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(msgCompFields, toList, ccList, bccList) {
     var toMap, tempTo, _iterator5, _step5, reci, ccMap, tempCc, _iterator6, _step6, _reci, bccMap, tempBcc, _iterator7, _step7, _reci2;
-    return _regenerator().w(function (_context3) {
-      while (1) switch (_context3.n) {
+    return _regenerator().w(function (_context2) {
+      while (1) switch (_context2.n) {
         case 0:
           console.log("bgevent.js: collectAddress 開始");
 
           // To
-          _context3.n = 1;
+          _context2.n = 1;
           return new Promise(function (resolve) {
             return msgCompFields.to.getAsync(resolve);
           });
         case 1:
-          toMap = _context3.v;
+          toMap = _context2.v;
           tempTo = toMap.value.map(function (r) {
             return r.emailAddress;
           }) || [];
@@ -346,12 +317,12 @@ function _collectAddress() {
           } finally {
             _iterator5.f();
           }
-          _context3.n = 2;
+          _context2.n = 2;
           return new Promise(function (resolve) {
             return msgCompFields.cc.getAsync(resolve);
           });
         case 2:
-          ccMap = _context3.v;
+          ccMap = _context2.v;
           tempCc = ccMap.value.map(function (r) {
             return r.emailAddress;
           }) || [];
@@ -373,12 +344,12 @@ function _collectAddress() {
           } finally {
             _iterator6.f();
           }
-          _context3.n = 3;
+          _context2.n = 3;
           return new Promise(function (resolve) {
             return msgCompFields.bcc.getAsync(resolve);
           });
         case 3:
-          bccMap = _context3.v;
+          bccMap = _context2.v;
           tempBcc = bccMap.value.map(function (r) {
             return r.emailAddress;
           }) || [];
@@ -399,27 +370,27 @@ function _collectAddress() {
             _iterator7.f();
           }
         case 4:
-          return _context3.a(2);
+          return _context2.a(2);
       }
-    }, _callee3);
+    }, _callee2);
   }));
   return _collectAddress.apply(this, arguments);
 }
-function getAttachments(_x6, _x7) {
+function getAttachments(_x5, _x6) {
   return _getAttachments.apply(this, arguments);
 }
 function _getAttachments() {
-  _getAttachments = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(msgCompFields, attList) {
+  _getAttachments = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(msgCompFields, attList) {
     var attResult, tempAtt, _iterator8, _step8, att;
-    return _regenerator().w(function (_context4) {
-      while (1) switch (_context4.n) {
+    return _regenerator().w(function (_context3) {
+      while (1) switch (_context3.n) {
         case 0:
-          _context4.n = 1;
+          _context3.n = 1;
           return new Promise(function (resolve) {
             return msgCompFields.getAttachmentsAsync(resolve);
           });
         case 1:
-          attResult = _context4.v;
+          attResult = _context3.v;
           tempAtt = attResult.value.map(function (att) {
             return att.name;
           }) || [];
@@ -439,9 +410,9 @@ function _getAttachments() {
             _iterator8.f();
           }
         case 2:
-          return _context4.a(2);
+          return _context3.a(2);
       }
-    }, _callee4);
+    }, _callee3);
   }));
   return _getAttachments.apply(this, arguments);
 }
@@ -449,24 +420,24 @@ function sendEmailDetails() {
   return _sendEmailDetails.apply(this, arguments);
 }
 function _sendEmailDetails() {
-  _sendEmailDetails = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
+  _sendEmailDetails = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
     var emailDetails;
-    return _regenerator().w(function (_context5) {
-      while (1) switch (_context5.n) {
+    return _regenerator().w(function (_context4) {
+      while (1) switch (_context4.n) {
         case 0:
           console.log("bgevent.js: sendEmailDetails 開始");
 
           // メールの詳細を収集する処理をここに追加
-          _context5.n = 1;
+          _context4.n = 1;
           return checkAddress();
         case 1:
-          emailDetails = _context5.v;
+          emailDetails = _context4.v;
           console.log("bgevent.js: 詳細:", emailDetails);
           caDialog.messageChild(JSON.stringify(emailDetails));
         case 2:
-          return _context5.a(2);
+          return _context4.a(2);
       }
-    }, _callee5);
+    }, _callee4);
   }));
   return _sendEmailDetails.apply(this, arguments);
 }

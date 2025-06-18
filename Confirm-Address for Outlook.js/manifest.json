@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.21/MicrosoftTeams.schema.json",
   "id": "5ab14cd7-dbe1-4d20-ab4c-7368e9e25e16",
   "manifestVersion": "1.21",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": {
     "short": "Confirm-Address for Outlook",
-    "full": "Confirm-Address for Outlook"
+    "full": "Confirm-Address for Outlook(Local)"
   },
   "description": {
     "short": "メール送信前に、送信先メールアドレス・添付ファイル名・本文冒頭を確認します。",
@@ -36,12 +36,7 @@
       ]
     }
   },
-  "validDomains": [
-    "https://localhost:3000",
-    "https://github.com/beatkz/confirm-address-outlook/",
-    "https://github.com/beatkz/confirm-address-outlook-js/",
-    "https://beatkz.github.io/confirm-address-outlook-js/"
-  ],
+  "validDomains": ["https://localhost:3000"],
   "extensions": [
     {
       "requirements": {
