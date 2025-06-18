@@ -8,7 +8,7 @@ Office.onReady((info) => {
   // ここでOutlook Classsicを判定
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
   if (info.platform === Office.PlatformType.PC) {
-    Office.actions.associate("onMessageSendHandler", onMeesageSendHandlerClassic);
+    Office.actions.associate("onMessageSendHandler", onMessageSendHandlerClassic);
   } else {
     Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
   }
