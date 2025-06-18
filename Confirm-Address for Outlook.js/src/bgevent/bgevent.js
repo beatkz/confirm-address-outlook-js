@@ -5,8 +5,13 @@ let caDialog; // confirmダイアログのグローバル変数
 let countdownInterval = null; // カウントダウン用のグローバル変数
 
 Office.onReady((info) => {
-  console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
-  Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
+  // ここでClassic Outlookを判定
+  if (info.platform === Office.PlatformType.PC) {
+    Office.actions.associate("onMessageSendHandler", onMeesageSendHandlerClassic);
+  } else {
+    console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
+    Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
+  }
 }).catch((error) => {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
@@ -15,6 +20,17 @@ Office.onReady((info) => {
 function onMessageSendHandler(event) {
   console.log("bgevent.js: onMessageSendHandler 開始");
   showConfirmDialog(event);
+}
+
+function onMeesageSendHandlerClassic(event) {
+  console.log("bgevent.js: onMeesageSendHandlerClassic 開始");
+  // 古いバージョンのOutlook用のハンドラ
+  // ここでは新しいダイアログを表示するための処理を行う
+  event.completed({
+    allowEvent: false,
+    errorMessage: "このバージョンのOutlookではサポートされていません。",
+    sendModeOverride: Office.MailboxEnums.SendModeOverride.PromptUser
+  });
 }
 
 function showConfirmDialog(sendEvent) {
