@@ -33,8 +33,8 @@ function onMessageSendHandler(event) {
   console.log("bgevent.js: onMessageSendHandler 開始");
   showConfirmDialog(event);
 }
-function onMesageSendHandlerClassic(event) {
-  console.log("bgevent.js: onMeesageSendHandlerClassic 開始");
+function onMessageSendHandlerClassic(event) {
+  console.log("bgevent.js: onMessageSendHandlerClassic 開始");
   event.completed({
     allowEvent: true,
     sendModeOverride: Office.MailboxEnums.SendModeOverride.PromptUser
