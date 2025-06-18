@@ -18,10 +18,10 @@ var countdownInterval = null; // カウントダウン用のグローバル変�
 
 Office.onReady(function (info) {
   // ここでClassic Outlookを判定
+  console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
   if (info.platform === Office.PlatformType.PC) {
     Office.actions.associate("onMessageSendHandler", onMeesageSendHandlerClassic);
   } else {
-    console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
     Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
   }
 }).catch(function (error) {
@@ -33,13 +33,10 @@ function onMessageSendHandler(event) {
   console.log("bgevent.js: onMessageSendHandler 開始");
   showConfirmDialog(event);
 }
-function onMeesageSendHandlerClassic(event) {
+function onMesageSendHandlerClassic(event) {
   console.log("bgevent.js: onMeesageSendHandlerClassic 開始");
-  // 古いバージョンのOutlook用のハンドラ
-  // ここでは新しいダイアログを表示するための処理を行う
   event.completed({
-    allowEvent: false,
-    errorMessage: "このバージョンのOutlookではサポートされていません。",
+    allowEvent: true,
     sendModeOverride: Office.MailboxEnums.SendModeOverride.PromptUser
   });
 }
