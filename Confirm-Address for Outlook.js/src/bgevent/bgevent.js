@@ -5,7 +5,7 @@ let caDialog; // confirmダイアログのグローバル変数
 let countdownInterval = null; // カウントダウン用のグローバル変数
 
 Office.onReady((info) => {
-  // ここでClassic Outlookを判定
+  // ここでOutlook Classsicを判定
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
   if (info.platform === Office.PlatformType.PC) {
     Office.actions.associate("onMessageSendHandler", onMeesageSendHandlerClassic);
@@ -22,12 +22,9 @@ function onMessageSendHandler(event) {
   showConfirmDialog(event);
 }
 
-function onMessageSendHandlerClassic(event) {
+function onMessageSendHandlerClassic(sendEvent) {
   console.log("bgevent.js: onMessageSendHandlerClassic 開始");
-  event.completed({
-    allowEvent: true,
-    sendModeOverride: Office.MailboxEnums.SendModeOverride.PromptUser
-  });
+  sendEvent.completed({ allowEvent: true });
 }
 
 function showConfirmDialog(sendEvent) {
