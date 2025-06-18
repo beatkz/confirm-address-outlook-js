@@ -3,9 +3,13 @@
 // ダイアログを表示
 let caDialog; // confirmダイアログのグローバル変数
 let countdownInterval = null; // カウントダウン用のグローバル変数
-let isOLClassic = false; // [Outlook Classic向け]ダイアログを抑制するフラグ
+let isOLClassic = false; // Outlook Classic向けの簡易ダイアログフラグ
 
 Office.onReady((info) => {
+  // ここでClassic Outlookを判定
+  if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
+    isOLClassic = true;
+  }
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
   Office.actions.associate("uniqueMessageSendHandler", uniqueMessageSendHandler);
 }).catch((error) => {
@@ -16,16 +20,31 @@ Office.onReady((info) => {
 function uniqueMessageSendHandler(event) {
   console.log("bgevent.js: uniqueMessageSendHandler 開始");
   if (isOLClassic) {
-    passingThruEvent(event);
-    console.log("bgevent.js: Outlook Classicではダイアログを表示せず、Confirm-Address for Outlook Classicに渡します。");
+    console.warn("bgevent.js: Outlook Classicでは簡易ダイアログを使用します。");
+    showConfirmDialogOLClassic(event);
     return;
   }
   showConfirmDialog(event);
 }
 
-function passingThruEvent(event) {
-  console.log("bgevent.js: passingThruEvent 開始");
-  event.completed({ allowEvent: true });
+async function showConfirmDialogOLClassic(sendEvent) {
+  const emailDetails = await checkAddress();
+  //console.log("bgevent.js: Outlook Classic用のメール詳細:", emailDetails);
+  /*
+  emailDetailsのデータ構造：
+  {
+    insiderReci: insiderReci,
+    outsiderReci: outsiderReci,
+    body: body,
+    attNames: attNames,
+  }
+  */
+ sendEvent.completed({
+    allowEvent: true,
+    errorMessageMarkdown:"送信してもよろしいですか？\n\n" +
+    "** 注)[Confirm-Address for Outlook Classic](https://github.com/beatkz/confirm-address-outlook)がインストールされている場合は、続けて確認ダイアログが表示されます。 **"
+ });
+
 }
 
 function showConfirmDialog(sendEvent) {

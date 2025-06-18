@@ -22,7 +22,6 @@ module.exports = async (env, options) => {
       settings: "./src/settings/settings.js",
       capopup: "./src/capopup/capopup.js",
       bgevent: "./src/bgevent/bgevent.js",
-      forolclassic: "./src/bgevent/forolclassic.js", // For Outlook Classic
     },
     plugins: [
       new HtmlWebpackPlugin({
