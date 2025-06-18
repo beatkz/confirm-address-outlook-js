@@ -23,7 +23,6 @@ module.exports = async (env, options) => {
       settings: "./src/settings/settings.js",
       capopup: "./src/capopup/capopup.js",
       bgevent: "./src/bgevent/bgevent.js",
-      bgevent_classic: "./src/bgevent/bgevent_classic.js",
     },
     plugins: [
       new HtmlWebpackPlugin({
