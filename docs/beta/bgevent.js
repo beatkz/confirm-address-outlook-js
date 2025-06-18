@@ -15,13 +15,8 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
 // ダイアログを表示
 var caDialog; // confirmダイアログのグローバル変数
 var countdownInterval = null; // カウントダウン用のグローバル変数
-var isOLClassic = false; // Outlook Classic向けの簡易ダイアログフラグ
 
 Office.onReady(function (info) {
-  // ここでClassic Outlookを判定
-  if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
-    isOLClassic = true;
-  }
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
   Office.actions.associate("uniqueMessageSendHandler", uniqueMessageSendHandler);
 }).catch(function (error) {
@@ -31,11 +26,27 @@ Office.onReady(function (info) {
 // メインのイベントハンドラ
 function uniqueMessageSendHandler(event) {
   console.log("bgevent.js: uniqueMessageSendHandler 開始");
-  if (isOLClassic) {
-    console.warn("bgevent.js: Outlook Classicでは簡易ダイアログを使用します。");
-    showConfirmDialogOLClassic(event);
+
+  // Outlook Classic の場合、簡易確認メッセージを表示
+  if (Office.context.platform === Office.PlatformType.PC) {
+    console.log("bgevent.js: Outlook Classic 検出、簡易確認メッセージを表示");
+    var confirmed = window.confirm("メールを送信しますか？");
+    if (confirmed) {
+      console.log("bgevent.js: 送信が確認されました");
+      event.completed({
+        allowEvent: true
+      });
+    } else {
+      console.log("bgevent.js: 送信がキャンセルされました");
+      event.completed({
+        allowEvent: false,
+        errorMessage: "送信がキャンセルされました。"
+      });
+    }
     return;
   }
+
+  // OWA/Outlook (new) の場合、既存のダイアログを表示
   showConfirmDialog(event);
 }
 function showConfirmDialogOLClassic(sendEvent) {
