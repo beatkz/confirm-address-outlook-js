@@ -38,7 +38,7 @@ if "%BETA_MODE%" == "TRUE" (
   del /q /s /f "dist\manifest.*"
   rd /s /q "..\docs\beta"
   xcopy /s /y /i dist "..\docs\beta"
-  xcopy /s /y /i "..\notes\manual" "..\docs\beta\manual"
+  xcopy /s /y /i "..\notes\manual" "..\docs\manual"
   copy /y "..\README.md" "..\docs\beta"
   copy /y manifest_beta.xml "..\docs\beta\manifest_beta.xml"
 ) else (
