@@ -6,7 +6,7 @@
 
 - マニフェスト [安定版](https://beatkz.github.io/confirm-address-outlook-js/manifest.xml) [β版](https://beatkz.github.io/confirm-address-outlook-js/beta/manifest_beta.xml)
 
-- [解説書ページ](https://beatkz.github.io/confirm-address-outlook-js/manual/manual_ja.html) [(β)](https://beatkz.github.io/confirm-address-outlook-js/beta/manual/manual_ja.html)
+- [解説書ページ](https://beatkz.github.io/confirm-address-outlook-js/manual/manual_ja.html) 
 
 - Original by Meatian [Confirm-Address for Thunderbird](https://github.com/Meatian/confirm-address/)
 - Outlook version ported by [Keiji Momose](https://github.com/beatkz/)
