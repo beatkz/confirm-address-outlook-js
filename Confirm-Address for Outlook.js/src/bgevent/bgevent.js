@@ -5,21 +5,31 @@ let caDialog; // confirmダイアログのグローバル変数
 let countdownInterval = null; // カウントダウン用のグローバル変数
 
 Office.onReady((info) => {
-  // ここでOutlook Classsicを判定
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
-  if (info.platform === Office.PlatformType.PC) {
-    //Office.actions.associate("onMessageSendHandler", onMessageSendHandlerClassic);
-    return;
-  } else {
-    Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
-  }
+  Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
 }).catch((error) => {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
 
+// Outlookのバージョンを確認して、Classicかどうかを判定する
+function isOutlookClassicVersion() {
+  const isOutlookClassic = Office.context.mailbox.diagnostics.hostName === "Outlook";
+  const isWindowsPlatform = Office.context.platform === Office.PlatformType.PC;
+  const outlookVersion = Office.context.mailbox.diagnostics.hostVersion;
+  
+  return isOutlookClassic && isWindowsPlatform && parseFloat(outlookVersion) < 16;
+}
+
 // メインのイベントハンドラ
 function onMessageSendHandler(event) {
   console.log("bgevent.js: onMessageSendHandler 開始");
+  
+  if (isOutlookClassicVersion()) {
+    console.log("bgevent.js: Outlook Classicを検出、ダイアログをバイパス");
+    event.completed({ allowEvent: true });
+    return;
+  }
+  
   showConfirmDialog(event);
 }
 
