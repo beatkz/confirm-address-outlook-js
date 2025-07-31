@@ -34,22 +34,16 @@ function isOutlookClassicVersion() {
 // メインのイベントハンドラ
 function onMessageSendHandler(event) {
   console.log("bgevent.js: onMessageSendHandler 開始");
+  showConfirmDialog(event);
+}
+function showConfirmDialog(sendEvent) {
   if (isOutlookClassicVersion()) {
     console.log("bgevent.js: Outlook Classicを検出、ダイアログをバイパス");
-    event.completed({
+    sendEvent.completed({
       allowEvent: true
     });
     return;
   }
-  showConfirmDialog(event);
-}
-function onMessageSendHandlerClassic(sendEvent) {
-  console.log("bgevent.js: onMessageSendHandlerClassic 開始");
-  sendEvent.completed({
-    allowEvent: true
-  });
-}
-function showConfirmDialog(sendEvent) {
   var dialogUrl = "".concat("https://beatkz.github.io/confirm-address-outlook-js/beta/", "capopup.html");
   console.log("bgevent.js: ダイアログ表示を試行", dialogUrl);
   Office.context.ui.displayDialogAsync(dialogUrl, {
