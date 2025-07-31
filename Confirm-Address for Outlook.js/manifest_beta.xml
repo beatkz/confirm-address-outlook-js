@@ -6,7 +6,7 @@ xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
 xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
 xsi:type="MailApp">
   <Id>b6b1674a-2dca-4f36-9255-7036e6e9023f</Id>
-  <Version>1.0.0.2</Version>
+  <Version>1.0.0.3</Version>
   <ProviderName>Keiji Momose</ProviderName>
   <DefaultLocale>ja-JP</DefaultLocale>
   <DisplayName DefaultValue="Confirm-Address for Outlook(Beta Branch)"/>

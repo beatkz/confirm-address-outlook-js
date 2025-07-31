@@ -23,22 +23,16 @@ function isOutlookClassicVersion() {
 // メインのイベントハンドラ
 function onMessageSendHandler(event) {
   console.log("bgevent.js: onMessageSendHandler 開始");
-  
-  if (isOutlookClassicVersion()) {
-    console.log("bgevent.js: Outlook Classicを検出、ダイアログをバイパス");
-    event.completed({ allowEvent: true });
-    return;
-  }
-  
   showConfirmDialog(event);
 }
 
-function onMessageSendHandlerClassic(sendEvent) {
-  console.log("bgevent.js: onMessageSendHandlerClassic 開始");
-  sendEvent.completed({ allowEvent: true });
-}
-
 function showConfirmDialog(sendEvent) {
+  if (isOutlookClassicVersion()) {
+    console.log("bgevent.js: Outlook Classicを検出、ダイアログをバイパス");
+    sendEvent.completed({ allowEvent: true });
+    return;
+  }
+
   const dialogUrl = `${process.env.BASE_URL}capopup.html`;
   console.log("bgevent.js: ダイアログ表示を試行", dialogUrl);
 
