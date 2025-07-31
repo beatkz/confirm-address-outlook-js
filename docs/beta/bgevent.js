@@ -18,34 +18,27 @@ var countdownInterval = null; // カウントダウン用のグローバル変�
 
 Office.onReady(function (info) {
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
-  if (info.host !== Office.HostType.Outlook || info.platform !== Office.PlatformType.PC) {
-    Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
-  }
+  Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
 }).catch(function (error) {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
 
-// Outlookのバージョンを確認して、Classicかどうかを判定する
-function isOutlookClassicVersion() {
-  var isOutlookClassic = Office.context.mailbox.diagnostics.hostName === "Outlook";
-  var isWindowsPlatform = Office.context.platform === Office.PlatformType.PC;
-  var outlookVersion = Office.context.mailbox.diagnostics.hostVersion;
-  return isOutlookClassic && isWindowsPlatform && parseFloat(outlookVersion) < 16;
-}
-
 // メインのイベントハンドラ
 function onMessageSendHandler(event) {
   console.log("bgevent.js: onMessageSendHandler 開始");
-  showConfirmDialog(event);
-}
-function showConfirmDialog(sendEvent) {
-  if (isOutlookClassicVersion()) {
-    console.log("bgevent.js: Outlook Classicを検出、ダイアログをバイパス");
-    sendEvent.completed({
-      allowEvent: true
+
+  // Outlook Classicでの動作を阻止
+  if (Office.context.platform === Office.PlatformType.OutlookDesktop) {
+    console.log("bgevent.js: Outlook Classicが検出されました。送信をキャンセルします。");
+    event.completed({
+      allowEvent: false,
+      errorMessage: "Outlook Classicではこの機能を使用できません。"
     });
     return;
   }
+  showConfirmDialog(event);
+}
+function showConfirmDialog(sendEvent) {
   var dialogUrl = "".concat("https://beatkz.github.io/confirm-address-outlook-js/beta/", "capopup.html");
   console.log("bgevent.js: ダイアログ表示を試行", dialogUrl);
   Office.context.ui.displayDialogAsync(dialogUrl, {

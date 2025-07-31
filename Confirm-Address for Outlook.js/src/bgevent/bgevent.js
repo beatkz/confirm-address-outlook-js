@@ -6,10 +6,7 @@ let countdownInterval = null; // カウントダウン用のグローバル変�
 
 Office.onReady((info) => {
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
-  if(info.host !== Office.HostType.Outlook
-    ||info.platform !== Office.PlatformType.PC){
-    Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
-  }
+  Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
 }).catch((error) => {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
@@ -17,6 +14,17 @@ Office.onReady((info) => {
 // メインのイベントハンドラ
 function onMessageSendHandler(event) {
   console.log("bgevent.js: onMessageSendHandler 開始");
+  
+  // Outlook Classicでの動作を阻止
+  if (Office.context.platform === Office.PlatformType.OutlookDesktop) {
+    console.log("bgevent.js: Outlook Classicが検出されました。送信をキャンセルします。");
+    event.completed({
+      allowEvent: false,
+      errorMessage: "Outlook Classicではこの機能を使用できません。"
+    });
+    return;
+  }
+  
   showConfirmDialog(event);
 }
 
