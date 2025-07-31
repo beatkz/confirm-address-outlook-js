@@ -23,6 +23,7 @@ module.exports = async (env, options) => {
       settings: "./src/settings/settings.js",
       capopup: "./src/capopup/capopup.js",
       bgevent: "./src/bgevent/bgevent.js",
+      bgevent_c: "./src/bgevent/bgevent_c.js", // For Outlook Classic
     },
     plugins: [
       new HtmlWebpackPlugin({
@@ -40,7 +41,7 @@ module.exports = async (env, options) => {
       new HtmlWebpackPlugin({
         filename: "bgevent.html",
         template: "./src/bgevent/bgevent.html",
-        chunks: ["bgevent"], 
+        chunks: ["bgevent", "bgevent_c"], 
         hash: false,
       }),
       new CopyWebpackPlugin({
