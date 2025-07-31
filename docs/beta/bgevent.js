@@ -18,7 +18,9 @@ var countdownInterval = null; // カウントダウン用のグローバル変�
 
 Office.onReady(function (info) {
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
-  Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
+  if (info.host !== Office.HostType.Outlook || info.platform !== Office.PlatformType.PC) {
+    Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
+  }
 }).catch(function (error) {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
