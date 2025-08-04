@@ -1,11 +1,11 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.21/MicrosoftTeams.schema.json",
-  "id": "5ab14cd7-dbe1-4d20-ab4c-7368e9e25e16",
+  "id": "b6b1674a-2dca-4f36-9255-7036e6e9023f",
   "manifestVersion": "1.21",
-  "version": "1.0.1",
+  "version": "1.0.0.5",
   "name": {
-    "short": "Confirm-Address(Local)",
-    "full": "Confirm-Address for Outlook(Local)"
+    "short": "Confirm-Address(Beta Local)",
+    "full": "Confirm-Address for Outlook(Beta Local)"
   },
   "description": {
     "short": "メール送信前に、送信先メールアドレス・添付ファイル名・本文冒頭を確認します。",
