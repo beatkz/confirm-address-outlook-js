@@ -14,17 +14,6 @@ Office.onReady((info) => {
 // メインのイベントハンドラ
 function onMessageSendHandler(event) {
   console.log("bgevent.js: onMessageSendHandler 開始");
-  
-  // Outlook Classicでの動作を阻止
-  if (Office.context.platform === Office.PlatformType.OutlookDesktop) {
-    console.log("bgevent.js: Outlook Classicが検出されました。送信をキャンセルします。");
-    event.completed({
-      allowEvent: false,
-      errorMessage: "Outlook Classicではこの機能を使用できません。"
-    });
-    return;
-  }
-  
   showConfirmDialog(event);
 }
 
@@ -140,7 +129,7 @@ async function checkAddress() {
   console.log("bgevent.js: 組織外アドレス:", outsiderReci.map((r) => r.address).join(", "));
 
   // 本文冒頭
-  const bodyResult = await new Promise((resolve) => msgCompFields.body.getAsync("text", resolve));
+  const bodyResult = await new Promise((resolve) => msgCompFields.body.getAsync("html", resolve));
   const lines = Office.context.roamingSettings.get("confirmMailBodyLines") || 5;
   const body = bodyResult.value.split("\n").slice(0, lines).join("\n") || "本文なし";
 

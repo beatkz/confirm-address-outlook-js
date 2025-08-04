@@ -26,16 +26,6 @@ Office.onReady(function (info) {
 // メインのイベントハンドラ
 function onMessageSendHandler(event) {
   console.log("bgevent.js: onMessageSendHandler 開始");
-
-  // Outlook Classicでの動作を阻止
-  if (Office.context.platform === Office.PlatformType.OutlookDesktop) {
-    console.log("bgevent.js: Outlook Classicが検出されました。送信をキャンセルします。");
-    event.completed({
-      allowEvent: false,
-      errorMessage: "Outlook Classicではこの機能を使用できません。"
-    });
-    return;
-  }
   showConfirmDialog(event);
 }
 function showConfirmDialog(sendEvent) {
@@ -161,7 +151,7 @@ function _checkAddress() {
           // 本文冒頭
           _context.n = 2;
           return new Promise(function (resolve) {
-            return msgCompFields.body.getAsync("text", resolve);
+            return msgCompFields.body.getAsync("html", resolve);
           });
         case 2:
           bodyResult = _context.v;

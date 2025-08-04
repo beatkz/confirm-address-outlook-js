@@ -6,7 +6,7 @@ xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
 xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
 xsi:type="MailApp">
   <Id>b6b1674a-2dca-4f36-9255-7036e6e9023f</Id>
-  <Version>1.0.0.3</Version>
+  <Version>1.0.0.5</Version>
   <ProviderName>Keiji Momose</ProviderName>
   <DefaultLocale>ja-JP</DefaultLocale>
   <DisplayName DefaultValue="Confirm-Address for Outlook(Beta Branch)"/>
@@ -17,7 +17,9 @@ xsi:type="MailApp">
   <HighResolutionIconUrl DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/assets/img/ConfirmAddress-192x192.png"/>
   <SupportUrl DefaultValue="https://github.com/beatkz/"/>
   <AppDomains>
+    <AppDomain>https://localhost:3000</AppDomain>
     <AppDomain>https://beatkz.github.io</AppDomain>
+    <AppDomain>https://outlook.office365.com</AppDomain>
   </AppDomains>
   <!-- Page for Add-in Settings -->
   <Hosts>
