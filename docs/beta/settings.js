@@ -96,11 +96,6 @@ if (window.settingsJsLoaded) {
         lval: prefs.get("insiderDomainBatchCheck") || false,
         sval: document.getElementById("insiderDomainBatchCheck").checked
       },
-      outsiderDomainBatchCheck: {
-        type: "checkbox",
-        lval: prefs.get("outsiderDomainBatchCheck") || false,
-        sval: document.getElementById("outsiderDomainBatchCheck").checked
-      },
       attachmentBatchCheck: {
         type: "checkbox",
         lval: prefs.get("attachmentBatchCheck") || false,

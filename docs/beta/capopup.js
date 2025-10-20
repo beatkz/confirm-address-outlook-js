@@ -5,8 +5,21 @@
 /* global Office, console, document */
 
 console.log("capopup.js: スクリプトロード開始");
-var isCountingDown = false; // カウントダウン状態を追跡
 
+// HTMLタグを除去してプレーンテキストに変換する関数
+function stripHtml(html) {
+  try {
+    var tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    var text = tempDiv.textContent || tempDiv.innerText || "";
+    text = text.replace(/\s+/g, " ").trim();
+    return text || "本文なし";
+  } catch (error) {
+    console.error("capopup.js: HTMLタグ除去エラー:", error);
+    return "本文なし";
+  }
+}
+var isCountingDown = false;
 Office.onReady(function (info) {
   console.log("capopup.js: Office.js 初期化完了:", JSON.stringify(info));
   var setupCheckboxListener = function setupCheckboxListener(checkboxId) {
@@ -20,7 +33,6 @@ Office.onReady(function (info) {
     });
   };
   setupCheckboxListener("batchCheck_insiderReci", "insiderReci");
-  setupCheckboxListener("batchCheck_outsiderReci", "outsiderReci");
   setupCheckboxListener("batchCheck_Attachments", "attNames");
   setupCheckboxListener("check_firstLinesOfBody", null);
   var sendButton = document.getElementById("btn_send");
@@ -34,7 +46,6 @@ Office.onReady(function (info) {
     }
   };
   setupBatchCheckButton("batchCheck_insiderReci", "insiderDomainBatchCheck");
-  setupBatchCheckButton("batchCheck_outsiderReci", "outsiderDomainBatchCheck");
   setupBatchCheckButton("batchCheck_Attachments", "attachmentBatchCheck");
   Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent, onRegisterMessageComplete);
   Office.context.ui.messageParent(JSON.stringify({
@@ -79,7 +90,6 @@ function onMessageFromParent(recv) {
     console.log("capopup.js: メッセージ受信:", message);
     if (message.type === "countdownUpdate") {
       document.getElementById("countdown").textContent = "\u3042\u3068".concat(message.seconds, "\u79D2\u3067\u9001\u4FE1\u3057\u307E\u3059\u3002");
-      // カウントダウン中にボタンを「今すぐ送信」に維持
       if (!isCountingDown) {
         isCountingDown = true;
         document.getElementById("btn_send").textContent = "今すぐ送信";
@@ -108,7 +118,7 @@ function onMessageFromParent(recv) {
       listType: "Addresses",
       pushingList: emailDetails.outsiderReci
     });
-    document.getElementById("body").textContent = emailDetails.body;
+    document.getElementById("body").textContent = stripHtml(emailDetails.body);
     document.getElementById("attNames").textContent = "";
     pushToList({
       targetId: "attNames",
@@ -156,14 +166,13 @@ function checkAllChecked(outsiderAddressCount) {
   };
   var prefs = Office.context.roamingSettings;
   var isInsiderDomainsChecked = areAllCheckboxesChecked("insiderReci");
-  var isOutsiderDomainsChecked = areAllCheckboxesChecked("outsiderReci");
+  var isOutsiderDomainsChecked = outsiderAddressCount === 0 || areAllCheckboxesChecked("outsiderReci");
   var isMailHeadChecked = true;
   if (prefs.get("confirmMailBody")) {
     isMailHeadChecked = document.getElementById("check_firstLinesOfBody").checked;
   }
   var isAttachmentsChecked = areAllCheckboxesChecked("attNames");
   document.getElementById("batchCheck_insiderReci").checked = isInsiderDomainsChecked;
-  document.getElementById("batchCheck_outsiderReci").checked = isOutsiderDomainsChecked;
   document.getElementById("batchCheck_Attachments").checked = isAttachmentsChecked;
   var sendButton = document.getElementById("btn_send");
   var isAllChecked;
@@ -183,7 +192,6 @@ function checkAllChecked(outsiderAddressCount) {
 }
 function cancelSend() {
   console.log("capopup.js: cancelSend 実行");
-  // ボタンラベルを「送信」にリセット
   document.getElementById("btn_send").textContent = "送信";
   isCountingDown = false;
   Office.context.ui.messageParent(JSON.stringify({
@@ -196,7 +204,6 @@ function confirmSend() {
   if (prefs.get("countDown") && !isCountingDown) {
     var seconds = parseInt(prefs.get("countDownTime") || 5, 10);
     document.getElementById("countdown").textContent = "\u3042\u3068".concat(seconds, "\u79D2\u3067\u9001\u4FE1\u3057\u307E\u3059\u3002");
-    // ボタンラベルを「今すぐ送信」に変更
     document.getElementById("btn_send").textContent = "今すぐ送信";
     isCountingDown = true;
     Office.context.ui.messageParent(JSON.stringify({
@@ -204,8 +211,7 @@ function confirmSend() {
       seconds: seconds
     }));
   } else {
-    // カウントダウン中またはカウントダウン無効時に即時送信
-    document.getElementById("btn_send").textContent = "送信"; // ボタンラベルをリセット
+    document.getElementById("btn_send").textContent = "送信";
     isCountingDown = false;
     Office.context.ui.messageParent(JSON.stringify({
       type: "confirm"

@@ -2,7 +2,21 @@
 
 console.log("capopup.js: スクリプトロード開始");
 
-let isCountingDown = false; // カウントダウン状態を追跡
+// HTMLタグを除去してプレーンテキストに変換する関数
+function stripHtml(html) {
+  try {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    let text = tempDiv.textContent || tempDiv.innerText || "";
+    text = text.replace(/\s+/g, " ").trim();
+    return text || "本文なし";
+  } catch (error) {
+    console.error("capopup.js: HTMLタグ除去エラー:", error);
+    return "本文なし";
+  }
+}
+
+let isCountingDown = false;
 
 Office.onReady((info) => {
   console.log("capopup.js: Office.js 初期化完了:", JSON.stringify(info));
@@ -18,7 +32,6 @@ Office.onReady((info) => {
   };
 
   setupCheckboxListener("batchCheck_insiderReci", "insiderReci");
-  setupCheckboxListener("batchCheck_outsiderReci", "outsiderReci");
   setupCheckboxListener("batchCheck_Attachments", "attNames");
   setupCheckboxListener("check_firstLinesOfBody", null);
 
@@ -34,7 +47,6 @@ Office.onReady((info) => {
     }
   };
   setupBatchCheckButton("batchCheck_insiderReci", "insiderDomainBatchCheck");
-  setupBatchCheckButton("batchCheck_outsiderReci", "outsiderDomainBatchCheck");
   setupBatchCheckButton("batchCheck_Attachments", "attachmentBatchCheck");
 
   Office.context.ui.addHandlerAsync(
@@ -87,7 +99,6 @@ function onMessageFromParent(recv) {
     console.log("capopup.js: メッセージ受信:", message);
     if (message.type === "countdownUpdate") {
       document.getElementById("countdown").textContent = `あと${message.seconds}秒で送信します。`;
-      // カウントダウン中にボタンを「今すぐ送信」に維持
       if (!isCountingDown) {
         isCountingDown = true;
         document.getElementById("btn_send").textContent = "今すぐ送信";
@@ -120,7 +131,7 @@ function onMessageFromParent(recv) {
       pushingList: emailDetails.outsiderReci,
     });
 
-    document.getElementById("body").textContent = emailDetails.body;
+    document.getElementById("body").textContent = stripHtml(emailDetails.body);
     document.getElementById("attNames").textContent = "";
     pushToList({
       targetId: "attNames",
@@ -171,7 +182,8 @@ function checkAllChecked(outsiderAddressCount) {
   const prefs = Office.context.roamingSettings;
 
   const isInsiderDomainsChecked = areAllCheckboxesChecked("insiderReci");
-  const isOutsiderDomainsChecked = areAllCheckboxesChecked("outsiderReci");
+  const isOutsiderDomainsChecked =
+    outsiderAddressCount === 0 || areAllCheckboxesChecked("outsiderReci");
   let isMailHeadChecked = true;
   if (prefs.get("confirmMailBody")) {
     isMailHeadChecked = document.getElementById("check_firstLinesOfBody").checked;
@@ -179,7 +191,6 @@ function checkAllChecked(outsiderAddressCount) {
   const isAttachmentsChecked = areAllCheckboxesChecked("attNames");
 
   document.getElementById("batchCheck_insiderReci").checked = isInsiderDomainsChecked;
-  document.getElementById("batchCheck_outsiderReci").checked = isOutsiderDomainsChecked;
   document.getElementById("batchCheck_Attachments").checked = isAttachmentsChecked;
 
   const sendButton = document.getElementById("btn_send");
@@ -225,7 +236,6 @@ function checkAllChecked(outsiderAddressCount) {
 
 function cancelSend() {
   console.log("capopup.js: cancelSend 実行");
-  // ボタンラベルを「送信」にリセット
   document.getElementById("btn_send").textContent = "送信";
   isCountingDown = false;
   Office.context.ui.messageParent(JSON.stringify({ type: "cancel" }));
@@ -237,13 +247,11 @@ function confirmSend() {
   if (prefs.get("countDown") && !isCountingDown) {
     const seconds = parseInt(prefs.get("countDownTime") || 5, 10);
     document.getElementById("countdown").textContent = `あと${seconds}秒で送信します。`;
-    // ボタンラベルを「今すぐ送信」に変更
     document.getElementById("btn_send").textContent = "今すぐ送信";
     isCountingDown = true;
     Office.context.ui.messageParent(JSON.stringify({ type: "countDown", seconds }));
   } else {
-    // カウントダウン中またはカウントダウン無効時に即時送信
-    document.getElementById("btn_send").textContent = "送信"; // ボタンラベルをリセット
+    document.getElementById("btn_send").textContent = "送信";
     isCountingDown = false;
     Office.context.ui.messageParent(JSON.stringify({ type: "confirm" }));
   }
