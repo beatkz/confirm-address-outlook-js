@@ -164,7 +164,7 @@ function checkAllChecked(counts) {
   document.getElementById("batchCheck_insiderReci").checked = isInsiderDomainsChecked;
   var sendButton = document.getElementById("btn_send");
   var isAllChecked;
-  if (prefs.get("noDisplayInsiderDomainOnly") && outsiderAddressCount === 0) {
+  if (prefs.get("noDisplayInsiderDomainOnly") && counts["outsiderAddr"] === 0) {
     isAllChecked = true;
   } else {
     isAllChecked = isInsiderDomainsChecked && isOutsiderDomainsChecked && isMailHeadChecked && isAttachmentsChecked;
