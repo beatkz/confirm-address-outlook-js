@@ -47,8 +47,8 @@ function stripHtml(html) {
     var tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
     var textArray = _extractTextWithBreaks(tempDiv);
-    // テキストを結合、連続する改行やスペースを整理
-    var text = textArray.join(" ").replace(/\s*\n\s*/g, "\n").replace(/\s+/g, " ").trim();
+    // テキストを結合、連続する改行を保持し、スペースを整理
+    var text = textArray.join("\n").replace(/\s+/g, " ").trim();
     // 空の場合のフォールバック
     return text || "本文なし";
   } catch (error) {
