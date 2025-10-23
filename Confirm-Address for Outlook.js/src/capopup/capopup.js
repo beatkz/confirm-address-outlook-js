@@ -59,7 +59,6 @@ Office.onReady((info) => {
   };
 
   setupCheckboxListener("batchCheck_insiderReci", "insiderReci");
-  setupCheckboxListener("batchCheck_Attachments", "attNames");
   setupCheckboxListener("check_firstLinesOfBody", null);
 
   const sendButton = document.getElementById("btn_send");
@@ -74,7 +73,6 @@ Office.onReady((info) => {
     }
   };
   setupBatchCheckButton("batchCheck_insiderReci", "insiderDomainBatchCheck");
-  setupBatchCheckButton("batchCheck_Attachments", "attachmentBatchCheck");
 
   Office.context.ui.addHandlerAsync(
     Office.EventType.DialogParentMessageReceived,
@@ -158,7 +156,8 @@ function onMessageFromParent(recv) {
       pushingList: emailDetails.outsiderReci,
     });
 
-    document.getElementById("body").textContent = stripHtml(emailDetails.body);
+    //document.getElementById("body").textContent = stripHtml(emailDetails.body);
+    document.getElementById("body").textContent = emailDetails.body;
     document.getElementById("attNames").textContent = "";
     pushToList({
       targetId: "attNames",
@@ -214,10 +213,9 @@ function checkAllChecked(outsiderAddressCount) {
   if (prefs.get("confirmMailBody")) {
     isMailHeadChecked = document.getElementById("check_firstLinesOfBody").checked;
   }
-  const isAttachmentsChecked = areAllCheckboxesChecked("attNames");
+  const isAttachmentsChecked = !document.getElementById("attNamesContainer").hidden || areAllCheckboxesChecked("attNames");
 
   document.getElementById("batchCheck_insiderReci").checked = isInsiderDomainsChecked;
-  document.getElementById("batchCheck_Attachments").checked = isAttachmentsChecked;
 
   const sendButton = document.getElementById("btn_send");
   let isAllChecked;
