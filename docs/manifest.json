@@ -1,11 +1,11 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.21/MicrosoftTeams.schema.json",
-  "id": "5ab14cd7-dbe1-4d20-ab4c-7368e9e25e16",
+  "id": "b6b1674a-2dca-4f36-9255-7036e6e9023f",
   "manifestVersion": "1.21",
-  "version": "1.0.0",
+  "version": "1.0.0.5",
   "name": {
-    "short": "Confirm-Address for Outlook",
-    "full": "Confirm-Address for Outlook"
+    "short": "Confirm-Address(Beta Local)",
+    "full": "Confirm-Address for Outlook(Beta Local)"
   },
   "description": {
     "short": "メール送信前に、送信先メールアドレス・添付ファイル名・本文冒頭を確認します。",
@@ -36,12 +36,7 @@
       ]
     }
   },
-  "validDomains": [
-    "https://localhost:3000",
-    "https://github.com/beatkz/confirm-address-outlook/",
-    "https://github.com/beatkz/confirm-address-outlook-js/",
-    "https://beatkz.github.io/confirm-address-outlook-js/"
-  ],
+  "validDomains": ["https://localhost:3000"],
   "extensions": [
     {
       "requirements": {
@@ -66,7 +61,7 @@
           "id": "SettingsRuntime",
           "type": "general",
           "code": {
-            "page": "https://beatkz.github.io/confirm-address-outlook-js/settings.html"
+            "page": "https://localhost:3000/settings.html"
           },
           "lifetime": "short",
           "actions": [
@@ -90,14 +85,14 @@
           "id": "AutorunRuntime",
           "type": "general",
           "code": {
-            "page": "https://beatkz.github.io/confirm-address-outlook-js/bgevent.html"
+            "page": "https://localhost:3000/bgevent.html"
           },
           "lifetime": "short",
           "actions": [
             {
-              "id": "uniqueMessageSendHandler",
+              "id": "onMessageSendHandler",
               "type": "executeFunction",
-              "displayName": "uniqueMessageSendHandler"
+              "displayName": "onMessageSendHandler"
             }
           ]
         },
@@ -113,7 +108,7 @@
           "id": "SendConfirmRuntime",
           "type": "general",
           "code": {
-            "page": "https://beatkz.github.io/confirm-address-outlook-js/capopup.html"
+            "page": "https://localhost:3000/capopup.html"
           },
           "lifetime": "short",
           "actions": [
@@ -140,7 +135,7 @@
           "events": [
             {
               "type": "messageSending",
-              "actionId": "uniqueMessageSendHandler",
+              "actionId": "onMessageSendHandler",
               "options": {
                 "sendMode": "softBlock"
               }
@@ -161,7 +156,7 @@
                   "icons": [
                     {
                       "size": 16,
-                      "url": "https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-16x16.png"
+                      "url": "https://localhost:3000/assets/img/ConfirmAddress-16x16.png"
                     }
                   ],
                   "controls": [
@@ -172,7 +167,7 @@
                       "icons": [
                         {
                           "size": 16,
-                          "url": "https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-16x16.png"
+                          "url": "https://localhost:3000/assets/img/ConfirmAddress-16x16.png"
                         }
                       ],
                       "supertip": {
