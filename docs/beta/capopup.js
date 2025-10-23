@@ -82,9 +82,12 @@ function onMessageFromParent(recv) {
     }
     var emailDetails = message;
     var prefs = Office.context.roamingSettings;
-    var outsiderAddressCount = emailDetails.outsiderReci.length;
-    if (prefs.get("noDisplayInsiderDomainOnly") && outsiderAddressCount === 0) {
-      checkAllChecked(outsiderAddressCount);
+    var counts = {
+      "outsiderAddr": emailDetails.outsiderReci.length,
+      "attachedFiles": emailDetails.attNames.length
+    };
+    if (prefs.get("noDisplayInsiderDomainOnly") && counts["outsiderAddr"] === 0) {
+      checkAllChecked(counts);
       confirmSend();
       return;
     }
@@ -142,7 +145,7 @@ function pushToList(args) {
     targetDiv.appendChild(document.createElement("br"));
   }
 }
-function checkAllChecked(outsiderAddressCount) {
+function checkAllChecked(counts) {
   var areAllCheckboxesChecked = function areAllCheckboxesChecked(containerId) {
     var container = document.getElementById(containerId);
     var checkboxes = container.getElementsByTagName("input");
@@ -152,12 +155,12 @@ function checkAllChecked(outsiderAddressCount) {
   };
   var prefs = Office.context.roamingSettings;
   var isInsiderDomainsChecked = areAllCheckboxesChecked("insiderReci");
-  var isOutsiderDomainsChecked = outsiderAddressCount === 0 || areAllCheckboxesChecked("outsiderReci");
+  var isOutsiderDomainsChecked = counts["outsiderAddr"] === 0 || areAllCheckboxesChecked("outsiderReci");
   var isMailHeadChecked = true;
   if (prefs.get("confirmMailBody")) {
     isMailHeadChecked = document.getElementById("check_firstLinesOfBody").checked;
   }
-  var isAttachmentsChecked = !document.getElementById("attNamesContainer").hidden || areAllCheckboxesChecked("attNames");
+  var isAttachmentsChecked = counts["attachedFiles"] === 0 || areAllCheckboxesChecked("attNames");
   document.getElementById("batchCheck_insiderReci").checked = isInsiderDomainsChecked;
   var sendButton = document.getElementById("btn_send");
   var isAllChecked;
