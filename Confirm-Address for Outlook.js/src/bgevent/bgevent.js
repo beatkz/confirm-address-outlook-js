@@ -178,17 +178,35 @@ async function checkAddress() {
   // 本文冒頭
   const lines = Office.context.roamingSettings.get("confirmMailBodyLines") || 5;
   let body;
-  const htmlResult = await new Promise((resolve) => msgCompFields.body.getAsync("html", resolve));
-  
-  body = stripHtml(htmlResult.value);
-  if(body){
+  const htmlResult = await new Promise(
+    (resolve) => msgCompFields.body.getAsync("html", resolve)
+  );
+  if (htmlResult.status === Office.AsyncResultStatus.Failed) {
+    console.error(
+      "bgevent.js: HTML本文取得エラー:", 
+      htmlResult.error.message);
+    body = "本文なし";
+  } else {
+    console.log("bgevent.js: HTML本文取得成功");
+    const rawBody = htmlResult.value;
+    // HTMLタグの有無を判定
+    const hasHtmlTags = /<\/?[a-z][^>]*>/i.test(rawBody);
+    console.log("bgevent.js: HTMLタグ検知:", hasHtmlTags);
+    if (hasHtmlTags) {
+      // HTMLタグが存在する場合、stripHtmlでプレーンテキストに変換
+      body = stripHtml(rawBody);
+    } else {
+      // HTMLタグがない場合（テキストメール）、そのまま使用
+      body = rawBody;
+    }
+    if(!body){
+      body = "本文なし";
+    }
     if (Office.context.roamingSettings.get("confirmMailBody")) {
       body = body.split("\n").slice(0, lines).join("\n").trim();
     } else {
       body = "";
     }
-  } else {
-    body = "本文なし";
   }
 
   var attNames = [];
