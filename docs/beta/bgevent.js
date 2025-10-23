@@ -174,7 +174,7 @@ function checkAddress() {
 }
 function _checkAddress() {
   _checkAddress = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-    var msgCompFields, toList, ccList, bccList, domainList, insiderReci, outsiderReci, lines, body, htmlResult, textResult, attNames;
+    var msgCompFields, toList, ccList, bccList, domainList, insiderReci, outsiderReci, lines, body, htmlResult, attNames;
     return _regenerator().w(function (_context) {
       while (1) switch (_context.n) {
         case 0:
@@ -210,44 +210,20 @@ function _checkAddress() {
           });
         case 2:
           htmlResult = _context.v;
-          if (!(htmlResult.status === Office.AsyncResultStatus.Failed)) {
-            _context.n = 4;
-            break;
-          }
-          console.error("bgevent.js: HTML本文取得エラー:", htmlResult.error.message);
-          _context.n = 3;
-          return new Promise(function (resolve) {
-            return msgCompFields.body.getAsync("text", resolve);
-          });
-        case 3:
-          textResult = _context.v;
-          if (textResult.status === Office.AsyncResultStatus.Failed) {
-            console.error("bgevent.js: テキスト本文取得エラー:", textResult.error.message);
-            body = "本文なし";
-          } else {
-            console.log("bgevent.js: テキスト本文取得成功");
-            body = textResult.value || "本文なし";
+          body = stripHtml(htmlResult.value);
+          if (body) {
             if (Office.context.roamingSettings.get("confirmMailBody")) {
               body = body.split("\n").slice(0, lines).join("\n").trim();
             } else {
               body = "";
             }
-          }
-          _context.n = 5;
-          break;
-        case 4:
-          console.log("bgevent.js: HTML本文取得成功");
-          body = stripHtml(htmlResult.value) || "本文なし";
-          if (Office.context.roamingSettings.get("confirmMailBody")) {
-            body = body.split("\n").slice(0, lines).join("\n").trim();
           } else {
-            body = "";
+            body = "本文なし";
           }
-        case 5:
           attNames = [];
-          _context.n = 6;
+          _context.n = 3;
           return getAttachments(msgCompFields, attNames);
-        case 6:
+        case 3:
           console.log("bgevent.js: 添付ファイル名:", attNames.map(function (att) {
             return att.name;
           }).join(", "));
