@@ -49,7 +49,7 @@ function stripHtml(html) {
     const textArray = extractTextWithBreaks(tempDiv);
     console.log("textArray: ", textArray);
     // テキストを結合、連続する改行を保持し、スペースを整理
-    let text = textArray.join("\n").replace(/[ \t]+/g, " ").replace(/\n+/g, "\n").trim();
+    let text = textArray.join("\n").replace(/[ \t]+/g, " ").trim();
     console.log("bgevent.js: stripHtml 出力:", text);
     // 空の場合のフォールバック
     return text || "本文なし";
