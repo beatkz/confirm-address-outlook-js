@@ -6,7 +6,6 @@
 
 console.log("capopup.js: スクリプトロード開始");
 var isCountingDown = false;
-var counts = {};
 Office.onReady(function (info) {
   console.log("capopup.js: Office.js 初期化完了:", JSON.stringify(info));
   var setupCheckboxListener = function setupCheckboxListener(checkboxId) {
@@ -83,12 +82,10 @@ function onMessageFromParent(recv) {
     }
     var emailDetails = message;
     var prefs = Office.context.roamingSettings;
-    counts = {
-      "outsiderAddr": emailDetails.outsiderReci.length,
-      "attachedFiles": emailDetails.attNames.length
-    };
-    if (prefs.get("noDisplayInsiderDomainOnly") && counts["outsiderAddr"] === 0) {
-      checkAllChecked();
+    var outsiderAddr = emailDetails.outsiderReci.length;
+    var attachedFiles = emailDetails.attNames.length;
+    if (prefs.get("noDisplayInsiderDomainOnly") && outsiderAddr === 0) {
+      checkAllChecked(outsiderAddr, attachedFiles);
       confirmSend();
       return;
     }
@@ -146,8 +143,7 @@ function pushToList(args) {
     targetDiv.appendChild(document.createElement("br"));
   }
 }
-function checkAllChecked() {
-  console.log("counts: ", counts);
+function checkAllChecked(outsiderAddr, attachedFiles) {
   var areAllCheckboxesChecked = function areAllCheckboxesChecked(containerId) {
     var container = document.getElementById(containerId);
     var checkboxes = container.getElementsByTagName("input");
@@ -157,16 +153,16 @@ function checkAllChecked() {
   };
   var prefs = Office.context.roamingSettings;
   var isInsiderDomainsChecked = areAllCheckboxesChecked("insiderReci");
-  var isOutsiderDomainsChecked = counts["outsiderAddr"] == 0 || areAllCheckboxesChecked("outsiderReci");
+  var isOutsiderDomainsChecked = outsiderAddr == 0 || areAllCheckboxesChecked("outsiderReci");
   var isMailHeadChecked = true;
   if (prefs.get("confirmMailBody")) {
     isMailHeadChecked = document.getElementById("check_firstLinesOfBody").checked;
   }
-  var isAttachmentsChecked = counts["attachedFiles"] == 0 || areAllCheckboxesChecked("attNames");
+  var isAttachmentsChecked = attachedFiles == 0 || areAllCheckboxesChecked("attNames");
   document.getElementById("batchCheck_insiderReci").checked = isInsiderDomainsChecked;
   var sendButton = document.getElementById("btn_send");
   var isAllChecked;
-  if (prefs.get("noDisplayInsiderDomainOnly") && counts["outsiderAddr"] === 0) {
+  if (prefs.get("noDisplayInsiderDomainOnly") && outsiderAddr === 0) {
     isAllChecked = true;
   } else {
     isAllChecked = isInsiderDomainsChecked && isOutsiderDomainsChecked && isMailHeadChecked && isAttachmentsChecked;
