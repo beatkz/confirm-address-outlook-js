@@ -181,32 +181,25 @@ async function checkAddress() {
   const htmlResult = await new Promise(
     (resolve) => msgCompFields.body.getAsync("html", resolve)
   );
-  if (htmlResult.status === Office.AsyncResultStatus.Failed) {
-    console.error(
-      "bgevent.js: HTML本文取得エラー:", 
-      htmlResult.error.message);
-    body = "本文なし";
+  console.log("bgevent.js: HTML本文取得完了");
+  const rawBody = htmlResult.value;
+  // HTMLタグの有無を判定
+  const hasHtmlTags = /<\/?[a-z][^>]*>/i.test(rawBody);
+  console.log("bgevent.js: HTMLタグ検知:", hasHtmlTags);
+  if (hasHtmlTags) {
+    // HTMLタグが存在する場合、stripHtmlでプレーンテキストに変換
+    body = stripHtml(rawBody);
   } else {
-    console.log("bgevent.js: HTML本文取得成功");
-    const rawBody = htmlResult.value;
-    // HTMLタグの有無を判定
-    const hasHtmlTags = /<\/?[a-z][^>]*>/i.test(rawBody);
-    console.log("bgevent.js: HTMLタグ検知:", hasHtmlTags);
-    if (hasHtmlTags) {
-      // HTMLタグが存在する場合、stripHtmlでプレーンテキストに変換
-      body = stripHtml(rawBody);
-    } else {
-      // HTMLタグがない場合（テキストメール）、そのまま使用
-      body = rawBody;
-    }
-    if(!body){
-      body = "本文なし";
-    }
-    if (Office.context.roamingSettings.get("confirmMailBody")) {
-      body = body.split("\n").slice(0, lines).join("\n").trim();
-    } else {
-      body = "";
-    }
+    // HTMLタグがない場合（テキストメール）、そのまま使用
+    body = rawBody;
+  }
+  if(!body){
+    body = "本文なし";
+  }
+  if (Office.context.roamingSettings.get("confirmMailBody")) {
+    body = body.split("\n").slice(0, lines).join("\n").trim();
+  } else {
+    body = "";
   }
 
   var attNames = [];
