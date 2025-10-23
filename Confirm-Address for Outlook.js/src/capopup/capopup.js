@@ -5,15 +5,9 @@ console.log("capopup.js: スクリプトロード開始");
 // HTMLタグを除去してプレーンテキストに変換する関数（改行を保持）
 function stripHtml(html) {
   try {
-    // HTMLエスケープされた文字列をデコード
-    const textarea = document.createElement("textarea");
-    textarea.innerHTML = html;
-    const decodedHtml = textarea.value;
-    console.log("capopup.js: stripHtml 入力:", decodedHtml);
-
     // 一時的なdiv要素を作成
     const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = decodedHtml;
+    tempDiv.innerHTML = html;
 
     // テキストノードと改行タグを再帰的に処理
     function extractTextWithBreaks(node, result = []) {
@@ -30,6 +24,7 @@ function stripHtml(html) {
           if (tagName === "br" || tagName === "p" || tagName === "div") {
             result.push("\n");
           }
+          // 子ノードを再帰的に処理
           extractTextWithBreaks(child, result);
         }
       }
@@ -38,10 +33,10 @@ function stripHtml(html) {
 
     // テキストと改行を抽出
     const textArray = extractTextWithBreaks(tempDiv);
-    // テキストを結合、連続する改行を保持し、スペースを整理
-    let text = textArray.join("\n").replace(/\s+/g, " ").trim();
-    console.log("capopup.js: stripHtml 出力:", text);
+    // テキストを結合、連続する改行やスペースを整理
+    let text = textArray.join(" ").replace(/\s*\n\s*/g, "\n").replace(/\s+/g, " ").trim();
     // 空の場合のフォールバック
+    console.dir(text);
     return text || "本文なし";
   } catch (error) {
     console.error("capopup.js: HTMLタグ除去エラー:", error);
