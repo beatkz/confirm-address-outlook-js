@@ -30,6 +30,8 @@ if "%BETA_MODE%" == "TRUE" (
     exit /b !errorlevel!
   )
   echo Starting beta branch deployment...
+  echo After you commit, hit any key to continue...
+  pause .
 
   REM Check for uncommitted changes
   git status --porcelain | findstr . >nul

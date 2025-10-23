@@ -9,7 +9,6 @@ if (window.settingsJsLoaded) {
   window.settingsJsLoaded = true;
 
   Office.onReady((info) => {
-    // ここでClassic Outlookを判定
     if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
       console.warn(
         "settings.js: Outlook Classic (Win32) ではサポートされていません。処理を中断します。"
@@ -26,7 +25,6 @@ if (window.settingsJsLoaded) {
     isInitialized = true;
 
     console.log("settings.js: Office.js 初期化完了:", JSON.stringify(info));
-    // テーマ検出と配色変更
     let isDarkTheme = false;
     if (Office.context.officeTheme && Office.context.officeTheme.displayPersona === "Dark") {
       console.log("settings.js: Outlook ダークテーマ検出");
@@ -44,7 +42,6 @@ if (window.settingsJsLoaded) {
   });
 
   function applyTheme(isDarkTheme) {
-    // 配色を適用
     if (isDarkTheme) {
       document.body.classList.add("dark", "bg-gray-900", "text-gray-100");
       document.body.classList.remove("bg-gray-100", "text-gray-900");
@@ -52,8 +49,8 @@ if (window.settingsJsLoaded) {
       rootContainers.forEach((container) => {
         container.classList.add("bg-gray-900", "text-gray-100");
         container.classList.remove("bg-gray-100", "text-gray-900");
-        container.style.backgroundColor = "#111827"; // bg-gray-900
-        container.style.color = "#F3F4F6"; // text-gray-100
+        container.style.backgroundColor = "#111827";
+        container.style.color = "#F3F4F6";
       });
       document.querySelectorAll("input, button").forEach((el) => {
         el.classList.add("bg-gray-800", "border-gray-600", "text-gray-100");
@@ -67,8 +64,8 @@ if (window.settingsJsLoaded) {
       rootContainers.forEach((container) => {
         container.classList.add("bg-gray-100", "text-gray-900");
         container.classList.remove("bg-gray-900", "text-gray-100");
-        container.style.backgroundColor = "#F3F4F6"; // bg-gray-100
-        container.style.color = "#111827"; // text-gray-900
+        container.style.backgroundColor = "#F3F4F6";
+        container.style.color = "#111827";
       });
       document.querySelectorAll("input, button").forEach((el) => {
         el.classList.add("bg-white", "border-gray-300", "text-gray-900");
@@ -125,11 +122,6 @@ if (window.settingsJsLoaded) {
         lval: prefs.get("insiderDomainBatchCheck") || false,
         sval: document.getElementById("insiderDomainBatchCheck").checked,
       },
-      attachmentBatchCheck: {
-        type: "checkbox",
-        lval: prefs.get("attachmentBatchCheck") || false,
-        sval: document.getElementById("attachmentBatchCheck").checked,
-      },
     };
   }
 
@@ -159,7 +151,7 @@ if (window.settingsJsLoaded) {
     }
 
     if (
-      prefsJson["countDown"].val &&
+      prefsJson["countDown"].sval &&
       !prefsJson["countDownTime"].validate(prefsJson["countDownTime"].sval)
     ) {
       document.getElementById("countdownErr").classList.remove("hidden");
@@ -167,7 +159,7 @@ if (window.settingsJsLoaded) {
     }
 
     if (
-      prefsJson["confirmMailBody"].val &&
+      prefsJson["confirmMailBody"].sval &&
       !prefsJson["confirmMailBodyLines"].validate(prefsJson["confirmMailBodyLines"].sval)
     ) {
       document.getElementById("bodyLinesErr").classList.remove("hidden");
