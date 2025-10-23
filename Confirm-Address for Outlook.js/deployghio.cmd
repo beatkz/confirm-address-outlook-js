@@ -83,7 +83,7 @@ if "%BETA_MODE%" == "TRUE" (
   )
 ) else (
   echo Running in release branch mode...
-  call npm run build
+  call npm run build:dev
   if !errorlevel! neq 0 (
     echo Build failed. Please check the errors above.
     pause
