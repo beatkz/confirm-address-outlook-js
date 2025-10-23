@@ -70,7 +70,6 @@ Office.onReady(function (info) {
     });
   };
   setupCheckboxListener("batchCheck_insiderReci", "insiderReci");
-  setupCheckboxListener("batchCheck_Attachments", "attNames");
   setupCheckboxListener("check_firstLinesOfBody", null);
   var sendButton = document.getElementById("btn_send");
   sendButton.addEventListener("click", confirmSend);
@@ -83,7 +82,6 @@ Office.onReady(function (info) {
     }
   };
   setupBatchCheckButton("batchCheck_insiderReci", "insiderDomainBatchCheck");
-  setupBatchCheckButton("batchCheck_Attachments", "attachmentBatchCheck");
   Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent, onRegisterMessageComplete);
   Office.context.ui.messageParent(JSON.stringify({
     type: "dialogReady"
@@ -155,7 +153,9 @@ function onMessageFromParent(recv) {
       listType: "Addresses",
       pushingList: emailDetails.outsiderReci
     });
-    document.getElementById("body").textContent = stripHtml(emailDetails.body);
+
+    //document.getElementById("body").textContent = stripHtml(emailDetails.body);
+    document.getElementById("body").textContent = emailDetails.body;
     document.getElementById("attNames").textContent = "";
     pushToList({
       targetId: "attNames",
@@ -208,9 +208,8 @@ function checkAllChecked(outsiderAddressCount) {
   if (prefs.get("confirmMailBody")) {
     isMailHeadChecked = document.getElementById("check_firstLinesOfBody").checked;
   }
-  var isAttachmentsChecked = areAllCheckboxesChecked("attNames");
+  var isAttachmentsChecked = !document.getElementById("attNamesContainer").hidden || areAllCheckboxesChecked("attNames");
   document.getElementById("batchCheck_insiderReci").checked = isInsiderDomainsChecked;
-  document.getElementById("batchCheck_Attachments").checked = isAttachmentsChecked;
   var sendButton = document.getElementById("btn_send");
   var isAllChecked;
   if (prefs.get("noDisplayInsiderDomainOnly") && outsiderAddressCount === 0) {
