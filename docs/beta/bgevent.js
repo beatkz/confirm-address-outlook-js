@@ -66,6 +66,7 @@ function stripHtml(html) {
     var tempDiv = document.createElement("div");
     tempDiv.innerHTML = decodedHtml;
     var textArray = _extractTextWithBreaks(tempDiv);
+    console.dir(textArray);
     // テキストを結合、連続する改行を保持し、スペースを整理
     var text = textArray.join("\n").replace(/\s+/g, " ").trim();
     console.log("bgevent.js: stripHtml 出力:", text);
