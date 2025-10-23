@@ -181,6 +181,7 @@ async function checkAddress() {
   const htmlResult = await new Promise((resolve) => msgCompFields.body.getAsync("html", resolve));
   if (htmlResult.status === Office.AsyncResultStatus.Failed) {
     console.error("bgevent.js: HTML本文取得エラー:", htmlResult.error.message);
+    
     const textResult = await new Promise((resolve) => msgCompFields.body.getAsync("text", resolve));
     if (textResult.status === Office.AsyncResultStatus.Failed) {
       console.error("bgevent.js: テキスト本文取得エラー:", textResult.error.message);
@@ -188,22 +189,20 @@ async function checkAddress() {
     } else {
       console.log("bgevent.js: テキスト本文取得成功");
       body = textResult.value || "本文なし";
-      body = slicedMailBodyfromRawMail(body, lines);
+      if (Office.context.roamingSettings.get("confirmMailBody")) {
+        body = body.split("\n").slice(0, lines).join("\n").trim();
+      } else {
+        body = "";
+      }
     }
   } else {
     console.log("bgevent.js: HTML本文取得成功");
     body = stripHtml(htmlResult.value) || "本文なし";
-    body = slicedMailBodyfromRawMail(body, lines);
-  }
-
-  function slicedMailBodyfromRawMail(rawmail, lines){
-    let sMailBody;
     if (Office.context.roamingSettings.get("confirmMailBody")) {
-      sMailbody = rawmail.split("\n").slice(0, lines).join("\n").trim();
+      body = body.split("\n").slice(0, lines).join("\n").trim();
     } else {
-      sMailbody = "";
+      body = "";
     }
-    return sMailBody;
   }
 
   var attNames = [];
