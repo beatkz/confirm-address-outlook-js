@@ -2,48 +2,6 @@
 
 console.log("capopup.js: スクリプトロード開始");
 
-// HTMLタグを除去してプレーンテキストに変換する関数（改行を保持）
-function stripHtml(html) {
-  try {
-    // 一時的なdiv要素を作成
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = html;
-
-    // テキストノードと改行タグを再帰的に処理
-    function extractTextWithBreaks(node, result = []) {
-      for (const child of node.childNodes) {
-        if (child.nodeType === Node.TEXT_NODE) {
-          // テキストノードを追加
-          let text = child.textContent.trim();
-          if (text) {
-            result.push(text);
-          }
-        } else if (child.nodeType === Node.ELEMENT_NODE) {
-          // 改行タグ（<br>, <p>, <div>）を検出して改行を追加
-          const tagName = child.tagName.toLowerCase();
-          if (tagName === "br" || tagName === "p" || tagName === "div") {
-            result.push("\n");
-          }
-          // 子ノードを再帰的に処理
-          extractTextWithBreaks(child, result);
-        }
-      }
-      return result;
-    }
-
-    // テキストと改行を抽出
-    const textArray = extractTextWithBreaks(tempDiv);
-    // テキストを結合、連続する改行やスペースを整理
-    let text = textArray.join(" ").replace(/\s*\n\s*/g, "\n").replace(/\s+/g, " ").trim();
-    // 空の場合のフォールバック
-    console.dir(text);
-    return text || "本文なし";
-  } catch (error) {
-    console.error("capopup.js: HTMLタグ除去エラー:", error);
-    return "本文なし";
-  }
-}
-
 let isCountingDown = false;
 
 Office.onReady((info) => {
@@ -157,7 +115,8 @@ function onMessageFromParent(recv) {
       pushingList: emailDetails.outsiderReci,
     });
 
-    document.getElementById("body").textContent = stripHtml(emailDetails.body);
+    // emailDetails.body はプレーンテキスト前提で直接設定
+    document.getElementById("body").textContent = emailDetails.body || "本文なし";
     document.getElementById("attNames").textContent = "";
     pushToList({
       targetId: "attNames",
