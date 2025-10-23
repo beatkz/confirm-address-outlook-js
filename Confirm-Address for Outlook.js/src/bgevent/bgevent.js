@@ -179,30 +179,16 @@ async function checkAddress() {
   const lines = Office.context.roamingSettings.get("confirmMailBodyLines") || 5;
   let body;
   const htmlResult = await new Promise((resolve) => msgCompFields.body.getAsync("html", resolve));
-  if (htmlResult.status === Office.AsyncResultStatus.Failed) {
-    console.error("bgevent.js: HTML本文取得エラー:", htmlResult.error.message);
-    
-    const textResult = await new Promise((resolve) => msgCompFields.body.getAsync("text", resolve));
-    if (textResult.status === Office.AsyncResultStatus.Failed) {
-      console.error("bgevent.js: テキスト本文取得エラー:", textResult.error.message);
-      body = "本文なし";
-    } else {
-      console.log("bgevent.js: テキスト本文取得成功");
-      body = textResult.value || "本文なし";
-      if (Office.context.roamingSettings.get("confirmMailBody")) {
-        body = body.split("\n").slice(0, lines).join("\n").trim();
-      } else {
-        body = "";
-      }
-    }
-  } else {
-    console.log("bgevent.js: HTML本文取得成功");
-    body = stripHtml(htmlResult.value) || "本文なし";
+  
+  body = stripHtml(htmlResult.value);
+  if(body){
     if (Office.context.roamingSettings.get("confirmMailBody")) {
       body = body.split("\n").slice(0, lines).join("\n").trim();
     } else {
       body = "";
     }
+  } else {
+    body = "本文なし";
   }
 
   var attNames = [];
