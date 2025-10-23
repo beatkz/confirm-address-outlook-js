@@ -174,19 +174,10 @@ function checkAddress() {
 }
 function _checkAddress() {
   _checkAddress = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-    var msgCompFields, toList, ccList, bccList, domainList, insiderReci, outsiderReci, lines, body, htmlResult, textResult, slicedMailBodyfromRawMail, attNames;
+    var msgCompFields, toList, ccList, bccList, domainList, insiderReci, outsiderReci, lines, body, htmlResult, textResult, attNames;
     return _regenerator().w(function (_context) {
       while (1) switch (_context.n) {
         case 0:
-          slicedMailBodyfromRawMail = function _slicedMailBodyfromRa(rawmail, lines) {
-            var sMailBody;
-            if (Office.context.roamingSettings.get("confirmMailBody")) {
-              sMailbody = rawmail.split("\n").slice(0, lines).join("\n").trim();
-            } else {
-              sMailbody = "";
-            }
-            return sMailBody;
-          };
           console.log("bgevent.js: checkAddress 開始");
           msgCompFields = Office.context.mailbox.item;
           toList = [];
@@ -236,14 +227,22 @@ function _checkAddress() {
           } else {
             console.log("bgevent.js: テキスト本文取得成功");
             body = textResult.value || "本文なし";
-            body = slicedMailBodyfromRawMail(body, lines);
+            if (Office.context.roamingSettings.get("confirmMailBody")) {
+              body = body.split("\n").slice(0, lines).join("\n").trim();
+            } else {
+              body = "";
+            }
           }
           _context.n = 5;
           break;
         case 4:
           console.log("bgevent.js: HTML本文取得成功");
           body = stripHtml(htmlResult.value) || "本文なし";
-          body = slicedMailBodyfromRawMail(body, lines);
+          if (Office.context.roamingSettings.get("confirmMailBody")) {
+            body = body.split("\n").slice(0, lines).join("\n").trim();
+          } else {
+            body = "";
+          }
         case 5:
           attNames = [];
           _context.n = 6;
