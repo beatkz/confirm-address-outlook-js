@@ -95,8 +95,6 @@ if "%BETA_MODE%" == "TRUE" (
   copy /y "..\README.md" "..\docs"
 )
 
-git push --all
-
 timeout 10
 popd
 endlocal
