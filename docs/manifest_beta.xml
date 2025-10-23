@@ -13,8 +13,8 @@ xsi:type="MailApp">
   <Description DefaultValue="メール送信前に、送信先メールアドレス・添付ファイル名・本文冒頭を確認します。 
   ※このアドインはOutlook(new)および、Outlook on the Web(以下 OWA)用です。
   OWAでご利用の際は、[サイトの設定]→[ポップアップとリダイレクト]を[許可する]に設定してください。"/>
-  <IconUrl DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/assets/img/ConfirmAddress-64x64.png"/>
-  <HighResolutionIconUrl DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/assets/img/ConfirmAddress-192x192.png"/>
+  <IconUrl DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-64x64.png"/>
+  <HighResolutionIconUrl DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-192x192.png"/>
   <SupportUrl DefaultValue="https://github.com/beatkz/"/>
   <AppDomains>
     <AppDomain>https://localhost:3000</AppDomain>
@@ -33,7 +33,7 @@ xsi:type="MailApp">
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/settings.html"/>
+        <SourceLocation DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/settings.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -99,16 +99,16 @@ xsi:type="MailApp">
       </Hosts>
       <Resources>
         <bt:Images>
-          <bt:Image id="Icon.16x16" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/assets/img/ConfirmAddress-16x16.png"/>
-          <bt:Image id="Icon.32x32" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/assets/img/ConfirmAddress-32x32.png"/>
-          <bt:Image id="Icon.80x80" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/assets/img/ConfirmAddress-80x80.png"/>
+          <bt:Image id="Icon.16x16" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-16x16.png"/>
+          <bt:Image id="Icon.32x32" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-32x32.png"/>
+          <bt:Image id="Icon.80x80" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-80x80.png"/>
         </bt:Images>
         <bt:Urls>
-          <bt:Url id="Capopup.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/capopup.html" />
-          <bt:Url id="Settings.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/settings.html" />
-          <bt:Url id="WebViewRuntime.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/bgevent.html" />
+          <bt:Url id="Capopup.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/capopup.html" />
+          <bt:Url id="Settings.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/settings.html" />
+          <bt:Url id="WebViewRuntime.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/bgevent.html" />
           <!-- Entry needed for classic Outlook on Windows. -->
-          <bt:Url id="JSRuntime.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/bgevent.js" />
+          <bt:Url id="JSRuntime.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/bgevent.js" />
         </bt:Urls>
         <bt:ShortStrings>
           <bt:String id="GroupLabel" DefaultValue="Confirm-Address for Outlook"/>
