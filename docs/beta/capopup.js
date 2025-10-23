@@ -47,8 +47,8 @@ function stripHtml(html) {
     var tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
     var textArray = _extractTextWithBreaks(tempDiv);
-    // テキストを結合、連続する改行やスペースを整理
-    var text = textArray.join(" ").replace(/\s*\n\s*/g, "\n").replace(/\s+/g, " ").trim();
+    // テキストを結合、連続する改行を保持し、スペースを整理
+    var text = textArray.join("\n").replace(/\s+/g, " ").trim();
     // 空の場合のフォールバック
     return text || "本文なし";
   } catch (error) {
@@ -70,7 +70,6 @@ Office.onReady(function (info) {
     });
   };
   setupCheckboxListener("batchCheck_insiderReci", "insiderReci");
-  setupCheckboxListener("batchCheck_Attachments", "attNames");
   setupCheckboxListener("check_firstLinesOfBody", null);
   var sendButton = document.getElementById("btn_send");
   sendButton.addEventListener("click", confirmSend);
@@ -83,7 +82,6 @@ Office.onReady(function (info) {
     }
   };
   setupBatchCheckButton("batchCheck_insiderReci", "insiderDomainBatchCheck");
-  setupBatchCheckButton("batchCheck_Attachments", "attachmentBatchCheck");
   Office.context.ui.addHandlerAsync(Office.EventType.DialogParentMessageReceived, onMessageFromParent, onRegisterMessageComplete);
   Office.context.ui.messageParent(JSON.stringify({
     type: "dialogReady"
@@ -208,9 +206,8 @@ function checkAllChecked(outsiderAddressCount) {
   if (prefs.get("confirmMailBody")) {
     isMailHeadChecked = document.getElementById("check_firstLinesOfBody").checked;
   }
-  var isAttachmentsChecked = areAllCheckboxesChecked("attNames");
+  var isAttachmentsChecked = !document.getElementById("attNamesContainer").hidden || areAllCheckboxesChecked("attNames");
   document.getElementById("batchCheck_insiderReci").checked = isInsiderDomainsChecked;
-  document.getElementById("batchCheck_Attachments").checked = isAttachmentsChecked;
   var sendButton = document.getElementById("btn_send");
   var isAllChecked;
   if (prefs.get("noDisplayInsiderDomainOnly") && outsiderAddressCount === 0) {

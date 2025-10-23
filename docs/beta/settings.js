@@ -16,7 +16,6 @@ if (window.settingsJsLoaded) {
   console.log("settings.js: 既にロード済み、スキップ");
 } else {
   var applyTheme = function applyTheme(isDarkTheme) {
-    // 配色を適用
     if (isDarkTheme) {
       document.body.classList.add("dark", "bg-gray-900", "text-gray-100");
       document.body.classList.remove("bg-gray-100", "text-gray-900");
@@ -24,8 +23,8 @@ if (window.settingsJsLoaded) {
       rootContainers.forEach(function (container) {
         container.classList.add("bg-gray-900", "text-gray-100");
         container.classList.remove("bg-gray-100", "text-gray-900");
-        container.style.backgroundColor = "#111827"; // bg-gray-900
-        container.style.color = "#F3F4F6"; // text-gray-100
+        container.style.backgroundColor = "#111827";
+        container.style.color = "#F3F4F6";
       });
       document.querySelectorAll("input, button").forEach(function (el) {
         el.classList.add("bg-gray-800", "border-gray-600", "text-gray-100");
@@ -39,8 +38,8 @@ if (window.settingsJsLoaded) {
       _rootContainers.forEach(function (container) {
         container.classList.add("bg-gray-100", "text-gray-900");
         container.classList.remove("bg-gray-900", "text-gray-100");
-        container.style.backgroundColor = "#F3F4F6"; // bg-gray-100
-        container.style.color = "#111827"; // text-gray-900
+        container.style.backgroundColor = "#F3F4F6";
+        container.style.color = "#111827";
       });
       document.querySelectorAll("input, button").forEach(function (el) {
         el.classList.add("bg-white", "border-gray-300", "text-gray-900");
@@ -95,11 +94,6 @@ if (window.settingsJsLoaded) {
         type: "checkbox",
         lval: prefs.get("insiderDomainBatchCheck") || false,
         sval: document.getElementById("insiderDomainBatchCheck").checked
-      },
-      attachmentBatchCheck: {
-        type: "checkbox",
-        lval: prefs.get("attachmentBatchCheck") || false,
-        sval: document.getElementById("attachmentBatchCheck").checked
       }
     };
   };
@@ -128,11 +122,11 @@ if (window.settingsJsLoaded) {
       document.getElementById("domainsErr").classList.remove("hidden");
       allClear = false;
     }
-    if (prefsJson["countDown"].val && !prefsJson["countDownTime"].validate(prefsJson["countDownTime"].sval)) {
+    if (prefsJson["countDown"].sval && !prefsJson["countDownTime"].validate(prefsJson["countDownTime"].sval)) {
       document.getElementById("countdownErr").classList.remove("hidden");
       allClear = false;
     }
-    if (prefsJson["confirmMailBody"].val && !prefsJson["confirmMailBodyLines"].validate(prefsJson["confirmMailBodyLines"].sval)) {
+    if (prefsJson["confirmMailBody"].sval && !prefsJson["confirmMailBodyLines"].validate(prefsJson["confirmMailBodyLines"].sval)) {
       document.getElementById("bodyLinesErr").classList.remove("hidden");
       allClear = false;
     }
@@ -199,7 +193,6 @@ if (window.settingsJsLoaded) {
   };
   window.settingsJsLoaded = true;
   Office.onReady(function (info) {
-    // ここでClassic Outlookを判定
     if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
       console.warn("settings.js: Outlook Classic (Win32) ではサポートされていません。処理を中断します。");
       document.body.innerHTML = "<div id='platformError'>このアドインはOutlook Classicではサポートされていません。<a href='https://github.com/beatkz/confirm-address-outlook/'>Confirm-Address for Outlook Classicをご利用ください。</a></div>";
@@ -211,7 +204,6 @@ if (window.settingsJsLoaded) {
     }
     isInitialized = true;
     console.log("settings.js: Office.js 初期化完了:", JSON.stringify(info));
-    // テーマ検出と配色変更
     var isDarkTheme = false;
     if (Office.context.officeTheme && Office.context.officeTheme.displayPersona === "Dark") {
       console.log("settings.js: Outlook ダークテーマ検出");
