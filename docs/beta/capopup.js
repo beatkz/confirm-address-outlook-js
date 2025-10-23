@@ -32,7 +32,6 @@ function stripHtml(html) {
             if (tagName === "br" || tagName === "p" || tagName === "div") {
               result.push("\n");
             }
-            // 子ノードを再帰的に処理
             _extractTextWithBreaks(child, result);
           }
         }
@@ -43,12 +42,19 @@ function stripHtml(html) {
       }
       return result;
     }; // テキストと改行を抽出
+    // HTMLエスケープされた文字列をデコード
+    var textarea = document.createElement("textarea");
+    textarea.innerHTML = html;
+    var decodedHtml = textarea.value;
+    console.log("capopup.js: stripHtml 入力:", decodedHtml);
+
     // 一時的なdiv要素を作成
     var tempDiv = document.createElement("div");
-    tempDiv.innerHTML = html;
+    tempDiv.innerHTML = decodedHtml;
     var textArray = _extractTextWithBreaks(tempDiv);
     // テキストを結合、連続する改行を保持し、スペースを整理
     var text = textArray.join("\n").replace(/\s+/g, " ").trim();
+    console.log("capopup.js: stripHtml 出力:", text);
     // 空の場合のフォールバック
     return text || "本文なし";
   } catch (error) {
