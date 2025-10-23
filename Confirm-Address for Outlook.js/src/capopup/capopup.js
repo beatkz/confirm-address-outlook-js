@@ -176,7 +176,7 @@ function checkAllChecked(counts) {
   if (prefs.get("confirmMailBody")) {
     isMailHeadChecked = document.getElementById("check_firstLinesOfBody").checked;
   }
-  const isAttachmentsChecked = counts["attachedFiles"] === 0 || areAllCheckboxesChecked("attNames");
+  const isAttachmentsChecked = counts["attachedFiles"] === 0 || areAllCheckboxesChecked("attNamesContainer");
 
   document.getElementById("batchCheck_insiderReci").checked = isInsiderDomainsChecked;
 
