@@ -33,8 +33,8 @@ function stripHtml(html) {
 
     // テキストと改行を抽出
     const textArray = extractTextWithBreaks(tempDiv);
-    // テキストを結合、連続する改行やスペースを整理
-    let text = textArray.join(" ").replace(/\s*\n\s*/g, "\n").replace(/\s+/g, " ").trim();
+    // テキストを結合、連続する改行を保持し、スペースを整理
+    let text = textArray.join("\n").replace(/\s+/g, " ").trim();
     // 空の場合のフォールバック
     return text || "本文なし";
   } catch (error) {
@@ -156,8 +156,7 @@ function onMessageFromParent(recv) {
       pushingList: emailDetails.outsiderReci,
     });
 
-    //document.getElementById("body").textContent = stripHtml(emailDetails.body);
-    document.getElementById("body").textContent = emailDetails.body;
+    document.getElementById("body").textContent = stripHtml(emailDetails.body);
     document.getElementById("attNames").textContent = "";
     pushToList({
       targetId: "attNames",
