@@ -11,6 +11,53 @@ Office.onReady((info) => {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
 
+// HTMLタグを除去してプレーンテキストに変換する関数（改行を保持）
+function stripHtml(html) {
+  try {
+    // HTMLエスケープされた文字列をデコード
+    const textarea = document.createElement("textarea");
+    textarea.innerHTML = html;
+    const decodedHtml = textarea.value;
+    console.log("bgevent.js: stripHtml 入力:", decodedHtml);
+
+    // 一時的なdiv要素を作成
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = decodedHtml;
+
+    // テキストノードと改行タグを再帰的に処理
+    function extractTextWithBreaks(node, result = []) {
+      for (const child of node.childNodes) {
+        if (child.nodeType === Node.TEXT_NODE) {
+          // テキストノードを追加
+          let text = child.textContent.trim();
+          if (text) {
+            result.push(text);
+          }
+        } else if (child.nodeType === Node.ELEMENT_NODE) {
+          // 改行タグ（<br>, <p>, <div>）を検出して改行を追加
+          const tagName = child.tagName.toLowerCase();
+          if (tagName === "br" || tagName === "p" || tagName === "div") {
+            result.push("\n");
+          }
+          extractTextWithBreaks(child, result);
+        }
+      }
+      return result;
+    }
+
+    // テキストと改行を抽出
+    const textArray = extractTextWithBreaks(tempDiv);
+    // テキストを結合、連続する改行を保持し、スペースを整理
+    let text = textArray.join("\n").replace(/\s+/g, " ").trim();
+    console.log("bgevent.js: stripHtml 出力:", text);
+    // 空の場合のフォールバック
+    return text || "本文なし";
+  } catch (error) {
+    console.error("bgevent.js: HTMLタグ除去エラー:", error);
+    return "本文なし";
+  }
+}
+
 // メインのイベントハンドラ
 function onMessageSendHandler(event) {
   console.log("bgevent.js: onMessageSendHandler 開始");
@@ -129,9 +176,35 @@ async function checkAddress() {
   console.log("bgevent.js: 組織外アドレス:", outsiderReci.map((r) => r.address).join(", "));
 
   // 本文冒頭
-  const bodyResult = await new Promise((resolve) => msgCompFields.body.getAsync("html", resolve));
   const lines = Office.context.roamingSettings.get("confirmMailBodyLines") || 5;
-  const body = bodyResult.value.split("\n").slice(0, lines).join("\n") || "本文なし";
+  let body;
+  const htmlResult = await new Promise((resolve) => msgCompFields.body.getAsync("html", resolve));
+  if (htmlResult.status === Office.AsyncResultStatus.Failed) {
+    console.error("bgevent.js: HTML本文取得エラー:", htmlResult.error.message);
+    const textResult = await new Promise((resolve) => msgCompFields.body.getAsync("text", resolve));
+    if (textResult.status === Office.AsyncResultStatus.Failed) {
+      console.error("bgevent.js: テキスト本文取得エラー:", textResult.error.message);
+      body = "本文なし";
+    } else {
+      console.log("bgevent.js: テキスト本文取得成功");
+      body = textResult.value || "本文なし";
+      body = slicedMailBodyfromRawMail(body, lines);
+    }
+  } else {
+    console.log("bgevent.js: HTML本文取得成功");
+    body = stripHtml(htmlResult.value) || "本文なし";
+    body = slicedMailBodyfromRawMail(body, lines);
+  }
+
+  function slicedMailBodyfromRawMail(rawmail, lines){
+    let sMailBody;
+    if (Office.context.roamingSettings.get("confirmMailBody")) {
+      sMailbody = rawmail.split("\n").slice(0, lines).join("\n").trim();
+    } else {
+      sMailbody = "";
+    }
+    return sMailBody;
+  }
 
   var attNames = [];
   await getAttachments(msgCompFields, attNames);
