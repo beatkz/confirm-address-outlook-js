@@ -182,7 +182,7 @@ function checkAllChecked(counts) {
 
   const sendButton = document.getElementById("btn_send");
   let isAllChecked;
-  if (prefs.get("noDisplayInsiderDomainOnly") && outsiderAddressCount === 0) {
+  if (prefs.get("noDisplayInsiderDomainOnly") && counts["outsiderAddr"] === 0) {
     isAllChecked = true;
   } else {
     isAllChecked =
