@@ -30,6 +30,16 @@ if "%BETA_MODE%" == "TRUE" (
     exit /b !errorlevel!
   )
   echo Starting beta branch deployment...
+  
+  REM Proceed with file copy for beta deployment
+  echo Copying files for beta deployment...
+  del /q /s /f "dist\manifest.*"
+  rd /s /q "..\docs\beta"
+  xcopy /s /y /i dist "..\docs\beta"
+  xcopy /s /y /i "..\notes\manual" "..\docs\manual"
+  copy /y "..\README.md" "..\docs\beta"
+  copy /y manifest_beta.xml "..\docs\beta\manifest_beta.xml"
+
   echo After you commit, hit any key to continue...
   pause .
 
@@ -71,15 +81,6 @@ if "%BETA_MODE%" == "TRUE" (
     pause
     exit /b !errorlevel!
   )
-
-  REM Proceed with file copy for beta deployment
-  echo Copying files for beta deployment...
-  del /q /s /f "dist\manifest.*"
-  rd /s /q "..\docs\beta"
-  xcopy /s /y /i dist "..\docs\beta"
-  xcopy /s /y /i "..\notes\manual" "..\docs\manual"
-  copy /y "..\README.md" "..\docs\beta"
-  copy /y manifest_beta.xml "..\docs\beta\manifest_beta.xml"
 ) else (
   echo Running in release branch mode...
   call npm run build
