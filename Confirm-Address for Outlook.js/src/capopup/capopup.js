@@ -3,6 +3,7 @@
 console.log("capopup.js: スクリプトロード開始");
 
 let isCountingDown = false;
+let counts = {};
 
 Office.onReady((info) => {
   console.log("capopup.js: Office.js 初期化完了:", JSON.stringify(info));
@@ -92,13 +93,13 @@ function onMessageFromParent(recv) {
 
     const emailDetails = message;
     const prefs = Office.context.roamingSettings;
-    const counts = {
+    counts = {
       "outsiderAddr": emailDetails.outsiderReci.length,
       "attachedFiles": emailDetails.attNames.length
     };
     if (prefs.get("noDisplayInsiderDomainOnly") 
       && counts["outsiderAddr"] === 0) {
-      checkAllChecked(counts);
+      checkAllChecked();
       confirmSend();
       return;
     }
@@ -162,7 +163,8 @@ function pushToList(args) {
   }
 }
 
-function checkAllChecked(counts) {
+function checkAllChecked() {
+  console.log("counts: ",counts);
   const areAllCheckboxesChecked = (containerId) => {
     const container = document.getElementById(containerId);
     const checkboxes = container.getElementsByTagName("input");
@@ -171,12 +173,12 @@ function checkAllChecked(counts) {
   const prefs = Office.context.roamingSettings;
 
   const isInsiderDomainsChecked = areAllCheckboxesChecked("insiderReci");
-  const isOutsiderDomainsChecked = counts["outsiderAddr"] === 0 || areAllCheckboxesChecked("outsiderReci");
+  const isOutsiderDomainsChecked = counts["outsiderAddr"] == 0 || areAllCheckboxesChecked("outsiderReci");
   let isMailHeadChecked = true;
   if (prefs.get("confirmMailBody")) {
     isMailHeadChecked = document.getElementById("check_firstLinesOfBody").checked;
   }
-  const isAttachmentsChecked = counts["attachedFiles"] === 0 || areAllCheckboxesChecked("attNames");
+  const isAttachmentsChecked = counts["attachedFiles"] == 0 || areAllCheckboxesChecked("attNames");
 
   document.getElementById("batchCheck_insiderReci").checked = isInsiderDomainsChecked;
 

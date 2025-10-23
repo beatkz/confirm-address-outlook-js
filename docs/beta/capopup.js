@@ -6,6 +6,7 @@
 
 console.log("capopup.js: スクリプトロード開始");
 var isCountingDown = false;
+var counts = {};
 Office.onReady(function (info) {
   console.log("capopup.js: Office.js 初期化完了:", JSON.stringify(info));
   var setupCheckboxListener = function setupCheckboxListener(checkboxId) {
@@ -82,12 +83,12 @@ function onMessageFromParent(recv) {
     }
     var emailDetails = message;
     var prefs = Office.context.roamingSettings;
-    var counts = {
+    counts = {
       "outsiderAddr": emailDetails.outsiderReci.length,
       "attachedFiles": emailDetails.attNames.length
     };
     if (prefs.get("noDisplayInsiderDomainOnly") && counts["outsiderAddr"] === 0) {
-      checkAllChecked(counts);
+      checkAllChecked();
       confirmSend();
       return;
     }
@@ -145,7 +146,8 @@ function pushToList(args) {
     targetDiv.appendChild(document.createElement("br"));
   }
 }
-function checkAllChecked(counts) {
+function checkAllChecked() {
+  console.log("counts: ", counts);
   var areAllCheckboxesChecked = function areAllCheckboxesChecked(containerId) {
     var container = document.getElementById(containerId);
     var checkboxes = container.getElementsByTagName("input");
@@ -155,12 +157,12 @@ function checkAllChecked(counts) {
   };
   var prefs = Office.context.roamingSettings;
   var isInsiderDomainsChecked = areAllCheckboxesChecked("insiderReci");
-  var isOutsiderDomainsChecked = counts["outsiderAddr"] === 0 || areAllCheckboxesChecked("outsiderReci");
+  var isOutsiderDomainsChecked = counts["outsiderAddr"] == 0 || areAllCheckboxesChecked("outsiderReci");
   var isMailHeadChecked = true;
   if (prefs.get("confirmMailBody")) {
     isMailHeadChecked = document.getElementById("check_firstLinesOfBody").checked;
   }
-  var isAttachmentsChecked = counts["attachedFiles"] === 0 || areAllCheckboxesChecked("attNames");
+  var isAttachmentsChecked = counts["attachedFiles"] == 0 || areAllCheckboxesChecked("attNames");
   document.getElementById("batchCheck_insiderReci").checked = isInsiderDomainsChecked;
   var sendButton = document.getElementById("btn_send");
   var isAllChecked;
