@@ -66,6 +66,16 @@ function onMessageSendHandler(event) {
 }
 
 function showConfirmDialog(sendEvent) {
+  // Dialog APIのサポートチェック
+  if (!Office.context.requirements.isSetSupported('DialogAPI', '1.1')) {
+    console.error("bgevent.js: Dialog APIがサポートされていません。Outlook Classicでは使用できません。");
+    sendEvent.completed({
+      allowEvent: false,
+      errorMessage: "この機能は現在のOutlookバージョンでサポートされていません。Outlook Classicでは使用できません。",
+    });
+    return;
+  }
+
   const dialogUrl = `${process.env.BASE_URL}capopup.html`;
   console.log("bgevent.js: ダイアログ表示を試行", dialogUrl);
 
