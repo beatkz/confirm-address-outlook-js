@@ -6,13 +6,7 @@ let countdownInterval = null; // カウントダウン用のグローバル変�
 
 Office.onReady((info) => {
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
-  // Dialog APIのサポートチェック
-  if (!Office.context.requirements.isSetSupported('DialogAPI', '1.1')) {
-    console.error("bgevent.js: Dialog APIがサポートされていないため、読込を停止します。");
-    return;
-  } else {
-    Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
-  }
+  Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
 }).catch((error) => {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
@@ -68,7 +62,19 @@ function stripHtml(html) {
 // メインのイベントハンドラ
 function onMessageSendHandler(event) {
   console.log("bgevent.js: onMessageSendHandler 開始");
-  showConfirmDialog(event);
+  // Dialog APIのサポートチェックをし、サポートされていない場合はパススルー処理をする
+  if (Office.context.requirements.isSetSupported('DialogAPI', '1.1')) {
+    showConfirmDialog(event);
+  } else {
+    console.error("bgevent.js: Dialog APIがサポートされていないため、確認ダイアログをスキップします。");
+    passThruDialog(event);
+  }
+}
+
+function passThruDialog(sendEvent) {
+  sendEvent.completed({
+    allowEvent: true
+  });
 }
 
 function showConfirmDialog(sendEvent) {
