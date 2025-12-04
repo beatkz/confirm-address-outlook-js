@@ -18,7 +18,13 @@ var countdownInterval = null; // カウントダウン用のグローバル変�
 
 Office.onReady(function (info) {
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
-  Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
+  // Dialog APIのサポートチェック
+  if (!Office.context.requirements.isSetSupported('DialogAPI', '1.1')) {
+    console.error("bgevent.js: Dialog APIがサポートされていないため、読込を停止します。");
+    return;
+  } else {
+    Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
+  }
 }).catch(function (error) {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
@@ -81,17 +87,7 @@ function stripHtml(html) {
 // メインのイベントハンドラ
 function onMessageSendHandler(event) {
   console.log("bgevent.js: onMessageSendHandler 開始");
-  // Dialog APIのサポートチェック
-  if (!Office.context.requirements.isSetSupported('DialogAPI', '1.1')) {
-    console.error("bgevent.js: Dialog APIがサポートされていません。Outlook Classicでは使用できません。");
-    sendEvent.completed({
-      allowEvent: false,
-      errorMessage: "この機能は現在のOutlookバージョンでサポートされていません。Outlook Classicでは使用できません。"
-    });
-    return;
-  } else {
-    showConfirmDialog(event);
-  }
+  showConfirmDialog(event);
 }
 function showConfirmDialog(sendEvent) {
   var dialogUrl = "".concat("https://beatkz.github.io/confirm-address-outlook-js/beta/", "capopup.html");
