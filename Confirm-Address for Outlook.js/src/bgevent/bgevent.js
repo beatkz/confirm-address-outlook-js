@@ -62,13 +62,7 @@ function stripHtml(html) {
 // メインのイベントハンドラ
 function onMessageSendHandler(event) {
   console.log("bgevent.js: onMessageSendHandler 開始");
-  // Dialog APIのサポートチェックをし、サポートされていない場合はパススルー処理をする
-  if (Office.context.requirements.isSetSupported('DialogAPI', '1.1')) {
-    showConfirmDialog(event);
-  } else {
-    console.error("bgevent.js: Dialog APIがサポートされていないため、確認ダイアログをスキップします。");
-    passThruDialog(event);
-  }
+  showConfirmDialog(event);
 }
 
 function passThruDialog(sendEvent) {
