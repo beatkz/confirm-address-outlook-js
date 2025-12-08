@@ -3,18 +3,10 @@
 // ダイアログを表示
 let caDialog; // confirmダイアログのグローバル変数
 let countdownInterval = null; // カウントダウン用のグローバル変数
-let isOutlookClassic; // Outlook Classic判定用のグローバル変数
 
 Office.onReady((info) => {
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
-  if (info.host === Office.HostType.Outlook 
-    && info.platform === Office.PlatformType.PC) {
-    isOutlookClassic = true;
-  } else {
-    isOutlookClassic = false;
-    Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
-  }
-
+  Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
 }).catch((error) => {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
