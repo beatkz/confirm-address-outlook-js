@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.21/MicrosoftTeams.schema.json",
   "id": "b6b1674a-2dca-4f36-9255-7036e6e9023f",
   "manifestVersion": "1.21",
-  "version": "1.0.0.5",
+  "version": "1.0.0.6",
   "name": {
     "short": "Confirm-Address(Beta Local)",
     "full": "Confirm-Address for Outlook(Beta Local)"
