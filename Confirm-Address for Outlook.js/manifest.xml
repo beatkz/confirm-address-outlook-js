@@ -21,7 +21,7 @@
   </Hosts>
   <Requirements>
     <Sets>
-      <Set Name="Mailbox" MinVersion="1.2"/>
+      <Set Name="Mailbox" MinVersion="1.7"/>
     </Sets>
   </Requirements>
   <FormSettings>

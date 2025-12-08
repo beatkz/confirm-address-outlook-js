@@ -6,7 +6,7 @@ xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
 xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
 xsi:type="MailApp">
   <Id>b6b1674a-2dca-4f36-9255-7036e6e9023f</Id>
-  <Version>1.0.0.7</Version>
+  <Version>1.0.0.10</Version>
   <ProviderName>Keiji Momose</ProviderName>
   <DefaultLocale>ja-JP</DefaultLocale>
   <DisplayName DefaultValue="Confirm-Address for Outlook(Beta Branch)"/>
@@ -27,7 +27,7 @@ xsi:type="MailApp">
   </Hosts>
   <Requirements>
     <Sets>
-      <Set Name="Mailbox" MinVersion="1.2"/>
+      <Set Name="Mailbox" MinVersion="1.13"/>
     </Sets>
   </Requirements>
   <FormSettings>
@@ -57,8 +57,6 @@ xsi:type="MailApp">
             <!-- HTML file including reference to or inline JavaScript event handlers.
                 This is used by Outlook on the web and on the new Mac UI, and new Outlook on Windows. -->
             <Runtime resid="WebViewRuntime.Url">
-              <!-- JavaScript file containing event handlers. This is used by classic Outlook on Windows. -->
-              <Override type="javascript" resid="JSRuntime.Url"/>
             </Runtime>
           </Runtimes>
           <DesktopFormFactor>
@@ -107,8 +105,6 @@ xsi:type="MailApp">
           <bt:Url id="Capopup.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/capopup.html" />
           <bt:Url id="Settings.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/settings.html" />
           <bt:Url id="WebViewRuntime.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/bgevent.html" />
-          <!-- Entry needed for classic Outlook on Windows. -->
-          <bt:Url id="JSRuntime.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/bgevent.js" />
         </bt:Urls>
         <bt:ShortStrings>
           <bt:String id="GroupLabel" DefaultValue="Confirm-Address for Outlook"/>
