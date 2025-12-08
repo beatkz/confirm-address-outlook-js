@@ -15,16 +15,10 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
 // ダイアログを表示
 var caDialog; // confirmダイアログのグローバル変数
 var countdownInterval = null; // カウントダウン用のグローバル変数
-var isOutlookClassic; // Outlook Classic判定用のグローバル変数
 
 Office.onReady(function (info) {
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
-  if (info.host === Office.HostType.Outlook && info.platform === Office.PlatformType.PC) {
-    isOutlookClassic = true;
-  } else {
-    isOutlookClassic = false;
-    Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
-  }
+  Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
 }).catch(function (error) {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
