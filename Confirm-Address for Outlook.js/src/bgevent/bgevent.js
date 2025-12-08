@@ -1,12 +1,20 @@
-/* global Office, console, setInterval, clearInterval, process */
+/* global Office, console, setInterval, clearInterval, process, document, Node */
 
 // ダイアログを表示
 let caDialog; // confirmダイアログのグローバル変数
 let countdownInterval = null; // カウントダウン用のグローバル変数
+let isOutlookClassic; // Outlook Classic判定用のグローバル変数
 
 Office.onReady((info) => {
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
-  Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
+  if (info.host === Office.HostType.Outlook 
+    && info.platform === Office.PlatformType.PC) {
+    isOutlookClassic = true;
+  } else {
+    isOutlookClassic = false;
+    Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
+  }
+
 }).catch((error) => {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
@@ -49,7 +57,10 @@ function stripHtml(html) {
     const textArray = extractTextWithBreaks(tempDiv);
     console.log("textArray: ", textArray);
     // テキストを結合、連続する改行を保持し、スペースを整理
-    let text = textArray.join("").replace(/[ \t]+/g, " ").trim();
+    let text = textArray
+      .join("")
+      .replace(/[ \t]+/g, " ")
+      .trim();
     console.log("bgevent.js: stripHtml 出力:", text);
     // 空の場合のフォールバック
     return text || "本文なし";
@@ -63,12 +74,6 @@ function stripHtml(html) {
 function onMessageSendHandler(event) {
   console.log("bgevent.js: onMessageSendHandler 開始");
   showConfirmDialog(event);
-}
-
-function passThruDialog(sendEvent) {
-  sendEvent.completed({
-    allowEvent: true
-  });
 }
 
 function showConfirmDialog(sendEvent) {
@@ -185,9 +190,7 @@ async function checkAddress() {
   // 本文冒頭
   const lines = Office.context.roamingSettings.get("confirmMailBodyLines") || 5;
   let body;
-  const htmlResult = await new Promise(
-    (resolve) => msgCompFields.body.getAsync("html", resolve)
-  );
+  const htmlResult = await new Promise((resolve) => msgCompFields.body.getAsync("html", resolve));
   console.log("bgevent.js: HTML本文取得完了");
   const rawBody = htmlResult.value;
   // HTMLタグの有無を判定
@@ -200,7 +203,7 @@ async function checkAddress() {
     // HTMLタグがない場合（テキストメール）、そのまま使用
     body = rawBody;
   }
-  if(!body){
+  if (!body) {
     body = "本文なし";
   }
   if (Office.context.roamingSettings.get("confirmMailBody")) {

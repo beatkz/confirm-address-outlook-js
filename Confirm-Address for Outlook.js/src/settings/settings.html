@@ -10,6 +10,12 @@
   <h1 class="text-2xl font-bold mb-4">メール送信確認設定</h1>
   <form id="settingsForm" class="space-y-4">
     <div class="form-group">
+      <label class="flex items-center">
+        <input type="checkbox" id="noDisplayDialogforOLClassic" name="noDisplayDialogforOLClassic" class="mr-2">
+        Outlook Classic上で実行している場合は確認ダイアログを表示しない
+      </label>
+    </div>
+    <div class="form-group">
       <label for="insiderDomains" class="block text-sm font-medium">自組織ドメイン名（カンマ区切りで複数指定）</label>
       <input type="text" id="insiderDomains" name="insiderDomains" class="mt-1 block w-full" placeholder="example.com, company.org">
       <p id="domainsErr" class="error text-sm mt-1 hidden">有効なドメインを入力してください</p>

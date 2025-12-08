@@ -95,8 +95,7 @@ function onMessageFromParent(recv) {
     const outsiderAddr = emailDetails.outsiderReci.length;
     const attachedFiles = emailDetails.attNames.length;
 
-    if (prefs.get("noDisplayInsiderDomainOnly") 
-      && outsiderAddr === 0) {
+    if (prefs.get("noDisplayInsiderDomainOnly") && outsiderAddr === 0) {
       checkAllChecked(outsiderAddr, attachedFiles);
       confirmSend();
       return;
