@@ -6,23 +6,26 @@
   xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
   xsi:type="MailApp">
 
+  <!-- GUID for Stable Branch
   <Id>5ab14cd7-dbe1-4d20-ab4c-7368e9e25e16</Id>
-  <Version>1.0.0.11</Version>
+  -->
+  <!-- GUID for Beta Branch(Same as manifest_beta.xml) -->
+  <Id>b6b1674a-2dca-4f36-9255-7036e6e9023f</Id>
+  <Version>1.0.0.12</Version>
   <ProviderName>Keiji Momose</ProviderName>
   <DefaultLocale>ja-JP</DefaultLocale>
 
-  <DisplayName DefaultValue="Confirm-Address for Outlook"/>
+  <DisplayName DefaultValue="Confirm-Address for Outlook(Local)"/>
   <Description DefaultValue="メール送信前に、送信先メールアドレス・添付ファイル名・本文冒頭を確認します。 
   ※Outlook on the Webでご利用の際は、[サイトの設定]→[ポップアップとリダイレクト]を[許可する]に設定してください。"/>
 
-  <IconUrl DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-64x64.png"/>
-  <HighResolutionIconUrl DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-192x192.png"/>
+  <IconUrl DefaultValue="https://localhost:3000/beta/assets/img/ConfirmAddress-64x64.png"/>
+  <HighResolutionIconUrl DefaultValue="https://localhost:3000/beta/assets/img/ConfirmAddress-192x192.png"/>
   <SupportUrl DefaultValue="https://github.com/beatkz/"/>
 
   <AppDomains>
     <AppDomain>https://localhost:3000</AppDomain>
     <AppDomain>https://outlook.office365.com</AppDomain>
-    <AppDomain>https://beatkz.github.io</AppDomain>
   </AppDomains>
 
   <Hosts>
@@ -39,7 +42,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/settings.html"/>
+        <SourceLocation DefaultValue="https://localhost:3000/beta/settings.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -111,23 +114,23 @@
 
       <Resources>
         <bt:Images>
-          <bt:Image id="Icon.16x16" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-16x16.png"/>
-          <bt:Image id="Icon.32x32" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-32x32.png"/>
-          <bt:Image id="Icon.80x80" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-80x80.png"/>
+          <bt:Image id="Icon.16x16" DefaultValue="https://localhost:3000/beta/assets/img/ConfirmAddress-16x16.png"/>
+          <bt:Image id="Icon.32x32" DefaultValue="https://localhost:3000/beta/assets/img/ConfirmAddress-32x32.png"/>
+          <bt:Image id="Icon.80x80" DefaultValue="https://localhost:3000/beta/assets/img/ConfirmAddress-80x80.png"/>
         </bt:Images>
 
         <bt:Urls>
           <!-- ★ 追加：FunctionFile（commands.html） -->
-          <bt:Url id="Commands.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/commands.html"/>
+          <bt:Url id="Commands.Url" DefaultValue="https://localhost:3000/beta/commands.html"/>
 
           <!-- ダイアログの最初のページ（コードから displayDialogAsync で開く） -->
-          <bt:Url id="Capopup.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/capopup.html"/>
+          <bt:Url id="Capopup.Url" DefaultValue="https://localhost:3000/beta/capopup.html"/>
 
           <!-- タスクペイン（設定画面） -->
-          <bt:Url id="Settings.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/settings.html"/>
+          <bt:Url id="Settings.Url" DefaultValue="https://localhost:3000/beta/settings.html"/>
 
           <!-- OnMessageSend 用ランタイム -->
-          <bt:Url id="WebViewRuntime.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/bgevent.html"/>
+          <bt:Url id="WebViewRuntime.Url" DefaultValue="https://localhost:3000/beta/bgevent.html"/>
         </bt:Urls>
 
         <bt:ShortStrings>

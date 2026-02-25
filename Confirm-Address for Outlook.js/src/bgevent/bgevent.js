@@ -3,41 +3,13 @@
 // ダイアログを表示
 let caDialog; // confirmダイアログのグローバル変数
 let countdownInterval = null; // カウントダウン用のグローバル変数
-let isDisplayDialogSupported; // Dialog APIサポート判定用のグローバル変数
 
 Office.onReady((info) => {
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
-
-  isDialogApiSupported().then((supported) => {
-    isDisplayDialogSupported = supported;
-    console.log("bgevent.js: Dialog API サポート判定結果:", isDisplayDialogSupported);
-  }).catch((error) => {
-    console.error("bgevent.js: Dialog API サポート判定エラー:", error);
-    isDisplayDialogSupported = false;
-  });
   Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
-
 }).catch((error) => {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
-
-async function isDialogApiSupported() {
-    // Office のバージョンが Dialog API をサポートしているか（Office 2016 以降、バージョン 1.1 以上）
-    if (!Office.context.requirements.isSetSupported('DialogApi', '1.1')) {
-        console.log('Dialog API はこのバージョンの Office ではサポートされていません。');
-        return false;
-    }
-
-    // 一部の環境（例: Excel on the web の特定の状況、iOSなど）では displayDialogAsync が存在しない場合があるため、
-    // 実際にメソッドが存在するか確認
-    if (typeof Office.context.ui.displayDialogAsync !== 'function') {
-        console.log('displayDialogAsync メソッドが存在しません（例: Excel on iPad など）。');
-        return false;
-    }
-
-    // ここまで来たらほぼ確実に使用可能
-    return true;
-}
 
 // HTMLタグを除去してプレーンテキストに変換する関数（改行を保持）
 function stripHtml(html) {
@@ -93,24 +65,23 @@ function stripHtml(html) {
 // メインのイベントハンドラ
 function onMessageSendHandler(event) {
   console.log("bgevent.js: onMessageSendHandler 開始");
-  if (!isDisplayDialogSupported) {
-    console.warn("bgevent.js: Dialog API がサポートされていないため、確認ダイアログを表示できません。送信を許可します。");
-    event.completed({ allowEvent: true });
-    return;
-  } else {
-    showConfirmDialog(event);
-  }
+  showConfirmDialog(event);
 }
 
 function showConfirmDialog(sendEvent) {
   const dialogUrl = `${process.env.BASE_URL}capopup.html`;
   console.log("bgevent.js: ダイアログ表示を試行", dialogUrl);
 
+  const isClassicOutlook =
+    Office.context.requirements.isSetSupported("Mailbox", "1.9") &&
+    Office.context.mailbox.diagnostics.hostVersion.indexOf("16.0.") === 0;
+
   Office.context.ui.displayDialogAsync(
     dialogUrl,
     {
       height: 50,
       width: 30,
+      displayInTaskpane: isClassicOutlook,
       promptBeforeOpen: false,
     },
     (result) => {
