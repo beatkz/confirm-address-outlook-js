@@ -33,7 +33,7 @@ if "%BETA_MODE%" == "TRUE" (
   
   REM Proceed with file copy for beta deployment
   echo Copying files for beta deployment...
-  del /q /s /f "dist\manifest.*"
+  del /q /s /f "dist\manifest*.*"
   rd /s /q "..\docs\beta"
   xcopy /s /y /i dist "..\docs\beta"
   xcopy /s /y /i "..\notes\manual" "..\docs\manual"
