@@ -63,7 +63,7 @@ if "%BETA_MODE%" == "TRUE" (
 
   REM Merge dev branch into main
   echo Merging dev branch into main...
-  git merge dev --no-ff
+  git merge dev --no-ff --no-edit
   if !errorlevel! neq 0 (
     echo Merge failed. Possible conflicts detected.
     echo Please resolve conflicts manually and try again.
