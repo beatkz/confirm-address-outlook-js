@@ -1,43 +1,14 @@
 /* global Office, console, setInterval, clearInterval, process, document, Node */
 
-// ダイアログを表示
 let caDialog; // confirmダイアログのグローバル変数
 let countdownInterval = null; // カウントダウン用のグローバル変数
-let isDisplayDialogSupported; // Dialog APIサポート判定用のグローバル変数
 
 Office.onReady((info) => {
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
-
-  isDialogApiSupported().then((supported) => {
-    isDisplayDialogSupported = supported;
-    console.log("bgevent.js: Dialog API サポート判定結果:", isDisplayDialogSupported);
-  }).catch((error) => {
-    console.error("bgevent.js: Dialog API サポート判定エラー:", error);
-    isDisplayDialogSupported = false;
-  });
   Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
-
 }).catch((error) => {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
-
-async function isDialogApiSupported() {
-    // Office のバージョンが Dialog API をサポートしているか（Office 2016 以降、バージョン 1.1 以上）
-    if (!Office.context.requirements.isSetSupported('DialogApi', '1.1')) {
-        console.log('Dialog API はこのバージョンの Office ではサポートされていません。');
-        return false;
-    }
-
-    // 一部の環境（例: Excel on the web の特定の状況、iOSなど）では displayDialogAsync が存在しない場合があるため、
-    // 実際にメソッドが存在するか確認
-    if (typeof Office.context.ui.displayDialogAsync !== 'function') {
-        console.log('displayDialogAsync メソッドが存在しません（例: Excel on iPad など）。');
-        return false;
-    }
-
-    // ここまで来たらほぼ確実に使用可能
-    return true;
-}
 
 // HTMLタグを除去してプレーンテキストに変換する関数（改行を保持）
 function stripHtml(html) {
@@ -56,13 +27,9 @@ function stripHtml(html) {
     function extractTextWithBreaks(node, result = []) {
       for (const child of node.childNodes) {
         if (child.nodeType === Node.TEXT_NODE) {
-          // テキストノードを追加
           let text = child.textContent.trim();
-          if (text) {
-            result.push(text);
-          }
+          if (text) result.push(text);
         } else if (child.nodeType === Node.ELEMENT_NODE) {
-          // 改行タグ（<br>, <p>, <div>）を検出して改行を追加
           const tagName = child.tagName.toLowerCase();
           if (tagName === "br" || tagName === "p" || tagName === "div") {
             result.push("\n");
@@ -73,16 +40,11 @@ function stripHtml(html) {
       return result;
     }
 
-    // テキストと改行を抽出
     const textArray = extractTextWithBreaks(tempDiv);
     console.log("textArray: ", textArray);
-    // テキストを結合、連続する改行を保持し、スペースを整理
-    let text = textArray
-      .join("")
-      .replace(/[ \t]+/g, " ")
-      .trim();
+
+    let text = textArray.join("").replace(/[ \t]+/g, " ").trim();
     console.log("bgevent.js: stripHtml 出力:", text);
-    // 空の場合のフォールバック
     return text || "本文なし";
   } catch (error) {
     console.error("bgevent.js: HTMLタグ除去エラー:", error);
@@ -93,13 +55,7 @@ function stripHtml(html) {
 // メインのイベントハンドラ
 function onMessageSendHandler(event) {
   console.log("bgevent.js: onMessageSendHandler 開始");
-  if (!isDisplayDialogSupported) {
-    console.warn("bgevent.js: Dialog API がサポートされていないため、確認ダイアログを表示できません。送信を許可します。");
-    event.completed({ allowEvent: true });
-    return;
-  } else {
-    showConfirmDialog(event);
-  }
+  showConfirmDialog(event);
 }
 
 function showConfirmDialog(sendEvent) {
@@ -175,9 +131,9 @@ function handleMessage(recv, sendEvent, dialog) {
 }
 
 function startCountdown(seconds, sendEvent, dialog) {
-  let remaining = seconds;
+  let remaining = seconds - 1;
   countdownInterval = setInterval(() => {
-    if (remaining <= 0) {
+    if (remaining < 0) {
       console.log("bgevent.js: カウントダウン終了、送信を許可");
       clearInterval(countdownInterval);
       countdownInterval = null;
@@ -219,14 +175,11 @@ async function checkAddress() {
   const htmlResult = await new Promise((resolve) => msgCompFields.body.getAsync("html", resolve));
   console.log("bgevent.js: HTML本文取得完了");
   const rawBody = htmlResult.value;
-  // HTMLタグの有無を判定
   const hasHtmlTags = /<\/?[a-z][^>]*>/i.test(rawBody);
   console.log("bgevent.js: HTMLタグ検知:", hasHtmlTags);
   if (hasHtmlTags) {
-    // HTMLタグが存在する場合、stripHtmlでプレーンテキストに変換
     body = stripHtml(rawBody);
   } else {
-    // HTMLタグがない場合（テキストメール）、そのまま使用
     body = rawBody;
   }
   if (!body) {
@@ -254,7 +207,6 @@ function judgeAddress(addressArray, domainList, insiderAddress, outsiderAddress)
   console.log("bgevent.js: judgeAddress 開始");
   console.log("[JUDGE] " + addressArray.map((a) => a.address).join(", ") + "\n");
 
-  // domainListが空の場合、全て外部とみなす
   if (domainList.length === 0) {
     for (const address of addressArray) {
       outsiderAddress.push(address);
@@ -262,7 +214,6 @@ function judgeAddress(addressArray, domainList, insiderAddress, outsiderAddress)
     return;
   }
 
-  // 登録されたドメインリストとアドレスを比較
   for (const target of addressArray) {
     const address = target.address;
     if (address.length === 0) {
@@ -304,7 +255,6 @@ function getDomainList() {
 async function collectAddress(msgCompFields, toList, ccList, bccList) {
   console.log("bgevent.js: collectAddress 開始");
 
-  // To
   const toMap = await new Promise((resolve) => msgCompFields.to.getAsync(resolve));
   const tempTo = toMap.value.map((r) => r.emailAddress) || [];
   for (const reci of tempTo) {
@@ -313,7 +263,6 @@ async function collectAddress(msgCompFields, toList, ccList, bccList) {
     }
   }
 
-  // Cc
   const ccMap = await new Promise((resolve) => msgCompFields.cc.getAsync(resolve));
   const tempCc = ccMap.value.map((r) => r.emailAddress) || [];
   for (const reci of tempCc) {
@@ -322,7 +271,6 @@ async function collectAddress(msgCompFields, toList, ccList, bccList) {
     }
   }
 
-  // Bcc
   const bccMap = await new Promise((resolve) => msgCompFields.bcc.getAsync(resolve));
   const tempBcc = bccMap.value.map((r) => r.emailAddress) || [];
   for (const reci of tempBcc) {
@@ -333,7 +281,6 @@ async function collectAddress(msgCompFields, toList, ccList, bccList) {
 }
 
 async function getAttachments(msgCompFields, attList) {
-  // 添付ファイル名
   const attResult = await new Promise((resolve) => msgCompFields.getAttachmentsAsync(resolve));
   const tempAtt = attResult.value.map((att) => att.name) || [];
   for (const att of tempAtt) {
@@ -345,10 +292,7 @@ async function getAttachments(msgCompFields, attList) {
 
 async function sendEmailDetails() {
   console.log("bgevent.js: sendEmailDetails 開始");
-
-  // メールの詳細を収集する処理をここに追加
   const emailDetails = await checkAddress();
-
   console.log("bgevent.js: 詳細:", emailDetails);
   caDialog.messageChild(JSON.stringify(emailDetails));
 }

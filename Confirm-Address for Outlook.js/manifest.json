@@ -2,14 +2,14 @@
   "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.21/MicrosoftTeams.schema.json",
   "id": "b6b1674a-2dca-4f36-9255-7036e6e9023f",
   "manifestVersion": "1.21",
-  "version": "1.0.0.6",
+  "version": "1.0.0.7",
   "name": {
-    "short": "Confirm-Address(Beta Local)",
-    "full": "Confirm-Address for Outlook(Beta Local)"
+    "short": "Confirm-Address(for Local)",
+    "full": "Confirm-Address for Outlook (for Local Debug)"
   },
   "description": {
     "short": "メール送信前に、送信先メールアドレス・添付ファイル名・本文冒頭を確認します。",
-    "full": "注意：このアドインはOutlook(new)および、Outlook on the Web用です。Outlook Classicご利用の方はConfirm-Address for Outlook Classicをご利用ください。(https://github.com/beatkz/confirm-address-outlook/)"
+    "full": "Outlook の送信前確認（宛先・添付名・本文冒頭）を行います。ローカルデバッグ用構成です。"
   },
   "developer": {
     "name": "Keiji Momose",
@@ -42,20 +42,14 @@
       "requirements": {
         "scopes": ["mail"],
         "capabilities": [
-          {
-            "name": "Mailbox",
-            "minVersion": "1.15"
-          }
+          { "name": "Mailbox", "minVersion": "1.9" }
         ]
       },
       "runtimes": [
         {
           "requirements": {
             "capabilities": [
-              {
-                "name": "Mailbox",
-                "minVersion": "1.14"
-              }
+              { "name": "Mailbox", "minVersion": "1.9" }
             ]
           },
           "id": "SettingsRuntime",
@@ -76,10 +70,7 @@
         {
           "requirements": {
             "capabilities": [
-              {
-                "name": "Mailbox",
-                "minVersion": "1.14"
-              }
+              { "name": "Mailbox", "minVersion": "1.9" }
             ]
           },
           "id": "AutorunRuntime",
@@ -99,10 +90,7 @@
         {
           "requirements": {
             "capabilities": [
-              {
-                "name": "Mailbox",
-                "minVersion": "1.12"
-              }
+              { "name": "Mailbox", "minVersion": "1.9" }
             ]
           },
           "id": "SendConfirmRuntime",
@@ -125,10 +113,7 @@
         {
           "requirements": {
             "capabilities": [
-              {
-                "name": "Mailbox",
-                "minVersion": "1.12"
-              }
+              { "name": "Mailbox", "minVersion": "1.9" }
             ],
             "scopes": ["mail"]
           },
@@ -136,14 +121,12 @@
             {
               "type": "messageSending",
               "actionId": "onMessageSendHandler",
-              "options": {
-                "sendMode": "softBlock"
-              }
+              "options": { "sendMode": "softBlock" }
             }
           ]
         }
       ],
-      "ribbons": [
+     "ribbons": [
         {
           "contexts": ["mailCompose"],
           "tabs": [
