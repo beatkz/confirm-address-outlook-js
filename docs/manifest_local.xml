@@ -16,8 +16,7 @@
   <DefaultLocale>ja-JP</DefaultLocale>
 
   <DisplayName DefaultValue="Confirm-Address for Outlook.js(Local)"/>
-  <Description DefaultValue="メール送信前に、送信先メールアドレス・添付ファイル名・本文冒頭を確認します。 
-  ※Outlook on the Webでご利用の際は、[サイトの設定]→[ポップアップとリダイレクト]を[許可する]に設定してください。"/>
+  <Description DefaultValue="メール送信前に、送信先メールアドレス・添付ファイル名・本文冒頭を確認します。※Outlook on the Webでご利用の際は、[サイトの設定]→[ポップアップとリダイレクト]を[許可する]に設定してください。Outlook Classicをご使用の方は従来のConfirm-Addressをインストールの上、本ダイアログボックスでは[そのまま送信]を押してください。"/>
 
   <IconUrl DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/assets/img/ConfirmAddress-64x64.png"/>
   <HighResolutionIconUrl DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/beta/assets/img/ConfirmAddress-192x192.png"/>
