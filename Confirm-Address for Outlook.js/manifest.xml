@@ -7,11 +7,11 @@
   xsi:type="MailApp">
 
   <Id>5ab14cd7-dbe1-4d20-ab4c-7368e9e25e16</Id>
-  <Version>1.0.0.11</Version>
+  <Version>1.0.0.12</Version>
   <ProviderName>Keiji Momose</ProviderName>
   <DefaultLocale>ja-JP</DefaultLocale>
 
-  <DisplayName DefaultValue="Confirm-Address for Outlook"/>
+  <DisplayName DefaultValue="Confirm-Address for Outlook.js"/>
   <Description DefaultValue="メール送信前に、送信先メールアドレス・添付ファイル名・本文冒頭を確認します。 
   ※Outlook on the Webでご利用の際は、[サイトの設定]→[ポップアップとリダイレクト]を[許可する]に設定してください。"/>
 
@@ -20,7 +20,6 @@
   <SupportUrl DefaultValue="https://github.com/beatkz/"/>
 
   <AppDomains>
-    <AppDomain>https://localhost:3000</AppDomain>
     <AppDomain>https://outlook.office365.com</AppDomain>
     <AppDomain>https://beatkz.github.io</AppDomain>
   </AppDomains>
@@ -30,8 +29,8 @@
   </Hosts>
 
   <Requirements>
-    <Sets DefaultMinVersion="1.9">
-      <Set Name="Mailbox" MinVersion="1.9"/>
+    <Sets DefaultMinVersion="1.15">
+      <Set Name="Mailbox"/>
     </Sets>
   </Requirements>
 
@@ -57,7 +56,7 @@
     <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides/1.1" xsi:type="VersionOverridesV1_1">
 
       <Requirements>
-        <bt:Sets DefaultMinVersion="1.9">
+        <bt:Sets DefaultMinVersion="1.15">
           <bt:Set Name="Mailbox"/>
         </bt:Sets>
       </Requirements>
@@ -66,12 +65,13 @@
         <Host xsi:type="MailHost">
           <Runtimes>
             <!-- OnMessageSend 用の軽量ランタイム（bgevent.html） -->
-            <Runtime resid="WebViewRuntime.Url"/>
+            <Runtime resid="WebViewRuntime.Url">
+              <!-- Outlook Classic用 JSファイル(VSTOアドインで処理) -->
+              <Override type="javascript" resid="BgeventOlc.Url"/>
+            </Runtime>
           </Runtimes>
 
           <DesktopFormFactor>
-            <!-- ★ FunctionFile を commands.html に設定 -->
-            <FunctionFile resid="Commands.Url"/>
 
             <!-- Compose リボン：設定ボタン（タスクペインを表示） -->
             <ExtensionPoint xsi:type="MessageComposeCommandSurface">
@@ -117,8 +117,8 @@
         </bt:Images>
 
         <bt:Urls>
-          <!-- ★ 追加：FunctionFile（commands.html） -->
-          <bt:Url id="Commands.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/commands.html"/>
+          <!-- Outlook Classic用 JSファイル（bgevent_olc.js） -->
+          <bt:Url id="BgeventOlc.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/bgevent_olc.js"/>
 
           <!-- ダイアログの最初のページ（コードから displayDialogAsync で開く） -->
           <bt:Url id="Capopup.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/capopup.html"/>

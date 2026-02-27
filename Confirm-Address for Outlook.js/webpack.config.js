@@ -5,9 +5,8 @@ const devCerts = require("office-addin-dev-certs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-// const urlDev = "https://localhost:3000/";
-const urlDev = "https://beatkz.github.io/confirm-address-outlook-js/beta/";
-const urlProd = "https://beatkz.github.io/confirm-address-outlook-js/";
+const urlDev = "https://localhost:3000/";
+const urlStable = "https://beatkz.github.io/confirm-address-outlook-js/";
 
 async function getHttpsOptions() {
   const httpsOptions = await devCerts.getHttpsServerOptions();
@@ -23,6 +22,7 @@ module.exports = async (env, options) => {
       settings: "./src/settings/settings.js",
       capopup: "./src/capopup/capopup.js",
       bgevent: "./src/bgevent/bgevent.js",
+      bgevent_olc: "./src/bgevent/bgevent_olc.js", // ★ 追加：Outlook Classic用エントリーポイント
     },
     plugins: [
       new HtmlWebpackPlugin({
@@ -40,7 +40,15 @@ module.exports = async (env, options) => {
       new HtmlWebpackPlugin({
         filename: "bgevent.html",
         template: "./src/bgevent/bgevent.html",
-        chunks: ["bgevent"], 
+        chunks: ["bgevent"],
+        hash: false,
+      }),
+      // ★ Outlook Classic用HTMLファイル（bgevent_olc.html）
+      // → bgevent_olc.htmlはダミーファイルで、実際のイベントハンドラーはbgevent_olc.jsに記述する想定
+      new HtmlWebpackPlugin({
+        filename: "bgevent_olc.html",
+        template: "./src/bgevent/bgevent.html",
+        chunks: ["bgevent_olc"],
         hash: false,
       }),
       new CopyWebpackPlugin({
@@ -63,7 +71,7 @@ module.exports = async (env, options) => {
         ],
       }),
       new webpack.DefinePlugin({
-        'process.env.BASE_URL': JSON.stringify(dev ? urlDev : urlProd),
+        'process.env.BASE_URL': JSON.stringify(dev ? urlDev : urlStable),
       }),
     ],
     devtool: "source-map",
