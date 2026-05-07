@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "repository": {
     "type": "git",
-    "url": "https://github.com/OfficeDev/Office-Addin-TaskPane-JS.git"
+    "url": "https://github.com/beatkz/confirm-address-outlook-js.git"
   },
   "license": "MIT",
   "config": {
@@ -22,10 +22,8 @@
     "signout": "office-addin-dev-settings m365-account logout",
     "start": "office-addin-debugging start manifest_local.xml",
     "stop": "office-addin-debugging stop manifest_local.xml",
-    "start:owa": "office-addin-debugging start manifest_local.xml web --app outlook",
-    "stop:owa": "office-addin-debugging stop manifest_local.xml web --app outlook",
     "validate": "office-addin-manifest validate manifest_local.xml",
-    "validate:release": "office-addin-manifest validate manifest.xml",
+    "validate:release": "office-addin-manifest validate manifest_stable.xml",
     "validate:beta": "office-addin-manifest validate manifest_beta.xml",
     "watch": "webpack --mode development --watch"
   },
