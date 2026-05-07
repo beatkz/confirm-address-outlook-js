@@ -13,6 +13,17 @@
     <h1 class="text-xl font-bold mb-4">あて先メールアドレスを確認してください。</h1>
     <p class="mb-4">※宛先の編集に戻るにはキャンセルボタンをクリックします。</p>
     <div class="form-group space-y-4" id="caPopup">
+      <div id="SenderAddressContainer" hidden>
+        <div class="flex items-center gap-2">
+          <input type="checkbox" name="sender" id="sender">
+          <label class="text-base font-semibold">
+            差出人
+          </label>
+        </div>
+        <div id="SenderAddress" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-900 dark:text-gray-100 min-h-0 max-h-48 overflow-y-auto">
+          読み込み中...
+        </div>
+      </div>
       <div id="insiderContainer" hidden>
         <div class="flex items-center gap-2">
           <input type="checkbox" name="batchCheck_insiderReci" id="batchCheck_insiderReci" disabled>
