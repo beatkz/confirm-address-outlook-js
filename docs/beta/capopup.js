@@ -54,10 +54,10 @@ function batchCheck(targetId, val) {
   }
 }
 function handleHiddenContainers(emailDetails) {
-  if (emailDetails.insiderReci.length > 0) {
+  if (emailDetails.caReciList.insider.length > 0) {
     document.getElementById("insiderContainer").hidden = false;
   }
-  if (emailDetails.outsiderReci.length > 0) {
+  if (emailDetails.caReciList.outsider.length > 0) {
     document.getElementById("outsiderContainer").hidden = false;
   }
   if (emailDetails.attNames.length > 0) {
@@ -82,7 +82,7 @@ function onMessageFromParent(recv) {
     }
     var emailDetails = message;
     var prefs = Office.context.roamingSettings;
-    var outsiderAddr = emailDetails.outsiderReci.length;
+    var outsiderAddr = emailDetails.caReciList.outsider.length;
     var attachedFiles = emailDetails.attNames.length;
     if (prefs.get("noDisplayInsiderDomainOnly") && outsiderAddr === 0) {
       checkAllChecked(outsiderAddr, attachedFiles);
@@ -91,17 +91,21 @@ function onMessageFromParent(recv) {
     }
     handleHiddenContainers(emailDetails);
     console.log("capopup.js: メール詳細を受信:", emailDetails);
+    if (emailDetails.senderAddress) {
+      document.getElementById("SenderAddress").textContent = emailDetails.senderAddress;
+      document.getElementById("SenderAddressContainer").hidden = false;
+    }
     document.getElementById("insiderReci").textContent = "";
     pushToList({
       targetId: "insiderReci",
       listType: "Addresses",
-      pushingList: emailDetails.insiderReci
+      pushingList: emailDetails.caReciList.insider
     });
     document.getElementById("outsiderReci").textContent = "";
     pushToList({
       targetId: "outsiderReci",
       listType: "Addresses",
-      pushingList: emailDetails.outsiderReci
+      pushingList: emailDetails.caReciList.outsider
     });
 
     // emailDetails.body はプレーンテキスト前提で直接設定

@@ -151,23 +151,34 @@ async function checkAddress() {
   console.log("bgevent.js: checkAddress 開始");
   const msgCompFields = Office.context.mailbox.item;
 
-  var toList = [];
-  var ccList = [];
-  var bccList = [];
-  await collectAddress(msgCompFields, toList, ccList, bccList);
+  const senderAddress = await getSenderAddress(msgCompFields);
+  console.log("bgevent.js: 送信者アドレス:", senderAddress);
+
+  var reciList = {
+    to: [],
+    cc: [],
+    bcc: [],
+  };
+
+  await collectAddress(msgCompFields, reciList);
   console.log("bgevent.js: メールアドレス収集完了");
-  console.log("bgevent.js: To:", toList, "Cc:", ccList, "Bcc:", bccList);
+  console.dir("bgevent.js: ", reciList);
 
   var domainList = getDomainList(); // 組織のドメインリスト
   console.log("bgevent.js: 組織のドメインリスト:", domainList);
 
   var insiderReci = [];
   var outsiderReci = [];
-  judgeAddress(toList, domainList, insiderReci, outsiderReci);
-  judgeAddress(ccList, domainList, insiderReci, outsiderReci);
-  judgeAddress(bccList, domainList, insiderReci, outsiderReci);
-  console.log("bgevent.js: 組織内アドレス:", insiderReci.map((r) => r.address).join(", "));
-  console.log("bgevent.js: 組織外アドレス:", outsiderReci.map((r) => r.address).join(", "));
+
+  var caReciList = {
+    insider: [],
+    outsider: [],
+  };
+  judgeAddress(reciList.to, domainList, caReciList);
+  judgeAddress(reciList.cc, domainList, caReciList);
+  judgeAddress(reciList.bcc, domainList, caReciList);
+  console.log("bgevent.js: 組織内アドレス:", caReciList.insider.map((r) => r.address).join(", "));
+  console.log("bgevent.js: 組織外アドレス:", caReciList.outsider.map((r) => r.address).join(", "));
 
   // 本文冒頭
   const lines = Office.context.roamingSettings.get("confirmMailBodyLines") || 5;
@@ -196,20 +207,20 @@ async function checkAddress() {
   console.log("bgevent.js: 添付ファイル名:", attNames.map((att) => att.name).join(", "));
 
   return {
-    insiderReci: insiderReci,
-    outsiderReci: outsiderReci,
+    senderAddress: senderAddress,
+    caReciList: caReciList,
     body: body,
     attNames: attNames,
   };
 }
 
-function judgeAddress(addressArray, domainList, insiderAddress, outsiderAddress) {
+function judgeAddress(addressArray, domainList, caReciList) {
   console.log("bgevent.js: judgeAddress 開始");
   console.log("[JUDGE] " + addressArray.map((a) => a.address).join(", ") + "\n");
 
   if (domainList.length === 0) {
     for (const address of addressArray) {
-      outsiderAddress.push(address);
+      caReciList.outsider.push(address);
     }
     return;
   }
@@ -229,9 +240,9 @@ function judgeAddress(addressArray, domainList, insiderAddress, outsiderAddress)
       }
     }
     if (match) {
-      insiderAddress.push(target);
+      caReciList.insider.push(target);
     } else {
-      outsiderAddress.push(target);
+      caReciList.outsider.push(target);
     }
   }
 }
@@ -252,14 +263,20 @@ function getDomainList() {
   return domainList;
 }
 
-async function collectAddress(msgCompFields, toList, ccList, bccList) {
+async function getSenderAddress(msgCompFields) {
+  console.log("bgevent.js: getSenderAddress 開始");
+  const senderResult = await new Promise((resolve) => msgCompFields.from.getAsync(resolve));
+  return senderResult.value.emailAddress;
+}
+
+async function collectAddress(msgCompFields, reciList) {
   console.log("bgevent.js: collectAddress 開始");
 
   const toMap = await new Promise((resolve) => msgCompFields.to.getAsync(resolve));
   const tempTo = toMap.value.map((r) => r.emailAddress) || [];
   for (const reci of tempTo) {
     if (reci) {
-      toList.push({ type: "To: ", address: reci });
+      reciList.to.push({ type: "To: ", address: reci });
     }
   }
 
@@ -267,7 +284,7 @@ async function collectAddress(msgCompFields, toList, ccList, bccList) {
   const tempCc = ccMap.value.map((r) => r.emailAddress) || [];
   for (const reci of tempCc) {
     if (reci) {
-      ccList.push({ type: "Cc: ", address: reci });
+      reciList.cc.push({ type: "Cc: ", address: reci });
     }
   }
 
@@ -275,7 +292,7 @@ async function collectAddress(msgCompFields, toList, ccList, bccList) {
   const tempBcc = bccMap.value.map((r) => r.emailAddress) || [];
   for (const reci of tempBcc) {
     if (reci) {
-      bccList.push({ type: "Bcc: ", address: reci });
+      reciList.bcc.push({ type: "Bcc: ", address: reci });
     }
   }
 }
