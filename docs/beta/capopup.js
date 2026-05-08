@@ -18,6 +18,7 @@ Office.onReady(function (info) {
       checkAllChecked();
     });
   };
+  setupCheckboxListener("chkSenderAddress", null);
   setupCheckboxListener("batchCheck_insiderReci", "insiderReci");
   setupCheckboxListener("check_firstLinesOfBody", null);
   var sendButton = document.getElementById("btn_send");
@@ -156,6 +157,7 @@ function checkAllChecked(outsiderAddr, attachedFiles) {
     });
   };
   var prefs = Office.context.roamingSettings;
+  var isSenderAddressChecked = document.getElementById("chkSenderAddress").checked;
   var isInsiderDomainsChecked = areAllCheckboxesChecked("insiderReci");
   var isOutsiderDomainsChecked = outsiderAddr == 0 || areAllCheckboxesChecked("outsiderReci");
   var isMailHeadChecked = true;
@@ -169,7 +171,7 @@ function checkAllChecked(outsiderAddr, attachedFiles) {
   if (prefs.get("noDisplayInsiderDomainOnly") && outsiderAddr === 0) {
     isAllChecked = true;
   } else {
-    isAllChecked = isInsiderDomainsChecked && isOutsiderDomainsChecked && isMailHeadChecked && isAttachmentsChecked;
+    isAllChecked = isSenderAddressChecked && isInsiderDomainsChecked && isOutsiderDomainsChecked && isMailHeadChecked && isAttachmentsChecked;
   }
   sendButton.disabled = !isAllChecked;
   if (isAllChecked) {
