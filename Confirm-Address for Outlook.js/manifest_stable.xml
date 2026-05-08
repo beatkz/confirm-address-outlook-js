@@ -7,7 +7,7 @@
   xsi:type="MailApp">
 
   <Id>5ab14cd7-dbe1-4d20-ab4c-7368e9e25e16</Id>
-  <Version>1.0.0.12</Version>
+  <Version>1.1.0</Version>
   <ProviderName>Keiji Momose</ProviderName>
   <DefaultLocale>ja-JP</DefaultLocale>
 
