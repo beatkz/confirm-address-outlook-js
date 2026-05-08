@@ -18,7 +18,7 @@ async function onMessageSendHandler(event) {
     const confirmMsg = `【アドレス確認】\n\n以下のアドレスに送信します。\n${addrList}\n\nこの内容で送信してよろしいですか？\n\n※Confirm-Address for Outlook Classicがインストールされている場合、続けて送信確認ダイアログが表示されます。`;
 
     event.completed({
-      allowEvent: false,
+      allowEvent: true,
       errorMessage: confirmMsg,
     });
   } catch (error) {

@@ -45,7 +45,7 @@ function _onMessageSendHandler() {
           addrList = recipients.join("\n");
           confirmMsg = "\u3010\u30A2\u30C9\u30EC\u30B9\u78BA\u8A8D\u3011\n\n\u4EE5\u4E0B\u306E\u30A2\u30C9\u30EC\u30B9\u306B\u9001\u4FE1\u3057\u307E\u3059\u3002\n".concat(addrList, "\n\n\u3053\u306E\u5185\u5BB9\u3067\u9001\u4FE1\u3057\u3066\u3088\u308D\u3057\u3044\u3067\u3059\u304B\uFF1F\n\n\u203BConfirm-Address for Outlook Classic\u304C\u30A4\u30F3\u30B9\u30C8\u30FC\u30EB\u3055\u308C\u3066\u3044\u308B\u5834\u5408\u3001\u7D9A\u3051\u3066\u9001\u4FE1\u78BA\u8A8D\u30C0\u30A4\u30A2\u30ED\u30B0\u304C\u8868\u793A\u3055\u308C\u307E\u3059\u3002");
           event.completed({
-            allowEvent: false,
+            allowEvent: true,
             errorMessage: confirmMsg
           });
           _context.n = 5;
