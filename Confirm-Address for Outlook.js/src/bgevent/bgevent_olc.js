@@ -8,7 +8,7 @@ async function onMessageSendHandler(event) {
   try {
     const item = Office.context.mailbox.item;
     const recipients = await collectRecipients(item);
-    
+
     if (recipients.length === 0) {
       event.completed({ allowEvent: true });
       return;
@@ -19,7 +19,7 @@ async function onMessageSendHandler(event) {
 
     event.completed({
       allowEvent: false,
-      errorMessage: confirmMsg
+      errorMessage: confirmMsg,
     });
   } catch (error) {
     console.error("bgevent_olc.js: エラー発生:", error);
@@ -32,7 +32,7 @@ async function collectRecipients(item) {
   const fields = [
     { name: "to", label: "To" },
     { name: "cc", label: "Cc" },
-    { name: "bcc", label: "Bcc" }
+    { name: "bcc", label: "Bcc" },
   ];
 
   for (const field of fields) {
@@ -42,8 +42,8 @@ async function collectRecipients(item) {
           item[field.name].getAsync((asyncResult) => {
             if (asyncResult.status === Office.AsyncResultStatus.Succeeded && asyncResult.value) {
               const adds = asyncResult.value
-                .filter(r => r && r.emailAddress)
-                .map(r => `${field.label}: ${r.emailAddress}`);
+                .filter((r) => r && r.emailAddress)
+                .map((r) => `${field.label}: ${r.emailAddress}`);
               recipients.push(...adds);
             }
             resolve();

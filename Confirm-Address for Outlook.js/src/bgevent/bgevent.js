@@ -43,7 +43,10 @@ function stripHtml(html) {
     const textArray = extractTextWithBreaks(tempDiv);
     console.log("textArray: ", textArray);
 
-    let text = textArray.join("").replace(/[ \t]+/g, " ").trim();
+    let text = textArray
+      .join("")
+      .replace(/[ \t]+/g, " ")
+      .trim();
     console.log("bgevent.js: stripHtml 出力:", text);
     return text || "本文なし";
   } catch (error) {
@@ -99,12 +102,12 @@ function showConfirmDialog(sendEvent) {
 // メッセージを処理
 function handleMessage(recv, sendEvent, dialog) {
   const msgDlg = JSON.parse(recv);
-  switch (msgDlg.type) {
-    case "dialogReady":
+  const msgFuncs = {
+    dialogReady: function () {
       console.log("bgevent.js: ダイアログ準備完了メッセージを受信、メール詳細を送信");
       sendEmailDetails();
-      break;
-    case "confirm":
+    },
+    confirm: function () {
       console.log("bgevent.js: 確認メッセージを受信、送信を許可");
       dialog.close();
       sendEvent.completed({ allowEvent: true });
@@ -112,22 +115,23 @@ function handleMessage(recv, sendEvent, dialog) {
         clearInterval(countdownInterval);
         countdownInterval = null;
       }
-      break;
-    case "countDown":
+    },
+    countDown: function () {
       console.log("bgevent.js: カウントダウン開始:", msgDlg.seconds);
       startCountdown(msgDlg.seconds, sendEvent, dialog);
-      break;
-    case "cancel":
+    },
+    cancel: function () {
       console.log("bgevent.js: キャンセルメッセージを受信、送信をキャンセル");
       dialog.close();
       sendEvent.completed({
         allowEvent: false,
         errorMessage: "送信がキャンセルされました。",
       });
-      break;
-    default:
-      console.warn("bgevent.js: 無効なメッセージを無視:", recv, "タイプ:", typeof recv);
-  }
+    },
+  };
+  msgFuncs[msgDlg.type]
+    ? msgFuncs[msgDlg.type]()
+    : console.warn("bgevent.js: 無効なメッセージを無視:", recv, "タイプ:", typeof recv);
 }
 
 function startCountdown(seconds, sendEvent, dialog) {
@@ -167,16 +171,15 @@ async function checkAddress() {
   var domainList = getDomainList(); // 組織のドメインリスト
   console.log("bgevent.js: 組織のドメインリスト:", domainList);
 
-  var insiderReci = [];
-  var outsiderReci = [];
-
   var caReciList = {
     insider: [],
     outsider: [],
   };
-  judgeAddress(reciList.to, domainList, caReciList);
-  judgeAddress(reciList.cc, domainList, caReciList);
-  judgeAddress(reciList.bcc, domainList, caReciList);
+
+  for (const reciType of ["to", "cc", "bcc"]) {
+    judgeAddress(reciList[reciType], domainList, caReciList);
+  }
+
   console.log("bgevent.js: 組織内アドレス:", caReciList.insider.map((r) => r.address).join(", "));
   console.log("bgevent.js: 組織外アドレス:", caReciList.outsider.map((r) => r.address).join(", "));
 
@@ -269,32 +272,22 @@ async function getSenderAddress(msgCompFields) {
   return senderResult.value.emailAddress;
 }
 
+// 受信者フィールド(To/Cc/Bcc)の収集を共通化（重複排除のためのヘルパー）
+async function collectFieldRecipients(msgCompFields, fieldName, targetList, typePrefix) {
+  const result = await new Promise((resolve) => msgCompFields[fieldName].getAsync(resolve));
+  const addresses = result.value?.map((r) => r.emailAddress) || [];
+  for (const address of addresses) {
+    if (address) {
+      targetList.push({ type: typePrefix, address: address });
+    }
+  }
+}
+
 async function collectAddress(msgCompFields, reciList) {
   console.log("bgevent.js: collectAddress 開始");
-
-  const toMap = await new Promise((resolve) => msgCompFields.to.getAsync(resolve));
-  const tempTo = toMap.value.map((r) => r.emailAddress) || [];
-  for (const reci of tempTo) {
-    if (reci) {
-      reciList.to.push({ type: "To: ", address: reci });
-    }
-  }
-
-  const ccMap = await new Promise((resolve) => msgCompFields.cc.getAsync(resolve));
-  const tempCc = ccMap.value.map((r) => r.emailAddress) || [];
-  for (const reci of tempCc) {
-    if (reci) {
-      reciList.cc.push({ type: "Cc: ", address: reci });
-    }
-  }
-
-  const bccMap = await new Promise((resolve) => msgCompFields.bcc.getAsync(resolve));
-  const tempBcc = bccMap.value.map((r) => r.emailAddress) || [];
-  for (const reci of tempBcc) {
-    if (reci) {
-      reciList.bcc.push({ type: "Bcc: ", address: reci });
-    }
-  }
+  await collectFieldRecipients(msgCompFields, "to", reciList.to, "To: ");
+  await collectFieldRecipients(msgCompFields, "cc", reciList.cc, "Cc: ");
+  await collectFieldRecipients(msgCompFields, "bcc", reciList.bcc, "Bcc: ");
 }
 
 async function getAttachments(msgCompFields, attList) {

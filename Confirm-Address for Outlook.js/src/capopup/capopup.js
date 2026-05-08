@@ -17,6 +17,7 @@ Office.onReady((info) => {
     });
   };
 
+  setupCheckboxListener("chkSenderAddress", null);
   setupCheckboxListener("batchCheck_insiderReci", "insiderReci");
   setupCheckboxListener("check_firstLinesOfBody", null);
 
@@ -174,6 +175,7 @@ function checkAllChecked(outsiderAddr, attachedFiles) {
   };
   const prefs = Office.context.roamingSettings;
 
+  const isSenderAddressChecked = document.getElementById("chkSenderAddress").checked;
   const isInsiderDomainsChecked = areAllCheckboxesChecked("insiderReci");
   const isOutsiderDomainsChecked = outsiderAddr == 0 || areAllCheckboxesChecked("outsiderReci");
   let isMailHeadChecked = true;
@@ -190,6 +192,7 @@ function checkAllChecked(outsiderAddr, attachedFiles) {
     isAllChecked = true;
   } else {
     isAllChecked =
+      isSenderAddressChecked &&
       isInsiderDomainsChecked &&
       isOutsiderDomainsChecked &&
       isMailHeadChecked &&
