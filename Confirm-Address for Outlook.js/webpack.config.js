@@ -5,9 +5,6 @@ const devCerts = require("office-addin-dev-certs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-const urlDev = "https://localhost:3000/";
-const urlStable = "https://beatkz.github.io/confirm-address-outlook-js/";
-
 async function getHttpsOptions() {
   const httpsOptions = await devCerts.getHttpsServerOptions();
   return { ca: httpsOptions.ca, key: httpsOptions.key, cert: httpsOptions.cert };
@@ -16,13 +13,33 @@ async function getHttpsOptions() {
 const path = require('path');
 
 module.exports = async (env, options) => {
-  const dev = options.mode === "development";
+  const buildState = {
+    development: function(){
+      var wpconf = {
+        endpoint: "https://localhost:3000/",
+        minify: false,
+      };
+      console.dir("Building for Debug. wpconf: " + JSON.stringify(wpconf));
+      return wpconf;
+    },
+    production: function(){
+      var wpconf = {
+        endpoint: "https://beatkz.github.io/confirm-address-outlook-js/",
+        minify: true,
+      };
+      console.dir("Building for Production. wpconf: " + JSON.stringify(wpconf));
+      return wpconf;
+    },
+  };
+
+  const { endpoint, minify } = buildState[options.mode]();
+
   const config = {
     entry: {
       settings: "./src/settings/settings.js",
       capopup: "./src/capopup/capopup.js",
       bgevent: "./src/bgevent/bgevent.js",
-      bgevent_olc: "./src/bgevent/bgevent_olc.js", // ★ 追加：Outlook Classic用エントリーポイント
+      bgevent_olc: "./src/bgevent/bgevent_olc.js",
     },
     plugins: [
       new HtmlWebpackPlugin({
@@ -43,8 +60,6 @@ module.exports = async (env, options) => {
         chunks: ["bgevent"],
         hash: false,
       }),
-      // ★ Outlook Classic用HTMLファイル（bgevent_olc.html）
-      // → bgevent_olc.htmlはダミーファイルで、実際のイベントハンドラーはbgevent_olc.jsに記述する想定
       new HtmlWebpackPlugin({
         filename: "bgevent_olc.html",
         template: "./src/bgevent/bgevent.html",
@@ -61,24 +76,25 @@ module.exports = async (env, options) => {
             from: "manifest*.*",
             to: "[name][ext]",
             transform(content) {
-              if (dev) {
+              if (minify) {
                 return content;
               } else {
-                return content.toString().replace(new RegExp(urlDev, "g"), urlStable);
+                var releaseendpoint = "https://beatkz.github.io/confirm-address-outlook-js/";
+                return content.toString().replace(new RegExp(endpoint, "g"), releaseendpoint);
               }
             },
           },
         ],
       }),
       new webpack.DefinePlugin({
-        'process.env.BASE_URL': JSON.stringify(dev ? urlDev : urlStable),
+        'process.env.BASE_URL': JSON.stringify(endpoint),
       }),
     ],
     devtool: "source-map",
     output: {
       clean: true,
-      filename: dev ? "[name].js" : "[name].min.js",
-      chunkFilename: dev ? "[name].chunk.js" : "[name].min.chunk.js",
+      filename: minify ? "[name].min.js" : "[name].js",
+      chunkFilename: minify ? "[name].min.chunk.js" : "[name].chunk.js",
       path: path.resolve(__dirname, "dist"),
     },
     resolve: {

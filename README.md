@@ -5,8 +5,7 @@
 - [GitHub Pagesのリリースページ](https://beatkz.github.io/confirm-address-outlook-js/)
 - [GitHubリポジトリページ](https://github.com/beatkz/confirm-address-outlook-js)
 
-- マニフェスト [安定版](https://beatkz.github.io/confirm-address-outlook-js/manifest_stable.xml) [β版](https://beatkz.github.io/confirm-address-outlook-js/beta/manifest_beta.xml)
-
+- [マニフェストファイル](https://beatkz.github.io/confirm-address-outlook-js/manifest_stable.xml) 
 - [解説書ページ](https://beatkz.github.io/confirm-address-outlook-js/manual/manual_ja.html)
 
 - Original by Meatian [Confirm-Address for Thunderbird](https://github.com/Meatian/confirm-address/)
@@ -27,7 +26,7 @@ Outlook Classic版のアドインを使いたい場合は、[Confirm-Address for
 - [Released on GitHub Pages](https://beatkz.github.io/confirm-address-outlook-js/)
 - [GitHub Repository Page](https://github.com/beatkz/confirm-address-outlook-js)
 
-- Manifest: [Stable branch](https://beatkz.github.io/confirm-address-outlook-js/manifest.xml) [Beta branch](https://beatkz.github.io/confirm-address-outlook-js/beta/manifest_beta.xml)
+- [Manifest file](https://beatkz.github.io/confirm-address-outlook-js/manifest.xml)
 
 - Original by Meatian [Confirm-Address for Thunderbird](https://github.com/Meatian/confirm-address/)
 - Outlook version ported by [Keiji Momose](https://github.com/beatkz/)
@@ -44,4 +43,4 @@ If you wish to use on Outlook Classic, please use [Confirm-Address for Outlook C
 
 ### Install this Add-in
 
-Upload the [Add-in only Manifest](https://beatkz.github.io/confirm-address-outlook-js/manifest.xml) into [olksideload page](https://aka.ms/olksideload). More information, please see the [Microsoft Learn article](https://learn.microsoft.com/en-us/office/dev/add-ins/outlook/sideload-outlook-add-ins-for-testing?tabs=xmlmanifest).
+Upload the [Add-in only Manifest](https://beatkz.github.io/confirm-address-outlook-js/manifest_stable.xml) into [olksideload page](https://aka.ms/olksideload). More information, please see the [Microsoft Learn article](https://learn.microsoft.com/en-us/office/dev/add-ins/outlook/sideload-outlook-add-ins-for-testing?tabs=xmlmanifest).
