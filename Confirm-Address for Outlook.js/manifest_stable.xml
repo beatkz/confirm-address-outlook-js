@@ -7,7 +7,7 @@
   xsi:type="MailApp">
 
   <Id>5ab14cd7-dbe1-4d20-ab4c-7368e9e25e16</Id>
-  <Version>1.1.1</Version>
+  <Version>1.1.2</Version>
   <ProviderName>Keiji Momose</ProviderName>
   <DefaultLocale>ja-JP</DefaultLocale>
 
@@ -66,13 +66,12 @@
           <Runtimes>
             <!-- OnMessageSend 用の軽量ランタイム（bgevent.html） -->
             <Runtime resid="WebViewRuntime.Url">
-              <!-- Outlook Classic用 JSファイル(VSTOアドインで処理) -->
+              <!-- Outlook Classic用 JSファイル -->
               <Override type="javascript" resid="BgeventOlc.Url"/>
             </Runtime>
           </Runtimes>
 
           <DesktopFormFactor>
-
             <!-- Compose リボン：設定ボタン（タスクペインを表示） -->
             <ExtensionPoint xsi:type="MessageComposeCommandSurface">
               <OfficeTab id="TabDefault">
@@ -97,10 +96,17 @@
               </OfficeTab>
             </ExtensionPoint>
 
-            <!-- OnMessageSend（SoftBlock） -->
+            <!-- イベントベースアクティベーション（事前処理用） -->
             <ExtensionPoint xsi:type="LaunchEvent">
               <LaunchEvents>
+                <!-- 送信時（SoftBlock） -->
                 <LaunchEvent Type="OnMessageSend" FunctionName="onMessageSendHandler" SendMode="SoftBlock"/>
+                
+                <!-- 事前処理用イベント（すべて同一の共通ハンドラー onPreProcessHandler を使用） -->
+                <LaunchEvent Type="OnMessageCompose" FunctionName="onMessageComposeHandler"/>
+                <LaunchEvent Type="OnMessageFromChanged" FunctionName="onMessageFromChangedHandler"/>
+                <LaunchEvent Type="OnMessageAttachmentsChanged" FunctionName="onMessageAttachmentsChangedHandler"/>
+                <LaunchEvent Type="OnMessageRecipientsChanged" FunctionName="onMessageRecipientsChangedHandler"/>
               </LaunchEvents>
               <!-- ランタイムの参照 -->
               <SourceLocation resid="WebViewRuntime.Url"/>
@@ -117,16 +123,16 @@
         </bt:Images>
 
         <bt:Urls>
-          <!-- Outlook Classic用 JSファイル（bgevent_olc.js） -->
+          <!-- Outlook Classic用 JSファイル -->
           <bt:Url id="BgeventOlc.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/bgevent_olc.js"/>
 
-          <!-- ダイアログの最初のページ（コードから displayDialogAsync で開く） -->
+          <!-- ダイアログの最初のページ -->
           <bt:Url id="Capopup.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/capopup.html"/>
 
           <!-- タスクペイン（設定画面） -->
           <bt:Url id="Settings.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/settings.html"/>
 
-          <!-- OnMessageSend 用ランタイム -->
+          <!-- イベントベース用ランタイム -->
           <bt:Url id="WebViewRuntime.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/bgevent.html"/>
         </bt:Urls>
 

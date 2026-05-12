@@ -6,6 +6,14 @@ let countdownInterval = null; // カウントダウン用のグローバル変�
 Office.onReady((info) => {
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
   Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
+  // 事前処理イベントはすべて同一の共通関数を使用（重複排除）
+  Office.actions.associate("onMessageComposeHandler", onMessageComposeHandler);
+  Office.actions.associate("onMessageFromChangedHandler", onMessageFromChangedHandler);
+  Office.actions.associate(
+    "onMessageAttachmentsChangedHandler",
+    onMessageAttachmentsChangedHandler
+  );
+  Office.actions.associate("onMessageRecipientsChangedHandler", onMessageRecipientsChangedHandler);
 }).catch((error) => {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
@@ -151,8 +159,94 @@ function startCountdown(seconds, sendEvent, dialog) {
   }, 1000);
 }
 
-async function checkAddress() {
-  console.log("bgevent.js: checkAddress 開始");
+// 事前処理用のイベントハンドラー
+
+function onMessageComposeHandler(event) {
+  console.log("bgevent.js: onMessageComposeHandler 開始 - キャッシュ更新");
+  updateCacheData();
+  event.completed();
+}
+
+function onMessageFromChangedHandler(event) {
+  console.log("bgevent.js: onMessageFromChangedHandler 開始 - キャッシュ更新");
+  updateCacheData();
+  event.completed();
+}
+
+function onMessageAttachmentsChangedHandler(event) {
+  console.log("bgevent.js: onMessageAttachmentsChangedHandler 開始 - キャッシュ更新");
+  updateCacheData();
+  event.completed();
+}
+
+function onMessageRecipientsChangedHandler(event) {
+  console.log("bgevent.js: onMessageRecipientsChangedHandler 開始 - キャッシュ更新");
+  updateCacheData();
+  event.completed();
+}
+
+// キャッシュデータをカスタムプロパティからロード
+async function loadCacheDetails() {
+  console.log("bgevent.js: loadCacheDetails 開始");
+  return new Promise((resolve) => {
+    const item = Office.context.mailbox.item;
+    item.loadCustomPropertiesAsync((result) => {
+      if (result.status === Office.AsyncResultStatus.Succeeded) {
+        const customProps = result.value;
+        const detailsStr = customProps.get("caCacheDetails");
+        if (detailsStr) {
+          try {
+            const details = JSON.parse(detailsStr);
+            console.log("bgevent.js: Cache loaded");
+            resolve(details);
+            return;
+          } catch (e) {
+            console.error("bgevent.js: Cache details parse error:", e);
+          }
+        }
+      } else {
+        console.error("bgevent.js: loadCustomPropertiesAsync failed:", result.error);
+      }
+      resolve(getDefaultCache());
+    });
+  });
+}
+
+function getDefaultCache() {
+  return {
+    senderAddress: "",
+    caReciList: {
+      insider: [],
+      outsider: [],
+    },
+    attNames: [],
+  };
+}
+
+// キャッシュを保存
+function saveCacheDetails(details) {
+  console.log("bgevent.js: saveCacheDetails 開始");
+  const item = Office.context.mailbox.item;
+  item.loadCustomPropertiesAsync((result) => {
+    if (result.status === Office.AsyncResultStatus.Succeeded) {
+      const customProps = result.value;
+      customProps.set("caCacheDetails", JSON.stringify(details));
+      customProps.saveAsync((saveResult) => {
+        if (saveResult.status === Office.AsyncResultStatus.Succeeded) {
+          console.log("bgevent.js: Cache details saved");
+        } else {
+          console.error("bgevent.js: saveCustomPropertiesAsync failed:", saveResult.error);
+        }
+      });
+    } else {
+      console.error("bgevent.js: load for save failed:", result.error);
+    }
+  });
+}
+
+// キャッシュデータ計算（本文以外）
+async function fetchCacheData() {
+  console.log("bgevent.js: fetchCacheData 開始");
   const msgCompFields = Office.context.mailbox.item;
 
   const senderAddress = await getSenderAddress(msgCompFields);
@@ -168,7 +262,7 @@ async function checkAddress() {
   console.log("bgevent.js: メールアドレス収集完了");
   console.dir("bgevent.js: ", reciList);
 
-  var domainList = getDomainList(); // 組織のドメインリスト
+  var domainList = getDomainList();
   console.log("bgevent.js: 組織のドメインリスト:", domainList);
 
   var caReciList = {
@@ -183,9 +277,31 @@ async function checkAddress() {
   console.log("bgevent.js: 組織内アドレス:", caReciList.insider.map((r) => r.address).join(", "));
   console.log("bgevent.js: 組織外アドレス:", caReciList.outsider.map((r) => r.address).join(", "));
 
-  // 本文冒頭
-  const lines = Office.context.roamingSettings.get("confirmMailBodyLines") || 5;
+  var attNames = [];
+  await getAttachments(msgCompFields, attNames);
+  console.log("bgevent.js: 添付ファイル名:", attNames.map((att) => att.name).join(", "));
+
+  return {
+    senderAddress: senderAddress,
+    caReciList: caReciList,
+    attNames: attNames,
+  };
+}
+
+// 更新トリガー
+function updateCacheData() {
+  fetchCacheData()
+    .then((details) => {
+      saveCacheDetails(details);
+    })
+    .catch((error) => {
+      console.error("bgevent.js: fetchCacheData error:", error);
+    });
+}
+
+async function getMailBody(msgCompFields) {
   let body;
+  const lines = Office.context.roamingSettings.get("confirmMailBodyLines") || 5;
   const htmlResult = await new Promise((resolve) => msgCompFields.body.getAsync("html", resolve));
   console.log("bgevent.js: HTML本文取得完了");
   const rawBody = htmlResult.value;
@@ -204,17 +320,7 @@ async function checkAddress() {
   } else {
     body = "";
   }
-
-  var attNames = [];
-  await getAttachments(msgCompFields, attNames);
-  console.log("bgevent.js: 添付ファイル名:", attNames.map((att) => att.name).join(", "));
-
-  return {
-    senderAddress: senderAddress,
-    caReciList: caReciList,
-    body: body,
-    attNames: attNames,
-  };
+  return body;
 }
 
 function judgeAddress(addressArray, domainList, caReciList) {
@@ -300,9 +406,16 @@ async function getAttachments(msgCompFields, attList) {
   }
 }
 
+// メール詳細をダイアログに送信（事前計算データ＋本文）
 async function sendEmailDetails() {
   console.log("bgevent.js: sendEmailDetails 開始");
-  const emailDetails = await checkAddress();
+  const Cache = await loadCacheDetails();
+  const msgCompFields = Office.context.mailbox.item;
+  let body = await getMailBody(msgCompFields);
+  const emailDetails = {
+    ...Cache,
+    body: body,
+  };
   console.log("bgevent.js: 詳細:", emailDetails);
   caDialog.messageChild(JSON.stringify(emailDetails));
 }

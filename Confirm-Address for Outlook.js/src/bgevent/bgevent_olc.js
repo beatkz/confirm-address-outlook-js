@@ -1,18 +1,45 @@
 /* global Office, console */
 
-// Outlook Classic版ではVSTO版で処理するため、パススルー処理します。
 async function onMessageSendHandler(event) {
-  console.log("bgevent_olc.js: Outlook Classic用パススルー 開始");
-
-  try {
-    event.completed({
-      allowEvent: true
-    });
-  } catch (error) {
-    console.error("bgevent_olc.js: エラー発生:", error);
-    event.completed({ allowEvent: true });
-  }
+  console.log("bgevent_olc.js: onMessageSendHandler 開始 ");
+  event.completed({
+    allowEvent: true,
+  });
 }
 
-// IMPORTANT: To ensure your add-in is supported in Outlook, remember to map the event handler name specified in the manifest to its JavaScript counterpart.
-Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
+async function onMessageComposeHandler(event) {
+  console.log("bgevent_olc.js: onMessageComposeHandler 開始 ");
+  event.completed();
+}
+
+async function onMessageFromChangedHandler(event) {
+  console.log("bgevent_olc.js: onMessageFromChangedHandler 開始");
+  event.completed();
+}
+
+async function onMessageAttachmentsChangedHandler(event) {
+  console.log("bgevent_olc.js: onMessageAttachmentsChangedHandler 開始");
+  event.completed();
+}
+
+async function onMessageRecipientsChangedHandler(event) {
+  console.log("bgevent_olc.js: onMessageRecipientsChangedHandler 開始");
+  event.completed();
+}
+
+// IMPORTANT: マニフェストの FunctionName と一致させる
+Office.actions.associate(
+  "onMessageSendHandler", 
+  onMessageSendHandler);
+Office.actions.associate(
+  "onMessageComposeHandler", 
+  onMessageComposeHandler);
+Office.actions.associate(
+  "onMessageFromChangedHandler", 
+  onMessageFromChangedHandler);
+Office.actions.associate(
+  "onMessageAttachmentsChangedHandler", 
+  onMessageAttachmentsChangedHandler);
+Office.actions.associate(
+  "onMessageRecipientsChangedHandler",  
+  onMessageRecipientsChangedHandler);
