@@ -1,6 +1,6 @@
 {
   "name": "confirm-address-outlook-js",
-  "version": "0.0.2",
+  "version": "1.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/beatkz/confirm-address-outlook-js.git"
@@ -22,6 +22,8 @@
     "signout": "office-addin-dev-settings m365-account logout",
     "start": "office-addin-debugging start manifest_local.xml",
     "stop": "office-addin-debugging stop manifest_local.xml",
+    "start:prev": "office-addin-debugging start manifest_local_v110.xml",
+    "stop:prev": "office-addin-debugging stop manifest_local_v110.xml",
     "validate": "office-addin-manifest validate manifest_local.xml",
     "validate:release": "office-addin-manifest validate manifest_stable.xml",
     "watch": "webpack --mode development --watch"

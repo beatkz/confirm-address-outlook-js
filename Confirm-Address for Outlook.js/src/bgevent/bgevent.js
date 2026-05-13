@@ -6,62 +6,9 @@ let countdownInterval = null; // カウントダウン用のグローバル変�
 Office.onReady((info) => {
   console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
   Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
-  // 事前処理イベントはすべて同一の共通関数を使用（重複排除）
-  Office.actions.associate("onMessageComposeHandler", onMessageComposeHandler);
-  Office.actions.associate("onMessageFromChangedHandler", onMessageFromChangedHandler);
-  Office.actions.associate(
-    "onMessageAttachmentsChangedHandler",
-    onMessageAttachmentsChangedHandler
-  );
-  Office.actions.associate("onMessageRecipientsChangedHandler", onMessageRecipientsChangedHandler);
 }).catch((error) => {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
-
-// HTMLタグを除去してプレーンテキストに変換する関数（改行を保持）
-function stripHtml(html) {
-  try {
-    // HTMLエスケープされた文字列をデコード
-    const textarea = document.createElement("textarea");
-    textarea.innerHTML = html;
-    const decodedHtml = textarea.value;
-    console.log("bgevent.js: stripHtml 入力:", decodedHtml);
-
-    // 一時的なdiv要素を作成
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = decodedHtml;
-
-    // テキストノードと改行タグを再帰的に処理
-    function extractTextWithBreaks(node, result = []) {
-      for (const child of node.childNodes) {
-        if (child.nodeType === Node.TEXT_NODE) {
-          let text = child.textContent.trim();
-          if (text) result.push(text);
-        } else if (child.nodeType === Node.ELEMENT_NODE) {
-          const tagName = child.tagName.toLowerCase();
-          if (tagName === "br" || tagName === "p" || tagName === "div") {
-            result.push("\n");
-          }
-          extractTextWithBreaks(child, result);
-        }
-      }
-      return result;
-    }
-
-    const textArray = extractTextWithBreaks(tempDiv);
-    console.log("textArray: ", textArray);
-
-    let text = textArray
-      .join("")
-      .replace(/[ \t]+/g, " ")
-      .trim();
-    console.log("bgevent.js: stripHtml 出力:", text);
-    return text || "本文なし";
-  } catch (error) {
-    console.error("bgevent.js: HTMLタグ除去エラー:", error);
-    return "本文なし";
-  }
-}
 
 // メインのイベントハンドラ
 function onMessageSendHandler(event) {
@@ -159,168 +106,49 @@ function startCountdown(seconds, sendEvent, dialog) {
   }, 1000);
 }
 
-// 事前処理用のイベントハンドラー
-
-function onMessageComposeHandler(event) {
-  console.log("bgevent.js: onMessageComposeHandler 開始 - キャッシュ更新");
-  updateCacheData();
-  event.completed();
-}
-
-function onMessageFromChangedHandler(event) {
-  console.log("bgevent.js: onMessageFromChangedHandler 開始 - キャッシュ更新");
-  updateCacheData();
-  event.completed();
-}
-
-function onMessageAttachmentsChangedHandler(event) {
-  console.log("bgevent.js: onMessageAttachmentsChangedHandler 開始 - キャッシュ更新");
-  updateCacheData();
-  event.completed();
-}
-
-function onMessageRecipientsChangedHandler(event) {
-  console.log("bgevent.js: onMessageRecipientsChangedHandler 開始 - キャッシュ更新");
-  updateCacheData();
-  event.completed();
-}
-
-// キャッシュデータをカスタムプロパティからロード
-async function loadCacheDetails() {
-  console.log("bgevent.js: loadCacheDetails 開始");
-  return new Promise((resolve) => {
-    const item = Office.context.mailbox.item;
-    item.loadCustomPropertiesAsync((result) => {
-      if (result.status === Office.AsyncResultStatus.Succeeded) {
-        const customProps = result.value;
-        const detailsStr = customProps.get("caCacheDetails");
-        if (detailsStr) {
-          try {
-            const details = JSON.parse(detailsStr);
-            console.log("bgevent.js: Cache loaded");
-            resolve(details);
-            return;
-          } catch (e) {
-            console.error("bgevent.js: Cache details parse error:", e);
-          }
-        }
-      } else {
-        console.error("bgevent.js: loadCustomPropertiesAsync failed:", result.error);
-      }
-      resolve(getDefaultCache());
-    });
-  });
-}
-
-function getDefaultCache() {
-  return {
-    senderAddress: "",
-    caReciList: {
-      insider: [],
-      outsider: [],
-    },
-    attNames: [],
-  };
-}
-
-// キャッシュを保存
-function saveCacheDetails(details) {
-  console.log("bgevent.js: saveCacheDetails 開始");
-  const item = Office.context.mailbox.item;
-  item.loadCustomPropertiesAsync((result) => {
-    if (result.status === Office.AsyncResultStatus.Succeeded) {
-      const customProps = result.value;
-      customProps.set("caCacheDetails", JSON.stringify(details));
-      customProps.saveAsync((saveResult) => {
-        if (saveResult.status === Office.AsyncResultStatus.Succeeded) {
-          console.log("bgevent.js: Cache details saved");
-        } else {
-          console.error("bgevent.js: saveCustomPropertiesAsync failed:", saveResult.error);
-        }
-      });
-    } else {
-      console.error("bgevent.js: load for save failed:", result.error);
-    }
-  });
-}
-
-// キャッシュデータ計算（本文以外）
-async function fetchCacheData() {
-  console.log("bgevent.js: fetchCacheData 開始");
+async function checkAddress() {
+  console.log("bgevent.js: checkAddress 開始");
   const msgCompFields = Office.context.mailbox.item;
 
   const senderAddress = await getSenderAddress(msgCompFields);
   console.log("bgevent.js: 送信者アドレス:", senderAddress);
 
-  var reciList = {
-    to: [],
-    cc: [],
-    bcc: [],
-  };
+  const caReciList = await caReciListfromRecipients(msgCompFields);
 
-  await collectAddress(msgCompFields, reciList);
-  console.log("bgevent.js: メールアドレス収集完了");
-  console.dir("bgevent.js: ", reciList);
+  // 本文冒頭
+  const body = await getEmailBody(msgCompFields);
+  console.log("bgevent.js: 本文冒頭:", body);
 
-  var domainList = getDomainList();
-  console.log("bgevent.js: 組織のドメインリスト:", domainList);
-
-  var caReciList = {
-    insider: [],
-    outsider: [],
-  };
-
-  for (const reciType of ["to", "cc", "bcc"]) {
-    judgeAddress(reciList[reciType], domainList, caReciList);
-  }
-
-  console.log("bgevent.js: 組織内アドレス:", caReciList.insider.map((r) => r.address).join(", "));
-  console.log("bgevent.js: 組織外アドレス:", caReciList.outsider.map((r) => r.address).join(", "));
-
-  var attNames = [];
-  await getAttachments(msgCompFields, attNames);
+  // 添付ファイル名の収集
+  const attNames = await getAttachments(msgCompFields);
   console.log("bgevent.js: 添付ファイル名:", attNames.map((att) => att.name).join(", "));
 
   return {
     senderAddress: senderAddress,
     caReciList: caReciList,
+    body: body,
     attNames: attNames,
   };
 }
 
-// 更新トリガー
-function updateCacheData() {
-  fetchCacheData()
-    .then((details) => {
-      saveCacheDetails(details);
-    })
-    .catch((error) => {
-      console.error("bgevent.js: fetchCacheData error:", error);
-    });
-}
+async function caReciListfromRecipients(msgCompFields) {
+  const caReciList = {
+    insider: [],
+    outsider: [],
+  };
 
-async function getMailBody(msgCompFields) {
-  let body;
-  const lines = Office.context.roamingSettings.get("confirmMailBodyLines") || 5;
-  const htmlResult = await new Promise((resolve) => msgCompFields.body.getAsync("html", resolve));
-  console.log("bgevent.js: HTML本文取得完了");
-  const rawBody = htmlResult.value;
-  const hasHtmlTags = /<\/?[a-z][^>]*>/i.test(rawBody);
-  console.log("bgevent.js: HTMLタグ検知:", hasHtmlTags);
-  if (hasHtmlTags) {
-    body = stripHtml(rawBody);
-  } else {
-    body = rawBody;
+  const reciList = await collectAddress(msgCompFields);
+  console.log("bgevent.js: メールアドレス収集完了");
+  console.dir("bgevent.js: ", reciList);
+
+  const domainList = getDomainList(); // 組織のドメインリスト
+  console.log("bgevent.js: 組織のドメインリスト:", domainList);
+
+  for (const reciType of ["to", "cc", "bcc"]) {
+    judgeAddress(reciList[reciType], domainList, caReciList);
   }
-  if (!body) {
-    body = "本文なし";
-  }
-  if (Office.context.roamingSettings.get("confirmMailBody")) {
-    body = body.split("\n").slice(0, lines).join("\n").trim();
-  } else {
-    body = "";
-  }
-  return body;
+  console.dir("bgevent.js: 振分アドレス:", caReciList);
+  return caReciList;
 }
 
 function judgeAddress(addressArray, domainList, caReciList) {
@@ -389,33 +217,107 @@ async function collectFieldRecipients(msgCompFields, fieldName, targetList, type
   }
 }
 
-async function collectAddress(msgCompFields, reciList) {
+async function collectAddress(msgCompFields) {
+  var reciList = {
+    to: [],
+    cc: [],
+    bcc: [],
+  };
+
   console.log("bgevent.js: collectAddress 開始");
-  await collectFieldRecipients(msgCompFields, "to", reciList.to, "To: ");
-  await collectFieldRecipients(msgCompFields, "cc", reciList.cc, "Cc: ");
-  await collectFieldRecipients(msgCompFields, "bcc", reciList.bcc, "Bcc: ");
+  for (const field of ["to", "cc", "bcc"]) {
+    console.log(`bgevent.js: ${field}フィールドの収集を開始`);
+    await collectFieldRecipients(
+      msgCompFields,
+      field,
+      reciList[field],
+      `${field.charAt(0).toUpperCase() + field.slice(1)}: `
+    );
+  }
+  return reciList;
 }
 
-async function getAttachments(msgCompFields, attList) {
-  const attResult = await new Promise((resolve) => msgCompFields.getAttachmentsAsync(resolve));
-  const tempAtt = attResult.value.map((att) => att.name) || [];
-  for (const att of tempAtt) {
-    if (att) {
-      attList.push({ name: att });
-    }
+async function getEmailBody(msgCompFields) {
+  const htmlResult = await new Promise((resolve) => msgCompFields.body.getAsync("html", resolve));
+  console.log("bgevent.js: HTML本文取得完了");
+
+  const rawBody = htmlResult.value;
+
+  var body = textFromRawText(rawBody);
+
+  if (!body) {
+    return "本文なし";
+  }
+
+  if (Office.context.roamingSettings.get("confirmMailBody")) {
+    const lines = Office.context.roamingSettings.get("confirmMailBodyLines") || 5;
+    return body.split("\n").slice(0, lines).join("\n").trim();
+  } else {
+    return "";
   }
 }
 
-// メール詳細をダイアログに送信（事前計算データ＋本文）
+function detectHTMLTags(text) {
+  return /<\/?[a-z][^>]*>/i.test(text);
+}
+
+// 本文をプレーンテキストに変換する関数（改行を保持）
+function textFromRawText(rawText) {
+  if (detectHTMLTags(rawText)) {
+    try {
+      // HTMLエスケープされた文字列をデコード
+      const textarea = document.createElement("textarea");
+      textarea.innerHTML = rawText;
+      const decodedHtml = textarea.value;
+      console.log("bgevent.js: textFromRawText 入力:", decodedHtml);
+
+      // 一時的なdiv要素を作成
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = decodedHtml;
+
+      // テキストノードと改行タグを再帰的に処理
+      function extractTextWithBreaks(node, result = []) {
+        for (const child of node.childNodes) {
+          if (child.nodeType === Node.TEXT_NODE) {
+            let text = child.textContent.trim();
+            if (text) result.push(text);
+          } else if (child.nodeType === Node.ELEMENT_NODE) {
+            const tagName = child.tagName.toLowerCase();
+            if (tagName === "br" || tagName === "p" || tagName === "div") {
+              result.push("\n");
+            }
+            extractTextWithBreaks(child, result);
+          }
+        }
+        return result;
+      }
+
+      const textArray = extractTextWithBreaks(tempDiv);
+      console.log("textArray: ", textArray);
+
+      let text = textArray
+        .join("")
+        .replace(/[ \t]+/g, " ")
+        .trim();
+      console.log("bgevent.js: textFromRawText 出力:", text);
+      return text || "本文なし";
+    } catch (error) {
+      console.error("bgevent.js: HTMLタグ除去エラー:", error);
+      return "本文なし";
+    }
+  } else {
+    return rawText;
+  }
+}
+
+async function getAttachments(msgCompFields) {
+  const attResult = await new Promise((resolve) => msgCompFields.getAttachmentsAsync(resolve));
+  const tempAtt = attResult.value.map((att) => att.name) || [];
+  return tempAtt.filter((att) => !!att).map((att) => ({ name: att }));
+}
+
+// メール詳細をダイアログに送信
 async function sendEmailDetails() {
   console.log("bgevent.js: sendEmailDetails 開始");
-  const Cache = await loadCacheDetails();
-  const msgCompFields = Office.context.mailbox.item;
-  let body = await getMailBody(msgCompFields);
-  const emailDetails = {
-    ...Cache,
-    body: body,
-  };
-  console.log("bgevent.js: 詳細:", emailDetails);
-  caDialog.messageChild(JSON.stringify(emailDetails));
+  caDialog.messageChild(JSON.stringify(await checkAddress()));
 }
