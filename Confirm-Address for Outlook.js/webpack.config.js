@@ -38,8 +38,8 @@ module.exports = async (env, options) => {
     entry: {
       settings: "./src/settings/settings.js",
       capopup: "./src/capopup/capopup.js",
-      bgevent: "./src/bgevent/bgevent.js",
-      bgevent_olc: "./src/bgevent/bgevent_olc.js",
+      bgevent: "./src/bgevent/bgevent.ts",
+      bgevent_olc: "./src/bgevent/bgevent_olc.ts",
     },
     plugins: [
       new HtmlWebpackPlugin({
@@ -98,16 +98,14 @@ module.exports = async (env, options) => {
       path: path.resolve(__dirname, "dist"),
     },
     resolve: {
-      extensions: [".html", ".js"],
+      extensions: [".ts", ".tsx", ".html", ".js"],
     },
     module: {
       rules: [
         {
-          test: /\.js$/,
+          test: /\.(tsx?|jsx?)$/,
           exclude: /node_modules/,
-          use: {
-            loader: "babel-loader",
-          },
+          use: "babel-loader",
         },
         {
           test: /\.html$/,

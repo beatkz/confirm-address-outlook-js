@@ -1,23 +1,21 @@
-/* global Office, console, setInterval, clearInterval, process, document, Node */
+/* global Office, Node, console, clearInterval, process, document, window */
 
-let caDialog; // confirmダイアログのグローバル変数
-let countdownInterval = null; // カウントダウン用のグローバル変数
+let caDialog: Office.Dialog; // confirmダイアログのグローバル変数
+let countdownInterval: number; // カウントダウン用のグローバル変数
 
-Office.onReady((info) => {
-  console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
-  Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
+Office.onReady((info: { host: Office.HostType }) => {
+  if (info.host === Office.HostType.Outlook) {
+    console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
+    Office.actions.associate("onMessageSendHandler", function (event) {
+      console.log("bgevent.js: onMessageSendHandler 開始");
+      showConfirmDialog(event, `${process.env.BASE_URL}capopup.html`);
+    });
+  }
 }).catch((error) => {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
 
-// メインのイベントハンドラ
-function onMessageSendHandler(event) {
-  console.log("bgevent.js: onMessageSendHandler 開始");
-  showConfirmDialog(event);
-}
-
-function showConfirmDialog(sendEvent) {
-  const dialogUrl = `${process.env.BASE_URL}capopup.html`;
+function showConfirmDialog(sendEvent: Office.MailboxEvent, dialogUrl: string) {
   console.log("bgevent.js: ダイアログ表示を試行", dialogUrl);
 
   Office.context.ui.displayDialogAsync(
@@ -38,16 +36,16 @@ function showConfirmDialog(sendEvent) {
       }
 
       console.log("bgevent.js: ダイアログ表示成功");
-      caDialog = result.value;
+      caDialog = result.value as Office.Dialog;
       console.log("bgevent.js: caDialog オブジェクト:", caDialog, "タイプ:", typeof caDialog);
 
       // Office.js のイベントハンドラ
-      caDialog.addEventHandler(Office.EventType.DialogMessageReceived, (arg) => {
+      caDialog.addEventHandler(Office.EventType.DialogMessageReceived, (arg: any) => {
         console.log("bgevent.js: ダイアログからのメッセージ受信:", arg.message);
         handleMessage(arg.message, sendEvent, caDialog);
       });
 
-      caDialog.addEventHandler(Office.EventType.DialogEventReceived, (arg) => {
+      caDialog.addEventHandler(Office.EventType.DialogEventReceived, (arg: any) => {
         console.log("bgevent.js: ダイアログが閉じられました:", arg);
       });
     }
@@ -55,9 +53,9 @@ function showConfirmDialog(sendEvent) {
 }
 
 // メッセージを処理
-function handleMessage(recv, sendEvent, dialog) {
-  const msgDlg = JSON.parse(recv);
-  const msgFuncs = {
+function handleMessage(recv: string, sendEvent: Office.MailboxEvent, dialog: Office.Dialog) {
+  const msgDlg: any = JSON.parse(recv);
+  const msgFuncs: any = {
     dialogReady: function () {
       console.log("bgevent.js: ダイアログ準備完了メッセージを受信、メール詳細を送信");
       sendEmailDetails();
@@ -68,7 +66,7 @@ function handleMessage(recv, sendEvent, dialog) {
       sendEvent.completed({ allowEvent: true });
       if (countdownInterval) {
         clearInterval(countdownInterval);
-        countdownInterval = null;
+        countdownInterval = -1;
       }
     },
     countDown: function () {
@@ -89,13 +87,13 @@ function handleMessage(recv, sendEvent, dialog) {
     : console.warn("bgevent.js: 無効なメッセージを無視:", recv, "タイプ:", typeof recv);
 }
 
-function startCountdown(seconds, sendEvent, dialog) {
+function startCountdown(seconds: number, sendEvent: Office.MailboxEvent, dialog: Office.Dialog) {
   let remaining = seconds - 1;
-  countdownInterval = setInterval(() => {
+  countdownInterval = window.setInterval(() => {
     if (remaining < 0) {
       console.log("bgevent.js: カウントダウン終了、送信を許可");
       clearInterval(countdownInterval);
-      countdownInterval = null;
+      countdownInterval = -1;
       dialog.close();
       sendEvent.completed({ allowEvent: true });
       return;
@@ -108,7 +106,7 @@ function startCountdown(seconds, sendEvent, dialog) {
 
 async function checkAddress() {
   console.log("bgevent.js: checkAddress 開始");
-  const msgCompFields = Office.context.mailbox.item;
+  const msgCompFields = Office.context.mailbox.item as Office.MessageCompose;
 
   const senderAddress = await getSenderAddress(msgCompFields);
   console.log("bgevent.js: 送信者アドレス:", senderAddress);
@@ -131,7 +129,7 @@ async function checkAddress() {
   };
 }
 
-async function caReciListfromRecipients(msgCompFields) {
+async function caReciListfromRecipients(msgCompFields: Office.MessageCompose) {
   const caReciList = {
     insider: [],
     outsider: [],
@@ -151,7 +149,11 @@ async function caReciListfromRecipients(msgCompFields) {
   return caReciList;
 }
 
-function judgeAddress(addressArray, domainList, caReciList) {
+function judgeAddress(
+  addressArray: { address: string }[],
+  domainList: string[],
+  caReciList: { insider: any[]; outsider: any[] }
+) {
   console.log("bgevent.js: judgeAddress 開始");
   console.log("[JUDGE] " + addressArray.map((a) => a.address).join(", ") + "\n");
 
@@ -190,7 +192,7 @@ function getDomainList() {
   const settings = Office.context.roamingSettings;
   const insiderDomains = settings.get("insiderDomains");
   if (insiderDomains) {
-    const domains = insiderDomains.split(",").map((domain) => domain.trim());
+    const domains: string[] = insiderDomains.split(",").map((domain: string) => domain.trim());
     for (const domain of domains) {
       if (domain) {
         domainList.push(domain);
@@ -200,45 +202,53 @@ function getDomainList() {
   return domainList;
 }
 
-async function getSenderAddress(msgCompFields) {
+async function getSenderAddress(msgCompFields: Office.MessageCompose) {
   console.log("bgevent.js: getSenderAddress 開始");
-  const senderResult = await new Promise((resolve) => msgCompFields.from.getAsync(resolve));
+  const senderResult = await new Promise<{ value: { emailAddress: string } }>((resolve) =>
+    msgCompFields.from.getAsync(resolve)
+  );
   return senderResult.value.emailAddress;
 }
 
-// 受信者フィールド(To/Cc/Bcc)の収集を共通化（重複排除のためのヘルパー）
-async function collectFieldRecipients(msgCompFields, fieldName, targetList, typePrefix) {
-  const result = await new Promise((resolve) => msgCompFields[fieldName].getAsync(resolve));
-  const addresses = result.value?.map((r) => r.emailAddress) || [];
-  for (const address of addresses) {
-    if (address) {
-      targetList.push({ type: typePrefix, address: address });
-    }
-  }
-}
-
-async function collectAddress(msgCompFields) {
-  var reciList = {
+async function collectAddress(msgCompFields: Office.MessageCompose) {
+  var reciList: any = {
     to: [],
     cc: [],
     bcc: [],
   };
 
   console.log("bgevent.js: collectAddress 開始");
-  for (const field of ["to", "cc", "bcc"]) {
+  const fields: Array<"to" | "cc" | "bcc"> = ["to", "cc", "bcc"];
+
+  for (const field of fields) {
     console.log(`bgevent.js: ${field}フィールドの収集を開始`);
-    await collectFieldRecipients(
-      msgCompFields,
-      field,
-      reciList[field],
-      `${field.charAt(0).toUpperCase() + field.slice(1)}: `
+    const result = await new Promise<Office.EmailAddressDetails[]>((resolve) =>
+      msgCompFields[field].getAsync((result) => {
+        if (result.status === Office.AsyncResultStatus.Succeeded) {
+          resolve(result.value);
+        } else {
+          console.error(`bgevent.js: ${field}フィールドの取得エラー:`, result.error.message);
+          resolve([]);
+        }
+      })
     );
+    const addresses: string[] = result.map((r) => r.emailAddress) || [];
+    for (const address of addresses) {
+      if (address) {
+        reciList[field].push({
+          type: `${field.charAt(0).toUpperCase() + field.slice(1)}: `,
+          address: address,
+        });
+      }
+    }
   }
   return reciList;
 }
 
-async function getEmailBody(msgCompFields) {
-  const htmlResult = await new Promise((resolve) => msgCompFields.body.getAsync("html", resolve));
+async function getEmailBody(msgCompFields: Office.MessageCompose) {
+  const htmlResult = await new Promise<{ value: string }>((resolve) =>
+    msgCompFields.body.getAsync("html", resolve)
+  );
   console.log("bgevent.js: HTML本文取得完了");
 
   const rawBody = htmlResult.value;
@@ -257,12 +267,12 @@ async function getEmailBody(msgCompFields) {
   }
 }
 
-function detectHTMLTags(text) {
+function detectHTMLTags(text: string) {
   return /<\/?[a-z][^>]*>/i.test(text);
 }
 
 // 本文をプレーンテキストに変換する関数（改行を保持）
-function textFromRawText(rawText) {
+function textFromRawText(rawText: string) {
   if (detectHTMLTags(rawText)) {
     try {
       // HTMLエスケープされた文字列をデコード
@@ -276,7 +286,7 @@ function textFromRawText(rawText) {
       tempDiv.innerHTML = decodedHtml;
 
       // テキストノードと改行タグを再帰的に処理
-      function extractTextWithBreaks(node, result = []) {
+      function extractTextWithBreaks(node: any, result: string[] = []): string[] {
         for (const child of node.childNodes) {
           if (child.nodeType === Node.TEXT_NODE) {
             let text = child.textContent.trim();
@@ -310,8 +320,10 @@ function textFromRawText(rawText) {
   }
 }
 
-async function getAttachments(msgCompFields) {
-  const attResult = await new Promise((resolve) => msgCompFields.getAttachmentsAsync(resolve));
+async function getAttachments(msgCompFields: Office.MessageCompose) {
+  const attResult = await new Promise<{ value: { name: string }[] }>((resolve) =>
+    msgCompFields.getAttachmentsAsync(resolve)
+  );
   const tempAtt = attResult.value.map((att) => att.name) || [];
   return tempAtt.filter((att) => !!att).map((att) => ({ name: att }));
 }
