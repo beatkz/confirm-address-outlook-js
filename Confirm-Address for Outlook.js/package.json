@@ -13,8 +13,8 @@
   },
   "scripts": {
     "type-check": "tsc --noEmit",
-    "build": "npm run type-check && webpack --mode production",
-    "build:dev": "npm run type-check && webpack --mode development",
+    "build": "npm run lint:fix && npm run type-check && webpack --mode production",
+    "build:dev": "npm run lint:fix && npm run type-check && webpack --mode development",
     "dev-server": "webpack serve --mode development",
     "lint": "office-addin-lint check",
     "lint:fix": "office-addin-lint fix",
