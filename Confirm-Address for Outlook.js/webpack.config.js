@@ -36,8 +36,8 @@ module.exports = async (env, options) => {
 
   const config = {
     entry: {
-      settings: "./src/settings/settings.js",
-      capopup: "./src/capopup/capopup.js",
+      settings: "./src/settings/settings.ts",
+      capopup: "./src/capopup/capopup.ts",
       bgevent: "./src/bgevent/bgevent.ts",
       bgevent_olc: "./src/bgevent/bgevent_olc.ts",
     },
