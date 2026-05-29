@@ -39,37 +39,30 @@ Office.onReady((info) => {
 });
 
 function applyTheme(isDarkTheme: boolean) {
+  const body = document.body;
+  const rootContainers = document.querySelectorAll(
+    ".ms-TaskPane-root, .ms-TaskPane-content, .ms-Dialog-content"
+  );
   if (isDarkTheme) {
-    document.body.classList.add("dark", "bg-gray-900", "text-gray-100");
-    document.body.classList.remove("bg-gray-100", "text-gray-900");
-    const rootContainers = document.querySelectorAll(".ms-TaskPane-root, .ms-TaskPane-content");
+    body.classList.add("dark", "is-dark");
+    body.classList.remove("light");
     rootContainers.forEach((container) => {
-      container.classList.add("bg-gray-900", "text-gray-100");
-      container.classList.remove("bg-gray-100", "text-gray-900");
-      (container as HTMLElement).style.backgroundColor = "#111827";
-      (container as HTMLElement).style.color = "#F3F4F6";
+      (container as HTMLElement).classList.add("dark", "is-dark");
+      (container as HTMLElement).style.backgroundColor = "#1b1a19";
+      (container as HTMLElement).style.color = "#f3f2f1";
     });
-    document.querySelectorAll("input, button").forEach((el) => {
-      el.classList.add("bg-gray-800", "border-gray-600", "text-gray-100");
-      el.classList.remove("bg-white", "border-gray-300", "text-gray-900");
-    });
-    console.log("settings.js: ダークテーマ配色を適用");
+    console.log("settings.js: ダークテーマ配色を適用 (Fabric + custom CSS)");
   } else {
-    document.body.classList.add("bg-gray-100", "text-gray-900");
-    document.body.classList.remove("dark", "bg-gray-900", "text-gray-100");
-    const rootContainers = document.querySelectorAll(".ms-TaskPane-root, .ms-TaskPane-content");
+    body.classList.add("light");
+    body.classList.remove("dark", "is-dark");
     rootContainers.forEach((container) => {
-      container.classList.add("bg-gray-100", "text-gray-900");
-      container.classList.remove("bg-gray-900", "text-gray-100");
-      (container as HTMLElement).style.backgroundColor = "#F3F4F6";
-      (container as HTMLElement).style.color = "#111827";
+      (container as HTMLElement).classList.remove("dark", "is-dark");
+      (container as HTMLElement).style.backgroundColor = "#ffffff";
+      (container as HTMLElement).style.color = "#323130";
     });
-    document.querySelectorAll("input, button").forEach((el) => {
-      el.classList.add("bg-white", "border-gray-300", "text-gray-900");
-      el.classList.remove("bg-gray-800", "border-gray-600", "text-gray-100");
-    });
-    console.log("settings.js: ライトテーマ配色を適用");
+    console.log("settings.js: ライトテーマ配色を適用 (Fabric + custom CSS)");
   }
+  // Input/button styles now primarily handled by common.css .dark / .ms-Fabric rules
 }
 
 function reloadPrefsJson() {
@@ -142,29 +135,27 @@ function loadSettings() {
 
 function validateSettings() {
   let allClear = true;
-  (document.getElementById("domainsErr") as HTMLElement).classList.add("hidden");
-  (document.getElementById("countdownErr") as HTMLElement).classList.add("hidden");
-  (document.getElementById("bodyLinesErr") as HTMLElement).classList.add("hidden");
+  let msgbuffer: string[] = [];
 
   if (!prefsJson["insiderDomains"].validate(prefsJson["insiderDomains"].sval)) {
-    (document.getElementById("domainsErr") as HTMLElement).classList.remove("hidden");
     allClear = false;
+    msgbuffer.push("・有効なドメインを入力してください。");
   }
 
   if (
     prefsJson["countDown"].sval &&
     !prefsJson["countDownTime"].validate(prefsJson["countDownTime"].sval)
   ) {
-    (document.getElementById("countdownErr") as HTMLElement).classList.remove("hidden");
     allClear = false;
+    msgbuffer.push("・1～60秒の範囲で指定してください。");
   }
 
   if (
     prefsJson["confirmMailBody"].sval &&
     !prefsJson["confirmMailBodyLines"].validate(prefsJson["confirmMailBodyLines"].sval)
   ) {
-    (document.getElementById("bodyLinesErr") as HTMLElement).classList.remove("hidden");
     allClear = false;
+    msgbuffer.push("・1～15行の範囲で指定してください。");
   }
 
   if (!allClear) {
@@ -175,8 +166,15 @@ function validateSettings() {
       ? "bg-red-700 text-white p-2 mt-2 rounded"
       : "bg-red-600 text-white p-2 mt-2 rounded";
     errorDiv.textContent = "入力にエラーがあります。確認してください。";
+
+    msgbuffer.forEach((msg) => {
+      const msgP = document.createElement("p");
+      msgP.textContent = msg;
+      errorDiv.appendChild(msgP);
+    });
+
     (document.getElementById("settingsForm") as HTMLElement).appendChild(errorDiv);
-    setTimeout(() => errorDiv.remove(), 3000);
+    setTimeout(() => errorDiv.remove(), 10000);
   }
   return allClear;
 }
@@ -212,7 +210,7 @@ function saveSettings(event: Event) {
           errorDiv.textContent = "設定の保存に失敗しました。後で再試行してください。";
           let settingsForm = document.getElementById("settingsForm");
           (settingsForm as HTMLElement).appendChild(errorDiv);
-          setTimeout(() => errorDiv.remove(), 3000);
+          setTimeout(() => errorDiv.remove(), 5000);
         }
       } else {
         console.log("settings.js: 設定を保存:", JSON.stringify(prefsJson));

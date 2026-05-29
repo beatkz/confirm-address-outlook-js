@@ -10,6 +10,25 @@ Office.onReady((info: { host: Office.HostType }) => {
   if (info.host === Office.HostType.Outlook) {
     console.log("capopup.js: Office.js 初期化完了:", JSON.stringify(info));
 
+    // Theme detection and application (dark base by default to suppress flash; switch to light only if light detected)
+    let isDarkTheme: boolean = true;  // ダークベースで開始（フラッシュ抑制）
+    if (Office.context.officeTheme) {
+      console.log("capopup.js: Office theme detected:", JSON.stringify(Office.context.officeTheme));
+      const bgColor = Office.context.officeTheme.bodyBackgroundColor || "";
+      if (bgColor && parseInt(bgColor.substring(1, 3), 16) >= 0x80) {  // Light background detected
+        console.log("capopup.js: ライトテーマ検出");
+        isDarkTheme = false;
+      } else {
+        console.log("capopup.js: Outlook ダークテーマ検出");
+      }
+    } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
+      console.log("capopup.js: システムライトモード検出");
+      isDarkTheme = false;
+    } else {
+      console.log("capopup.js: ダークをデフォルト適用");
+    }
+    addinApplyTheme(isDarkTheme);
+
     const setupCheckboxListener = (checkboxId: string, targetId: string | null = null) => {
       const checkbox: HTMLInputElement = document.getElementById(checkboxId) as HTMLInputElement;
       checkbox.addEventListener("change", (event: any) => {
@@ -58,6 +77,33 @@ function onRegisterMessageComplete(result: Office.AsyncResult<void>) {
   } else {
     console.log("capopup.js: DialogParentMessageReceived ハンドラ登録成功");
   }
+}
+
+function addinApplyTheme(isDarkTheme: boolean) {
+  const body = document.body;
+  const rootContainers = document.querySelectorAll(
+    ".ms-TaskPane-root, .ms-TaskPane-content, .ms-Dialog-content, .ms-Dialog-inner, .ms-Dialog-main"
+  );
+  if (isDarkTheme) {
+    body.classList.add("dark", "is-dark");
+    body.classList.remove("light");
+    rootContainers.forEach((container) => {
+      (container as HTMLElement).classList.add("dark", "is-dark");
+      (container as HTMLElement).style.backgroundColor = "#1b1a19";
+      (container as HTMLElement).style.color = "#f3f2f1";
+    });
+    console.log("capopup.js: ダークテーマ配色を適用 (Fabric + custom CSS)");
+  } else {
+    body.classList.add("light");
+    body.classList.remove("dark", "is-dark");
+    rootContainers.forEach((container) => {
+      (container as HTMLElement).classList.remove("dark", "is-dark");
+      (container as HTMLElement).style.backgroundColor = "#ffffff";
+      (container as HTMLElement).style.color = "#323130";
+    });
+    console.log("capopup.js: ライトテーマ配色を適用 (Fabric + custom CSS)");
+  }
+  // Input/button styles now primarily handled by common.css .dark / .ms-Fabric rules
 }
 
 function batchCheck(targetId: string, val: boolean) {
