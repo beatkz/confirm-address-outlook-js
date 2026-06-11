@@ -1,4 +1,4 @@
-/* global Office, console, document, HTMLElement, HTMLInputElement, HTMLButtonElement */
+/* global Office, window, console, document, HTMLElement, HTMLInputElement, HTMLButtonElement */
 
 console.log("capopup.js: スクリプトロード開始");
 
@@ -11,11 +11,12 @@ Office.onReady((info: { host: Office.HostType }) => {
     console.log("capopup.js: Office.js 初期化完了:", JSON.stringify(info));
 
     // Theme detection and application (dark base by default to suppress flash; switch to light only if light detected)
-    let isDarkTheme: boolean = true;  // ダークベースで開始（フラッシュ抑制）
+    let isDarkTheme: boolean = true; // ダークベースで開始（フラッシュ抑制）
     if (Office.context.officeTheme) {
       console.log("capopup.js: Office theme detected:", JSON.stringify(Office.context.officeTheme));
       const bgColor = Office.context.officeTheme.bodyBackgroundColor || "";
-      if (bgColor && parseInt(bgColor.substring(1, 3), 16) >= 0x80) {  // Light background detected
+      if (bgColor && parseInt(bgColor.substring(1, 3), 16) >= 0x80) {
+        // Light background detected
         console.log("capopup.js: ライトテーマ検出");
         isDarkTheme = false;
       } else {
