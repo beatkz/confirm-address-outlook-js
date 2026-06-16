@@ -28,7 +28,7 @@ elseif ($deploy) {
     }
 
     & git checkout main
-    & .\deployghio.ps1
+    & "./deployghio.ps1"
     if ($LASTEXITCODE -ne 0) {
         Write-Error "Deployment failed. Please check the errors above."
         exit $LASTEXITCODE
