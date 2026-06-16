@@ -27,13 +27,13 @@ elseif ($deploy) {
         Read-Host -Prompt "You are currently on the 'dev' branch. After committing your changes, hit any key to continue."
     }
 
-    git checkout main
-    .\deployghio.ps1
+    & git checkout main
+    & .\deployghio.ps1
     if ($LASTEXITCODE -ne 0) {
         Write-Error "Deployment failed. Please check the errors above."
         exit $LASTEXITCODE
     }
-    git checkout dev
+    & git checkout dev
 }
 elseif ($halt) {
     & npm run stop
