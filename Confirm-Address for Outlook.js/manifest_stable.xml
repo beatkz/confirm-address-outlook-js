@@ -101,12 +101,6 @@
               <LaunchEvents>
                 <!-- 送信時（SoftBlock） -->
                 <LaunchEvent Type="OnMessageSend" FunctionName="onMessageSendHandler" SendMode="SoftBlock"/>
-                
-                <!-- 事前処理用イベント（すべて同一の共通ハンドラー onPreProcessHandler を使用） -->
-                <LaunchEvent Type="OnMessageCompose" FunctionName="onMessageComposeHandler"/>
-                <LaunchEvent Type="OnMessageFromChanged" FunctionName="onMessageFromChangedHandler"/>
-                <LaunchEvent Type="OnMessageAttachmentsChanged" FunctionName="onMessageAttachmentsChangedHandler"/>
-                <LaunchEvent Type="OnMessageRecipientsChanged" FunctionName="onMessageRecipientsChangedHandler"/>
               </LaunchEvents>
               <!-- ランタイムの参照 -->
               <SourceLocation resid="WebViewRuntime.Url"/>

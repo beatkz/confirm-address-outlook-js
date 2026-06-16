@@ -1,74 +1,224 @@
-body {
-  font-family: Arial, sans-serif;
+/* Fabric Core integration for Office Add-in - migrated from Tailwind */
+body.ms-Fabric,
+.ms-Fabric {
+  font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
   padding: 20px;
-  @apply bg-gray-100 text-gray-900;
+  background-color: #ffffff;
+  color: #323130;
 }
+
 .error {
-  @apply text-red-500;
+  color: #a4262c;
 }
-input, button {
-  @apply bg-white border-gray-300 text-gray-900 rounded-md;
+
+input, button, .ms-TextField-field, .ms-Button {
+  background-color: #ffffff;
+  border: 1px solid #8a8886;
+  color: #323130;
+  border-radius: 2px;
 }
+
 #successMessage {
-  @apply bg-green-600 text-white p-2 mt-2 rounded;
+  background-color: #107c10;
+  color: #ffffff;
+  padding: 8px;
+  margin-top: 8px;
+  border-radius: 2px;
 }
+
 #errorMessage {
-  @apply bg-red-600 text-white p-2 mt-2 rounded;
+  background-color: #a4262c;
+  color: #ffffff;
+  padding: 8px;
+  margin-top: 8px;
+  border-radius: 2px;
 }
-button.bg-blue-500 {
-  @apply bg-blue-500 hover:bg-blue-600;
+
+/* Button styles compatible with Fabric .ms-Button */
+button, .ms-Button {
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  min-height: 32px;
 }
+
+button.bg-blue-500,
+.ms-Button--primary {
+  background-color: #0078d4;
+  color: #ffffff;
+  border-color: #0078d4;
+}
+button.bg-blue-500:hover,
+.ms-Button--primary:hover {
+  background-color: #106ebe;
+}
+
 button.bg-red-500 {
-  @apply bg-red-500 hover:bg-red-600;
+  background-color: #d13438;
+  color: #ffffff;
+  border-color: #d13438;
 }
-button[id*="Check"] {
-  @apply bg-gray-500 hover:bg-gray-600;
+button.bg-red-500:hover {
+  background-color: #a4262c;
 }
+
+button[id*="Check"],
+.ms-Button--default {
+  background-color: #605e5c;
+  color: #ffffff;
+}
+button[id*="Check"]:hover,
+.ms-Button--default:hover {
+  background-color: #4a4a4a;
+}
+
 #countdown {
-  @apply text-blue-600;
+  color: #0078d4;
+  font-weight: 600;
 }
+
 .form-group {
   margin-bottom: 1rem;
 }
+
 .inline-flex-group {
-  @apply flex items-center flex-wrap gap-2;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
+
 .inline-input {
-  @apply w-16 h-8 px-2;
+  width: 64px;
+  height: 32px;
+  padding: 0 8px;
 }
+
 #platformError {
-  @apply text-red-500 dark:text-red-400 p-4 rounded bg-gray-200 dark:bg-gray-800;
+  color: #a4262c;
+  padding: 16px;
+  border-radius: 4px;
+  background-color: #f3f2f1;
 }
-.ms-TaskPane-root, .ms-TaskPane-content, .ms-Dialog-content, .ms-Dialog-inner {
-  @apply bg-gray-100 text-gray-900;
+
+.ms-TaskPane-root, .ms-TaskPane-content, .ms-Dialog-content, .ms-Dialog-inner,
+.ms-Fabric .ms-Dialog-main {
+  background-color: #ffffff;
+  color: #323130;
 }
-.dark body {
-  @apply bg-gray-900 text-gray-100;
+
+/* Dark mode support (Office theme compatible) */
+.dark body,
+.dark .ms-Fabric,
+body.is-dark,
+.ms-Fabric.is-dark {
+  background-color: #1b1a19;
+  color: #f3f2f1;
 }
-.dark .error {
-  @apply text-red-400;
+
+.dark .error,
+.is-dark .error {
+  color: #f1707c;
 }
-.dark input, .dark button {
-  @apply bg-gray-800 border-gray-600 text-gray-100;
+
+.dark input,
+.dark button,
+.dark .ms-TextField-field,
+.is-dark input,
+.is-dark button {
+  background-color: #252423;
+  border-color: #484644;
+  color: #f3f2f1;
 }
-.dark #successMessage {
-  @apply bg-green-700 text-white;
+
+.dark #successMessage,
+.is-dark #successMessage {
+  background-color: #107c10;
 }
-.dark #errorMessage {
-  @apply bg-red-700 text-white;
+
+.dark #errorMessage,
+.is-dark #errorMessage {
+  background-color: #a4262c;
 }
-.dark button.bg-blue-500 {
-  @apply bg-blue-600 hover:bg-blue-700;
+
+.dark button.bg-blue-500,
+.dark .ms-Button--primary,
+.is-dark button.bg-blue-500 {
+  background-color: #2899f5;
 }
-.dark button.bg-red-500 {
-  @apply bg-red-600 hover:bg-red-700;
+.dark button.bg-blue-500:hover,
+.is-dark button.bg-blue-500:hover {
+  background-color: #3a9fff;
 }
-.dark button[id*="Check"] {
-  @apply bg-gray-600 hover:bg-gray-700;
+
+.dark button.bg-red-500,
+.is-dark button.bg-red-500 {
+  background-color: #e06a6f;
 }
-.dark #countdown {
-  @apply text-blue-400;
+.dark button.bg-red-500:hover {
+  background-color: #f1707c;
 }
-.dark .ms-TaskPane-root, .dark .ms-TaskPane-content, .dark .ms-Dialog-content, .dark .ms-Dialog-inner {
-  @apply bg-gray-900 text-gray-100;
+
+.dark button[id*="Check"],
+.dark .ms-Button--default,
+.is-dark button[id*="Check"] {
+  background-color: #8a8886;
+}
+.dark button[id*="Check"]:hover {
+  background-color: #a19f9d;
+}
+
+.dark #countdown,
+.is-dark #countdown {
+  color: #5eb4ff;
+}
+
+.dark .ms-TaskPane-root,
+.dark .ms-TaskPane-content,
+.dark .ms-Dialog-content,
+.dark .ms-Dialog-inner,
+.is-dark .ms-TaskPane-root,
+.is-dark .ms-Dialog-content {
+  background-color: #1b1a19;
+  color: #f3f2f1;
+}
+
+/* Additional Fabric helpers for forms and lists */
+.ms-Label {
+  font-weight: 600;
+  color: #323130;
+  padding-bottom: 4px;
+}
+
+.dark .ms-Label,
+.is-dark .ms-Label {
+  color: #f3f2f1;
+}
+
+.ms-Checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.address-list {
+  background-color: #f3f2f1;
+  border: 1px solid #e1dfdd;
+  border-radius: 2px;
+  padding: 8px;
+  max-height: 192px;
+  overflow-y: auto;
+}
+
+.dark .address-list,
+.is-dark .address-list {
+  background-color: #252423;
+  border-color: #484644;
+}
+
+pre, .ms-Dialog-content pre {
+  font-family: monospace;
+  white-space: pre-wrap;
 }
