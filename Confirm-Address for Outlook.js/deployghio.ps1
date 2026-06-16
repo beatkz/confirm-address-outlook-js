@@ -6,6 +6,64 @@
 Push-Location (Split-Path -Parent $MyInvocation.MyCommand.Path)
 
 try {
+    # ====================== 関数定義 ======================
+
+    # フォルダの中身を構造を保持したままコピーする関数
+    function Copy-Contents {
+        param(
+            [Parameter(Mandatory=$true)]
+            [string]$SourcePath,
+            
+            [Parameter(Mandatory=$true)]
+            [string]$DestinationPath,
+            
+            [string]$Description = ""
+        )
+        
+        if (-not (Test-Path $SourcePath)) {
+            Write-Warning "'$SourcePath' が見つかりません。スキップします。"
+            return $false
+        }
+        
+        # 宛先フォルダが存在しない場合は作成
+        if (-not (Test-Path $DestinationPath)) {
+            New-Item -Path $DestinationPath -ItemType Directory -Force | Out-Null
+        }
+        
+        # 中身だけをコピー（構造保持）
+        Copy-Item -Path "$SourcePath\*" -Destination $DestinationPath -Recurse -Force
+        
+        if ($Description) {
+            Write-Host "✓ $Description" -ForegroundColor Gray
+        } else {
+            Write-Host "✓ Copied contents of '$SourcePath' to '$DestinationPath'" -ForegroundColor Gray
+        }
+        
+        return $true
+    }
+    
+    # 単一ファイルをコピーする関数
+    function Copy-File {
+        param(
+            [Parameter(Mandatory=$true)]
+            [string]$SourceFile,
+            
+            [Parameter(Mandatory=$true)]
+            [string]$DestinationPath
+        )
+        
+        if (-not (Test-Path $SourceFile)) {
+            Write-Warning "'$SourceFile' が見つかりません。スキップします。"
+            return $false
+        }
+        
+        Copy-Item -Path $SourceFile -Destination $DestinationPath -Force
+        Write-Host "✓ Copied '$SourceFile' to '$DestinationPath'" -ForegroundColor Gray
+        return $true
+    }
+    
+    # ====================== 本処理 ======================
+    
     # 現在のGitブランチを取得
     $branch = git branch --show-current
 
@@ -66,12 +124,19 @@ try {
             exit $LASTEXITCODE
         }
 
-        # リリース用ファイルのコピー
+        # ==================== リリース用ファイルのコピー ====================
         Write-Host "Starting release branch deployment..." -ForegroundColor Cyan
 
-        Copy-Item -Path "dist" -Destination "..\docs" -Recurse -Force
-        Copy-Item -Path "..\notes\manual" -Destination "..\docs\manual" -Recurse -Force
-        Copy-Item -Path "..\README.md" -Destination "..\docs" -Force
+        Copy-Contents -SourcePath "dist" `
+                      -DestinationPath "..\docs" `
+                      -Description "dist フォルダの中身を ..\docs にコピー"
+
+        Copy-Contents -SourcePath "..\notes\manual" `
+                      -DestinationPath "..\docs\manual" `
+                      -Description "manual フォルダの中身を ..\docs\manual にコピー"
+
+        Copy-File -SourceFile "..\README.md" `
+                  -DestinationPath "..\docs"
 
         Write-Host "Release branch deployment complete." -ForegroundColor Green
     }

@@ -55,7 +55,7 @@
           "id": "SettingsRuntime",
           "type": "general",
           "code": {
-            "page": "https://beatkz.github.io/confirm-address-outlook-js/settings.html"
+            "page": "https://localhost:3000/settings.html"
           },
           "lifetime": "short",
           "actions": [
@@ -76,7 +76,7 @@
           "id": "AutorunRuntime",
           "type": "general",
           "code": {
-            "page": "https://beatkz.github.io/confirm-address-outlook-js/bgevent.html"
+            "page": "https://localhost:3000/bgevent.html"
           },
           "lifetime": "short",
           "actions": [
@@ -96,7 +96,7 @@
           "id": "SendConfirmRuntime",
           "type": "general",
           "code": {
-            "page": "https://beatkz.github.io/confirm-address-outlook-js/capopup.html"
+            "page": "https://localhost:3000/capopup.html"
           },
           "lifetime": "short",
           "actions": [
@@ -139,7 +139,7 @@
                   "icons": [
                     {
                       "size": 16,
-                      "url": "https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-16x16.png"
+                      "url": "https://localhost:3000/assets/img/ConfirmAddress-16x16.png"
                     }
                   ],
                   "controls": [
@@ -150,7 +150,7 @@
                       "icons": [
                         {
                           "size": 16,
-                          "url": "https://beatkz.github.io/confirm-address-outlook-js/assets/img/ConfirmAddress-16x16.png"
+                          "url": "https://localhost:3000/assets/img/ConfirmAddress-16x16.png"
                         }
                       ],
                       "supertip": {

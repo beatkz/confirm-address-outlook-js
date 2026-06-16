@@ -43,4 +43,4 @@ If you wish to use on Outlook Classic, please use [Confirm-Address for Outlook C
 
 ### Install this Add-in
 
-Upload the [Add-in only Manifest](https://beatkz.github.io/confirm-address-outlook-js/manifest_stable.xml) into [sideload page](https://aka.ms/olksideload). More information, please see the [Microsoft Learn article](https://learn.microsoft.com/en-us/office/dev/add-ins/outlook/sideload-outlook-add-ins-for-testing?tabs=xmlmanifest).
+Upload the [Add-in only Manifest](https://beatkz.github.io/confirm-address-outlook-js/manifest_stable.xml) into [olksideload page](https://aka.ms/olksideload). More information, please see the [Microsoft Learn article](https://learn.microsoft.com/en-us/office/dev/add-ins/outlook/sideload-outlook-add-ins-for-testing?tabs=xmlmanifest).

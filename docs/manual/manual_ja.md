@@ -2,7 +2,7 @@
 
 ## 1.インストール
 
-1. 任意のブラウザーで[アドインのみマニフェスト](https://beatkz.github.io/confirm-address-outlook-js/manifest_stable.xml)へのリンクを右クリック→[名前を付けてリンク先を保存]をクリックし、manifest.xmlをデスクトップ等任意の場所に保存します。
+1. 任意のブラウザーでアドインのみマニフェストへのリンク([安定版](https://beatkz.github.io/confirm-address-outlook-js/manifest.xml)/[β版](https://beatkz.github.io/confirm-address-outlook-js/beta/manifest_beta.xml))を右クリック→[名前を付けてリンク先を保存]をクリックし、manifest.xmlをデスクトップ等任意の場所に保存します。
 2. 一旦Outlookを終了してから任意のブラウザーで[このリンク](https://aka.ms/olksideload)をクリックし、Outlook on the Web内の[Outlook用アドイン]ダイアログが表示されるまで待ちます。
 3. Outlookのアドインダイアログボックスで[個人用アドイン]を選択します。
 4. ダイアログボックスの下部のカスタムアドインまでスクロールし、[カスタムアドインの追加]をクリックしてから[ファイルから追加]を選択します。
