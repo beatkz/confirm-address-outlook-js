@@ -30,7 +30,7 @@ function showConfirmDialog(sendEvent: Office.MailboxEvent, dialogUrl: string) {
         console.error("bgevent.js: ダイアログ表示エラー:", result.error.message);
         sendEvent.completed({
           allowEvent: false,
-          errorMessage: `確認画面の表示に失敗: ${result.error.message}`,
+          errorMessage: `確認画面の表示に失敗: ${result.error.code + " / " + result.error.message}`,
         });
         return;
       }

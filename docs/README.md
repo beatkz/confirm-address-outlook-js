@@ -17,9 +17,13 @@
 - メール本文の冒頭
 - 添付ファイル名
 
-プラットフォームの制限により、このOfficeアドインはOutlook(new)および、Outlook on the Web(OWA)で使用できます。
+プラットフォームの制限により、このOfficeアドインは次の環境で使用できます。
 
-Outlook Classic版のアドインを使いたい場合は、[Confirm-Address for Outlook Classic](https://github.com/beatkz/confirm-address-outlook/)をご利用ください。
+- Outlook (new)（Windows）
+- Outlook on the Web (OWA)
+- Outlook for Mac の新しい UI（Mailbox 1.12 以上。OnMessageSend / Smart Alerts 対応ビルド）
+
+Outlook for Mac のクラシック UI、および Windows の Outlook Classic では使用できません。Outlook Classic 版のアドインを使いたい場合は、[Confirm-Address for Outlook Classic](https://github.com/beatkz/confirm-address-outlook/)をご利用ください。
 
 ## en
 
@@ -37,9 +41,13 @@ This Office Add-in confirms mail items before sending as follows:
 - Head of mail body
 - Attached file name(s)
 
-Due to its platform limit, this Office Add-in is only for Outlook (new) and Outlook on the Web(OWA).
+Due to platform limits, this Office Add-in works on:
 
-If you wish to use on Outlook Classic, please use [Confirm-Address for Outlook Classic](https://github.com/beatkz/confirm-address-outlook/) instead.
+- Outlook (new) on Windows
+- Outlook on the Web (OWA)
+- Outlook for Mac new UI (Mailbox 1.12 or later)
+
+It does not work on Outlook for Mac classic UI or Outlook Classic on Windows. If you wish to use Outlook Classic, please use [Confirm-Address for Outlook Classic](https://github.com/beatkz/confirm-address-outlook/) instead.
 
 ### Install this Add-in
 

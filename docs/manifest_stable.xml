@@ -7,7 +7,7 @@
   xsi:type="MailApp">
 
   <Id>5ab14cd7-dbe1-4d20-ab4c-7368e9e25e16</Id>
-  <Version>1.1.1</Version>
+  <Version>1.1.2</Version>
   <ProviderName>Keiji Momose</ProviderName>
   <DefaultLocale>ja-JP</DefaultLocale>
 
@@ -29,7 +29,7 @@
   </Hosts>
 
   <Requirements>
-    <Sets DefaultMinVersion="1.15">
+    <Sets DefaultMinVersion="1.12">
       <Set Name="Mailbox"/>
     </Sets>
   </Requirements>
@@ -56,7 +56,7 @@
     <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides/1.1" xsi:type="VersionOverridesV1_1">
 
       <Requirements>
-        <bt:Sets DefaultMinVersion="1.15">
+        <bt:Sets DefaultMinVersion="1.12">
           <bt:Set Name="Mailbox"/>
         </bt:Sets>
       </Requirements>
