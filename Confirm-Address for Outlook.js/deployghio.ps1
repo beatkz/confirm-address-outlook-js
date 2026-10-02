@@ -18,7 +18,7 @@ try {
     Write-Host "Current branch name: $branch" -ForegroundColor Cyan
 
     # ローカルモード（devブランチ）の判定
-    $localMode = ($branch -eq "dev")
+    $localMode = ($branch -like "dev*")
 
     if ($localMode) {
         Write-Host "Running in local deployment mode..." -ForegroundColor Yellow
