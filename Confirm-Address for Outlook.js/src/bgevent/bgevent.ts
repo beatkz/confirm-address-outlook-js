@@ -21,6 +21,39 @@ Office.onReady((info: { host: Office.HostType }) => {
   console.error("bgevent.js: Office.js 初期化エラー:", error);
 });
 
+// Mac用: checkAddress() の結果を Smart Alerts の標準ダイアログ文言に変換
+async function runSmartAlertForMac(sendEvent: Office.MailboxEvent) {
+  const details = await checkAddress();
+  const hasOutsider = details.caReciList.outsider.length > 0;
+
+  const headline = hasOutsider
+    ? "社外のアドレスが含まれています。本当に送信してもよろしいですか？"
+    : "送信してもよろしいですか？";
+
+  const addressLines: string[] = [];
+  if (details.caReciList.insider.length > 0) {
+    addressLines.push(
+      `組織内: ${details.caReciList.insider.map((r: any) => r.address).join(", ")}`
+    );
+  }
+  if (details.caReciList.outsider.length > 0) {
+    addressLines.push(
+      `組織外: ${details.caReciList.outsider.map((r: any) => r.address).join(", ")}`
+    );
+  }
+  if (details.attNames.length > 0) {
+    addressLines.push(`添付: ${details.attNames.map((a: any) => a.name).join(", ")}`);
+  }
+
+  sendEvent.completed({
+    allowEvent: false,
+    errorMessage: `${headline}\n${addressLines.join("\n")}`,
+    errorMessageMarkdown: `${headline}\n\n${addressLines.map((l) => `- ${l}`).join("\n")}`,
+    cancelLabel: "内容を確認",
+    commandId: "msgComposeOpenPaneButton",
+  });
+}
+
 function showConfirmDialog(sendEvent: Office.MailboxEvent, dialogUrl: string) {
   console.log("bgevent.js: ダイアログ表示を試行", dialogUrl);
 
@@ -108,39 +141,6 @@ function startCountdown(seconds: number, sendEvent: Office.MailboxEvent, dialog:
     dialog.messageChild(JSON.stringify({ type: "countdownUpdate", seconds: remaining }));
     remaining--;
   }, 1000);
-}
-
-// Mac用: checkAddress() の結果を Smart Alerts の標準ダイアログ文言に変換
-async function runSmartAlertForMac(sendEvent: Office.MailboxEvent) {
-  const details = await checkAddress();
-  const hasOutsider = details.caReciList.outsider.length > 0;
-
-  const headline = hasOutsider
-    ? "社外のアドレスが含まれています。本当に送信してもよろしいですか？"
-    : "送信してもよろしいですか？";
-
-  const addressLines: string[] = [];
-  if (details.caReciList.insider.length > 0) {
-    addressLines.push(
-      `組織内: ${details.caReciList.insider.map((r: any) => r.address).join(", ")}`
-    );
-  }
-  if (details.caReciList.outsider.length > 0) {
-    addressLines.push(
-      `組織外: ${details.caReciList.outsider.map((r: any) => r.address).join(", ")}`
-    );
-  }
-  if (details.attNames.length > 0) {
-    addressLines.push(`添付: ${details.attNames.map((a: any) => a.name).join(", ")}`);
-  }
-
-  sendEvent.completed({
-    allowEvent: false,
-    errorMessage: `${headline}\n${addressLines.join("\n")}`,
-    errorMessageMarkdown: `${headline}\n\n${addressLines.map((l) => `- ${l}`).join("\n")}`,
-    cancelLabel: "内容を確認",
-    commandId: "msgComposeOpenPaneButton",
-  });
 }
 
 async function checkAddress() {
