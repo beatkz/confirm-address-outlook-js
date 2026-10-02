@@ -13,9 +13,9 @@
   },
   "scripts": {
     "type-check": "tsc --noEmit",
-    "build": "npm run lint:fix && npm run type-check && webpack --mode production",
-    "build:dev": "npm run lint:fix && npm run type-check && webpack --mode development",
-    "dev-server": "webpack serve --mode development",
+    "build": "npm run lint:fix && npm run type-check && vite build --mode production",
+    "build:dev": "npm run lint:fix && npm run type-check && vite build --mode development",
+    "dev-server": "vite --mode development --port 3000",
     "lint": "office-addin-lint check",
     "lint:fix": "office-addin-lint fix",
     "prettier": "office-addin-lint prettier",
@@ -23,47 +23,38 @@
     "signout": "office-addin-dev-settings m365-account logout",
     "start": "office-addin-debugging start manifest_local.xml",
     "stop": "office-addin-debugging stop manifest_local.xml",
-    "start:prev": "office-addin-debugging start manifest_local_v110.xml",
-    "stop:prev": "office-addin-debugging stop manifest_local_v110.xml",
     "validate": "office-addin-manifest validate manifest_local.xml",
-    "validate:release": "office-addin-manifest validate manifest_stable.xml",
-    "watch": "webpack --mode development --watch"
+    "validate:release": "office-addin-manifest validate manifest_stable.xml"
   },
   "dependencies": {
     "core-js": "^3.36.0",
+    "esbuild": "^0.28.2",
     "office-ui-fabric-core": "^11.1.0",
     "regenerator-runtime": "^0.14.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.0",
-    "@babel/preset-env": "^7.25.4",
-    "@babel/preset-typescript": "^7.23.3",
     "@types/office-js": "^1.0.591",
     "@types/office-runtime": "^1.0.35",
-    "babel-loader": "^9.1.3",
-    "copy-webpack-plugin": "^12.0.2",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "eslint-plugin-office-addins": "^4.0.3",
-    "file-loader": "^6.2.0",
-    "html-loader": "^5.0.0",
-    "html-webpack-plugin": "^5.6.0",
     "office-addin-cli": "^2.0.3",
     "office-addin-debugging": "^6.0.3",
     "office-addin-dev-certs": "^2.0.3",
     "office-addin-lint": "^3.0.3",
     "office-addin-manifest": "^2.0.3",
     "office-addin-prettier-config": "^2.0.1",
-    "os-browserify": "^0.3.0",
-    "process": "^0.11.10",
-    "source-map-loader": "^5.0.0",
-    "@typescript/native": "npm:typescript@^7.0.2",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "webpack": "^5.95.0",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "5.1.0"
+    "vite": "^8.3.2",
+    "vite-plugin-static-copy": "^4.1.1"
+  },
+  "overrides": {
+    "@typescript-eslint/parser": "^8.40.0",
+    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/typescript-estree": "^8.40.0",
+    "@typescript-eslint/utils": "^8.40.0"
   },
   "prettier": "office-addin-prettier-config",
   "browserslist": [
-    "last 2 versions",
-    "ie 11"
+    "last 2 versions"
   ]
 }
