@@ -1,14 +1,20 @@
 /* global Office, Node, console, clearInterval, process, document, window */
 
-let caDialog: Office.Dialog; // confirmダイアログのグローバル変数
-let countdownInterval: number; // カウントダウン用のグローバル変数
+let caDialog: Office.Dialog;
+let countdownInterval: number;
 
 Office.onReady((info: { host: Office.HostType }) => {
   if (info.host === Office.HostType.Outlook) {
     console.log("bgevent.js: Office.js 初期化完了:", JSON.stringify(info));
     Office.actions.associate("onMessageSendHandler", function (event) {
-      console.log("bgevent.js: onMessageSendHandler 開始");
-      showConfirmDialog(event, `${process.env.BASE_URL}capopup.html`);
+      console.log("bgevent.js: onMessageSendHandler 開始", Office.context.platform);
+      if (Office.context.platform === Office.PlatformType.Mac) {
+        // Mac: イベントタスクからはダイアログを開けないため Smart Alerts 標準UIのみで完結させる
+        runSmartAlertForMac(event);
+      } else {
+        // Win(new) / Web: 従来どおり独自の確認ダイアログを表示
+        showConfirmDialog(event, `${process.env.BASE_URL}capopup.html`);
+      }
     });
   }
 }).catch((error) => {
@@ -102,6 +108,39 @@ function startCountdown(seconds: number, sendEvent: Office.MailboxEvent, dialog:
     dialog.messageChild(JSON.stringify({ type: "countdownUpdate", seconds: remaining }));
     remaining--;
   }, 1000);
+}
+
+// Mac用: checkAddress() の結果を Smart Alerts の標準ダイアログ文言に変換
+async function runSmartAlertForMac(sendEvent: Office.MailboxEvent) {
+  const details = await checkAddress();
+  const hasOutsider = details.caReciList.outsider.length > 0;
+
+  const headline = hasOutsider
+    ? "社外のアドレスが含まれています。本当に送信してもよろしいですか？"
+    : "送信してもよろしいですか？";
+
+  const addressLines: string[] = [];
+  if (details.caReciList.insider.length > 0) {
+    addressLines.push(
+      `組織内: ${details.caReciList.insider.map((r: any) => r.address).join(", ")}`
+    );
+  }
+  if (details.caReciList.outsider.length > 0) {
+    addressLines.push(
+      `組織外: ${details.caReciList.outsider.map((r: any) => r.address).join(", ")}`
+    );
+  }
+  if (details.attNames.length > 0) {
+    addressLines.push(`添付: ${details.attNames.map((a: any) => a.name).join(", ")}`);
+  }
+
+  sendEvent.completed({
+    allowEvent: false,
+    errorMessage: `${headline}\n${addressLines.join("\n")}`,
+    errorMessageMarkdown: `${headline}\n\n${addressLines.map((l) => `- ${l}`).join("\n")}`,
+    cancelLabel: "内容を確認",
+    commandId: "msgComposeOpenPaneButton",
+  });
 }
 
 async function checkAddress() {
