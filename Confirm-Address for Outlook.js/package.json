@@ -16,9 +16,9 @@
     "build": "npm run lint:fix && npm run type-check && vite build --mode production",
     "build:dev": "npm run lint:fix && npm run type-check && vite build --mode development",
     "dev-server": "vite --mode development --port 3000",
-    "lint": "office-addin-lint check",
-    "lint:fix": "office-addin-lint fix",
-    "prettier": "office-addin-lint prettier",
+    "lint": "office-addin-lint check --files \"src/**/*.{ts,js}\"",
+    "lint:fix": "office-addin-lint fix --files \"src/**/*.{ts,js}\"",
+    "prettier": "office-addin-lint prettier --files \"src/**/*.{ts,js}\"",
     "signin": "office-addin-dev-settings m365-account login",
     "signout": "office-addin-dev-settings m365-account logout",
     "start": "office-addin-debugging start manifest_local.xml",
@@ -40,7 +40,7 @@
     "office-addin-cli": "^2.0.3",
     "office-addin-debugging": "^6.0.3",
     "office-addin-dev-certs": "^2.0.3",
-    "office-addin-lint": "^3.0.3",
+    "office-addin-lint": "^3.0.10",
     "office-addin-manifest": "^2.0.3",
     "office-addin-prettier-config": "^2.0.1",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
@@ -56,5 +56,13 @@
   "prettier": "office-addin-prettier-config",
   "browserslist": [
     "last 2 versions"
-  ]
+  ],
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "core-js@3.50.0": true,
+    "keytar@7.9.0": true,
+    "@azure/msal-node-extensions@1.5.32": true,
+    "@microsoft/m365agentstoolkit-cli@1.1.17": true,
+    "fsevents@2.3.3": true
+  }
 }
