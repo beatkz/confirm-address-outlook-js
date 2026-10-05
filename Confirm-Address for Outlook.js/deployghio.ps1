@@ -1,3 +1,4 @@
+#! /usr/bin/env pwsh
 # ================================================
 # Deployment Script (PowerShell)
 # ================================================
@@ -39,6 +40,7 @@ try {
         Write-Host "Build success." -ForegroundColor Green
         Write-Host "- Run `"npm run start`" to start debugging." -ForegroundColor Green
         Write-Host "- Run `"npm run stop`" to stop debugging." -ForegroundColor Green
+        Write-Host "- For macOS, please run `"npm run start:mac`" to start the development server, and sideload manually: https://aka.ms/olksideload" -ForegroundColor Green
         Write-Host "- When debugging is complete, switch to the main branch and run this script again to deploy the release version." -ForegroundColor Green
 
     }

@@ -22,6 +22,7 @@
     "signin": "office-addin-dev-settings m365-account login",
     "signout": "office-addin-dev-settings m365-account logout",
     "start": "office-addin-debugging start manifest_local.xml",
+    "start:mac": "npm run build:dev && vite --mode development --port 3000",
     "stop": "office-addin-debugging stop manifest_local.xml",
     "validate": "office-addin-manifest validate manifest_local.xml",
     "validate:release": "office-addin-manifest validate manifest_stable.xml"
