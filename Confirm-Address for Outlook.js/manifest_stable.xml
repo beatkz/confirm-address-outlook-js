@@ -118,7 +118,7 @@
 
         <bt:Urls>
           <!-- Outlook Classic用 JSファイル -->
-          <bt:Url id="BgeventOlc.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/bgevent_olc.js"/>
+          <bt:Url id="BgeventOlc.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/bgevent_olc.min.js"/>
 
           <!-- ダイアログの最初のページ -->
           <bt:Url id="Capopup.Url" DefaultValue="https://beatkz.github.io/confirm-address-outlook-js/capopup.html"/>

@@ -2,7 +2,6 @@ import { defineConfig } from "vite";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import devCerts from "office-addin-dev-certs";
-import esbuild from "esbuild";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const devUrl = "https://localhost:3000/";
@@ -15,11 +14,12 @@ const htmlMap: Record<string, string> = {
   "/bgevent_olc.html": "/src/bgevent/bgevent_olc.html",
 };
 
-export default defineConfig(async ({ mode }) => {
+export default defineConfig(async ({ command, mode }) => {
   const prod = mode === "production";
-  const https = await devCerts.getHttpsServerOptions();
+  const https = command === "serve" ? await devCerts.getHttpsServerOptions() : undefined;
 
   return {
+    base: prod ? "/confirm-address-outlook-js/" : "/",
     define: {
       "process.env.BASE_URL": JSON.stringify(prod ? prodUrl : devUrl),
     },
@@ -45,7 +45,7 @@ export default defineConfig(async ({ mode }) => {
     server: {
       port: 3000,
       strictPort: true,
-      https: { ca: https.ca, key: https.key, cert: https.cert },
+      https: https ? { ca: https.ca, key: https.key, cert: https.cert } : undefined,
       headers: { "Access-Control-Allow-Origin": "*" },
     },
     plugins: [
@@ -55,20 +55,6 @@ export default defineConfig(async ({ mode }) => {
           server.middlewares.use(async (req, _res, next) => {
             const url = req.url?.split("?")[0] ?? "";
             if (htmlMap[url]) req.url = htmlMap[url];
-            if (url === "/bgevent_olc.js") {
-              const result = await esbuild.build({
-                absWorkingDir: root,
-                entryPoints: ["src/bgevent/bgevent_olc.ts"],
-                bundle: true,
-                format: "iife",
-                platform: "browser",
-                write: false,
-                sourcemap: "inline",
-              });
-              _res.setHeader("Content-Type", "text/javascript");
-              _res.end(result.outputFiles[0].text);
-              return;
-            }
             next();
           });
         },
@@ -76,6 +62,7 @@ export default defineConfig(async ({ mode }) => {
           for (const file of Object.keys(bundle)) {
             if (!file.endsWith(".html") || !file.includes("/")) continue;
             const flat = file.split("/").pop()!;
+            bundle[file].fileName = flat; // 出力ファイル名自体を更新
             bundle[flat] = bundle[file];
             delete bundle[file];
           }
