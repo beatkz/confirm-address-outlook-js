@@ -61,10 +61,10 @@
   ],
   "allowScripts": {
     "esbuild@0.28.2": true,
-    "core-js@3.50.0": true,
     "keytar@7.9.0": true,
     "@azure/msal-node-extensions@1.5.32": true,
-    "@microsoft/m365agentstoolkit-cli@1.1.17": true,
-    "fsevents@2.3.3": true
+    "fsevents@2.3.3": true,
+    "@microsoft/m365agentstoolkit-cli@1.1.18": true,
+    "core-js@3.51.0": true
   }
 }
