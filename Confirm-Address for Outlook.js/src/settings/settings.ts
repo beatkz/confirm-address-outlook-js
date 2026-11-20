@@ -1,4 +1,4 @@
-/* global Office, console, document, window, setTimeout, Event, HTMLElement, HTMLFormElement, HTMLInputElement */
+/* global console, document, window, setTimeout, Event, HTMLElement, HTMLFormElement, HTMLInputElement */
 
 let isInitialized = false;
 let prefsJson: { [key: string]: any } = {};

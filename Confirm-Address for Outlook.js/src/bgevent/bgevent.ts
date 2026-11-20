@@ -1,4 +1,4 @@
-/* global Office, Node, console, clearInterval, process, document, window */
+/* global Node, console, clearInterval, process, document, window */
 
 let caDialog: Office.Dialog;
 let countdownInterval: number;

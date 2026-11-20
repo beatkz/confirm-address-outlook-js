@@ -1,4 +1,4 @@
-/* global Office, console */
+/* global console */
 
 // 事前処理個別ハンドラー (マニフェストFunctionName準拠)
 function onMessageSendHandler(event: Office.AddinCommands.Event) {

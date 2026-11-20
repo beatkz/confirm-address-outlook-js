@@ -1,4 +1,4 @@
-/* global Office, window, console, document, HTMLElement, HTMLInputElement, HTMLButtonElement */
+/* global window, console, document, HTMLElement, HTMLInputElement, HTMLButtonElement */
 
 console.log("capopup.js: スクリプトロード開始");
 

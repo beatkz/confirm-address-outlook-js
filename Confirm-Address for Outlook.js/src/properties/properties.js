@@ -3,7 +3,7 @@
  * See LICENSE in the project root for license information.
  */
 
-/* global document, Office */
+/* global document */
 
 Office.onReady((info) => {
   if (info.host === Office.HostType.Outlook) {
