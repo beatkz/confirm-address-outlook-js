@@ -1,18 +1,10 @@
+import { resolve } from "node:path";
 import { defineConfig } from "vite";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import flattenOutput from "vite-plugin-flatten-output";
 import devCerts from "office-addin-dev-certs";
 
-const root = path.dirname(fileURLToPath(import.meta.url));
-const devUrl = "https://localhost:3000/";
+const devUrl = "https://localhost:3000/confirm-address-outlook-js/";
 const prodUrl = "https://beatkz.github.io/confirm-address-outlook-js/";
-
-const htmlMap: Record<string, string> = {
-  "/settings.html": "/src/settings/settings.html",
-  "/capopup.html": "/src/capopup/capopup.html",
-  "/bgevent.html": "/src/bgevent/bgevent.html",
-  "/bgevent_olc.html": "/src/bgevent/bgevent_olc.html",
-};
 
 export default defineConfig(async ({ command, mode }) => {
   const prod = mode === "production";
@@ -23,17 +15,26 @@ export default defineConfig(async ({ command, mode }) => {
     define: {
       "process.env.BASE_URL": JSON.stringify(prod ? prodUrl : devUrl),
     },
+    plugins: [
+      flattenOutput({
+        removeDirs: [
+          'src/bgevent', 
+          'src/capopup', 
+          'src/settings',
+        ],
+      }),
+    ],
     build: {
       outDir: "dist",
       emptyOutDir: true,
       sourcemap: true,
       modulePreload: false,
-      rollupOptions: {
+      rolldownOptions: {
         input: {
-          settings: path.resolve(root, "src/settings/settings.html"),
-          capopup: path.resolve(root, "src/capopup/capopup.html"),
-          bgevent: path.resolve(root, "src/bgevent/bgevent.html"),
-          bgevent_olc: path.resolve(root, "src/bgevent/bgevent_olc.html"),
+          settings: resolve("src/settings/settings.html"),
+          capopup: resolve("src/capopup/capopup.html"),
+          bgevent: resolve("src/bgevent/bgevent.html"),
+          bgevent_olc: resolve("src/bgevent/bgevent_olc.html"),
         },
         output: {
           entryFileNames: prod ? "[name].min.js" : "[name].js",
@@ -48,26 +49,5 @@ export default defineConfig(async ({ command, mode }) => {
       https: https ? { ca: https.ca, key: https.key, cert: https.cert } : undefined,
       headers: { "Access-Control-Allow-Origin": "*" },
     },
-    plugins: [
-      {
-        name: "office-flat-paths",
-        configureServer(server) {
-          server.middlewares.use(async (req, _res, next) => {
-            const url = req.url?.split("?")[0] ?? "";
-            if (htmlMap[url]) req.url = htmlMap[url];
-            next();
-          });
-        },
-        generateBundle(_options, bundle) {
-          for (const file of Object.keys(bundle)) {
-            if (!file.endsWith(".html") || !file.includes("/")) continue;
-            const flat = file.split("/").pop()!;
-            bundle[file].fileName = flat; // 出力ファイル名自体を更新
-            bundle[flat] = bundle[file];
-            delete bundle[file];
-          }
-        },
-      },
-    ],
   };
 });
