@@ -19,7 +19,7 @@ export default defineConfig(async ({ command, mode }) => {
   const https = command === "serve" ? await devCerts.getHttpsServerOptions() : undefined;
 
   return {
-    base: prod ? "/confirm-address-outlook-js/" : "/",
+    base: "/confirm-address-outlook-js/",
     define: {
       "process.env.BASE_URL": JSON.stringify(prod ? prodUrl : devUrl),
     },
